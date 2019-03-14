@@ -14,7 +14,8 @@ const routes: Routes = [
   { path: 'timeline', loadChildren: './timeline/timeline.module#TimelinePageModule' },
   { path: 'movements', loadChildren: './movements/movements.module#MovementsPageModule' },
   { path: 'profile', loadChildren: './profile/profile.module#ProfilePageModule' },
-  { path: 'login', loadChildren: './login/login.module#LoginPageModule' }
+  { path: 'login', loadChildren: './login/login.module#LoginPageModule' },  { path: 'register', loadChildren: './register/register.module#RegisterPageModule' }
+
 
 ];
 
