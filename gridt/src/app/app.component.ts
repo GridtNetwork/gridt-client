@@ -16,9 +16,14 @@ export class AppComponent {
       icon: 'home'
     },
     {
-      title: 'Timeline',
-      url: '/timeline',
-      icon: 'time'
+      title: 'Login',
+      url: '/login',
+      icon: 'person'
+    },
+    {
+      title: 'Register',
+      url: '/register',
+      icon: 'person'
     },
     {
       title: 'Movements',
