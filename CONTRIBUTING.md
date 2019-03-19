@@ -39,6 +39,10 @@ There is 3 levels at which contribution is possible:
 ### Documentation
 Before you actually start to code, it might be very useful for you to help us expand our documentation. We go through a lot of effort to document our code as well as possible, but there is always more that you could do. Feel free to ask question about subjects you don't understand yet. Once you know the answer, please write it down so that the awesome coders after you don't have to do the same thing!
 
+Gridt works with a simplified version of agile development. We create issues with titles in the shape of a user story. "As a <user> I want <a feature> for <a reason>." We then label it with a milestone to set a date for when we want to have dealth with the subject and enter it in a project to show our co-contributors what we are working on. 
+  
+If you want to file a bug, you can also do that. Please be as explicit as possible. Tell us what behaviour you observed and what you expected. You can even suggest a rough fix if you'd like to!
+
 ### Testing
 Once you have a proper understanding of our code, we would really appreciate it if you could assist us with writing tests for our platform. We have laid the fundaments for this, but there is a lot of tests that still can be of much use. Any addittion will be very welcome.
 
