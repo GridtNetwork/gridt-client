@@ -3,11 +3,11 @@
 We, the Gridt network project love to welcome anyone who want to contribute to the project.
 In this document we get you up to speed to start making your first commits!
 
-# Project leaders
+## Project leaders
 Our Chief Technology Officer is [@ddvduuren](https://github.com/ddvduuren). He is the one to contact if you want to be part our Gridt Slack. 
 Our lead developer is [@Drvanon](https://github.com/Drvanon), he is a nice guy so don't be shy to ask him in depth questions about the code.
 
-# Coding sessions
+## Coding sessions
 Most of us are from Groningen, The Netherlands. Hence, every wednesday we host a coding session at the Zernike campus of the University of Groningen.
 
 Adres: *Nijenborgh 4, 9747AG, Groningen*
@@ -18,7 +18,7 @@ Time: *17:00 - 19:00*
 
 Important to note, every first Wednesday of the month there is free pizza during the coding session! You don't have to reserve a seat, just meet us there.
 
-# How to start
+## How to start
 Here's a little shortlist of things to do before contributing:
 - Visit our website http://www.gridt.org
 - Take a quick look at the master branch
@@ -28,4 +28,20 @@ Here's a little shortlist of things to do before contributing:
 - Clone the [gridt-client](https://github.com/GridtNetwork/gridt-client)
 - Checkout to the `ionic` branch and study its content
 - Take a look at the Ionic documentation
-- Start tackling your first issue!
+
+## The contributing process
+There is 3 levels at which contribution is possible:
+
+1. Documentation/Issue generation
+2. Testing
+3. Features
+
+### Documentation
+Before you actually start to code, it might be very useful for you to help us expand our documentation. We go through a lot of effort to document our code as well as possible, but there is always more that you could do. Feel free to ask question about subjects you don't understand yet. Once you know the answer, please write it down so that the awesome coders after you don't have to do the same thing!
+
+### Testing
+Once you have a proper understanding of our code, we would really appreciate it if you could assist us with writing tests for our platform. We have laid the fundaments for this, but there is a lot of tests that still can be of much use. Any addittion will be very welcome.
+
+### Writing Features
+Once you think you really understand the server and all of it's intricacies you can start to write some additional functionalities. You can request to have an issue assigned to you and we will check your pull requests as quickly as possible!
+
