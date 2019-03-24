@@ -5,5 +5,27 @@
 </ion-header>
 
 <ion-content padding>
+  <!-- First an explicit search bar -->
+  <ion-searchbar [{ngModel}]="searchTerm"></ion-searchbar>
 
+  <!-- Then print a list of all the movements -->
+  <ion-list>
+
+    <!-- Create a list item for each search result.
+      Here I had to guess the routerLink, but that can be changed later.
+      async allows the results to change by making a new search.
+      -->
+    <ion-item button *ngFor="let item of (results | async)" [routerLink]="['/','movements',movement.id]">
+
+      <!-- Display the title on the left -->
+      <ion-label text-wrap>
+        <h3>{{ item.Title}}</h3>
+      </ion-label>
+      
+      <!-- Display the intervall (like, weekly, monthly etc.) on the right -->
+      <ion-label slot="end">
+        {{ item.Interval}}
+      </ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>
