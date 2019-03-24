@@ -6,4 +6,28 @@
 
 <ion-content padding>
 
+  <!-- Create a list item for each movement the user is in. -->
+  <ion-card *ngFor="let item of user.movements">
+
+    <!-- Display the title on top -->
+    <ion-card-header>
+      <ion-card-title>{{item.Title}} {{item.Interval}}</ion-card-title>
+      <ion-card-subtitle>Have you done it yet?</ion-card-subtitle>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-toggle></ion-toggle>
+      <ion-list>
+        <ion-item *ngFor="let leader of item.leaders">
+          <ion-label slot="start">
+            {{leader.name}}
+          </ion-label>
+
+          {{leader.status}}
+
+          <ion-toggle slot="end"></ion-toggle>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
