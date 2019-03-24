@@ -36,6 +36,11 @@ export class AppComponent {
       icon: 'person'
     },
     {
+      title: 'Timeline',
+      url: '/timeline',
+      icon: 'person'
+    },
+    {
       title: 'Welcome',
       url: '/welcome',
       icon: 'person'
