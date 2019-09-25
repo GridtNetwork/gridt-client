@@ -1,7 +1,7 @@
 export const movements = [
     {
       name: 'Flossing',
-      description: 'We floss daily to keep our gums happy.'
+      description: 'We floss daily to keep our gums happy.',
       period: '1'
     },
     {
