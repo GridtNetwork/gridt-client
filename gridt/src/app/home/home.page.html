@@ -16,10 +16,13 @@
         <ion-card-subtitle>Get Started</ion-card-subtitle>
         <ion-card-title>Welcome to Ionic</ion-card-title>
       </ion-card-header>
+
       <ion-card-content>
-        <p>Look at this thing! Resources:</p>
+        <p>{{ text }}</p>
       </ion-card-content>
+      <ion-button (click)="onChangeText()">Made you look! Now click me...</ion-button>
     </ion-card>
+
     <ion-list lines="none">
       <ion-list-header>
         <ion-label>Resources</ion-label>

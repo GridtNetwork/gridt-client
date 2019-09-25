@@ -6,5 +6,10 @@ import { Component } from '@angular/core';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
+  text = 'Don\'t look down'
+
+  onChangeText() {
+    this.text = 'Well done! You completed you assignment.'
+  }
 
 }

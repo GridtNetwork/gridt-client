@@ -14,6 +14,8 @@
   <!-- First an explicit search bar -->
   <ion-searchbar></ion-searchbar>
 
+  {{ movements }}
+
   <!-- Then print a list of all the movements -->
   <ion-list>
 
@@ -21,16 +23,16 @@
       Here I had to guess the routerLink, but that can be changed later.
       async allows the results to change by making a new search.
       -->
-    <ion-item button>
+    <ion-item button *ngFor="let movement of movements">
 
       <!-- Display the title on the left -->
       <ion-label text-wrap>
-        <h3>Item Title</h3>
+        <h3>{{ movement.name }}</h3>
       </ion-label>
 
       <!-- Display the intervall (like, weekly, monthly etc.) on the right -->
       <ion-label slot="end">
-        w
+        {{ movement.period }}
       </ion-label>
     </ion-item>
   </ion-list>
