@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+
 import { movements } from '../mock-movements';
 
 @Component({
@@ -14,6 +15,6 @@ export class MovementsPage implements OnInit {
 
   }
 
-  public movements = movements
+  public movements = movements;
 
 }
