@@ -7,24 +7,19 @@
 <ion-content padding>
 
   <!-- Create a list item for each movement the user is in. -->
-  <ion-card>
-
+  <ion-card *ngFor = "let movement of movements">
     <!-- Display the title on top -->
-    <ion-card-header *ngFor="let movement of timeline">
-      <ion-card-title>{{ movement.name }} ({{ movement.period }})</ion-card-title>
+    <ion-card-header>
+      <ion-card-title>{{ movement.name }}</ion-card-title>
       <ion-card-subtitle>Have you done it yet?</ion-card-subtitle>
     </ion-card-header>
 
     <ion-card-content>
       <ion-toggle></ion-toggle>
       <ion-list>
-        <ion-item>
-          <ion-label slot="start">
-            Jorn
-          </ion-label>
-
-          Done!
-
+        <ion-item *ngFor = "let leader of movement.leaders">
+          <ion-label slot="start"></ion-label>
+          {{ leader.username }}
           <ion-toggle slot="end"></ion-toggle>
         </ion-item>
       </ion-list>

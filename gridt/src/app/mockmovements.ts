@@ -31,7 +31,7 @@ export const movements: Movements = [
       subscribed: false,
       leaders: leaders,
       shortDescription: 'Go meatless one day a week for your health and the health of our planet!',
-      description?: '',
+      description: '',
       interval: {hours: 0, days: 0, weeks: 1, months: 0},
     },
     {
