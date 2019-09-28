@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {movements} from '../mockmovements';
+import { movements } from '../mockmovements';
+
 @Component({
   selector: 'app-movements',
   templateUrl: './movements.page.html',
@@ -11,5 +12,5 @@ export class MovementsPage implements OnInit {
 
   ngOnInit() {
   }
-  public movements= movements;
+  public movements = movements;
 }

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { movements } from '../mockmovements'
 
 @Component({
   selector: 'app-timeline',
@@ -11,5 +12,7 @@ export class TimelinePage implements OnInit {
 
   ngOnInit() {
   }
+
+  public movements = movements;
 
 }
