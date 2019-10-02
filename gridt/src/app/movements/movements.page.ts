@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+
 import { movements } from '../mockmovements';
 
 @Component({
@@ -11,6 +12,7 @@ export class MovementsPage implements OnInit {
   constructor() { }
 
   ngOnInit() {
+
   }
   public movements = movements;
   
