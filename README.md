@@ -17,7 +17,8 @@ This application is build in [Ionic](https://ionicframework.com/) which is a fra
 apt-get install nodejs
 npm install -g @angular/cli
 ```
-
+## Server 
+Documentation and download for api https://app.swaggerhub.com/apis/Gridt/GridtServer/0.0.1?loggedInWithGitHub=true
 ## Contributing
 If you'd like to contribute to project, please contact @ddvduuren trough GitHub.
 
