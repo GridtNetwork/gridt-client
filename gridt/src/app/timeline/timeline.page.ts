@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { movements } from '../mockmovements'
+import { leaders } from '../mockleaders'
+import { Subscriber } from 'rxjs';
 
 @Component({
   selector: 'app-timeline',

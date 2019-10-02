@@ -5,7 +5,7 @@ export const movements: Movements = [
     {
       name: 'Flossing',
       subscribed: true,
-      leaders: leaders,
+      leaders: leaders.filter(user => [0,1,2,3].includes(user.id)),
       shortDescription: 'We floss daily to keep our gums happy.',
       description: '',
       interval: {hours: 0, days: 1, weeks: 0, months: 0},
@@ -13,15 +13,15 @@ export const movements: Movements = [
     {
       name: 'Running: 3k/3d',
       subscribed: true,
-      leaders: leaders,
+      leaders: leaders.filter(user => [4,5,6,7].includes(user.id)),
       shortDescription: 'Get into those running shoes! The world is your treadmill. Run 3k every 3 days.',
       description: '',
       interval: {hours: 0, days: 3, weeks: 0, months: 0},
     },
     {
       name: 'Guitar Heroes',
-      subscribed: false,
-      leaders: leaders,
+      subscribed: true,
+      leaders: leaders.filter(user => [0,8,9,10].includes(user.id)),
       shortDescription: 'Take out your guitar and start strumming/picking/whatever takes your fancy. Let\'s become guitar heroes by playing daily!',
       description: '',
       interval: {hours: 0, days: 1, weeks: 0, months: 0},
