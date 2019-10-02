@@ -11,9 +11,10 @@ export class MovementsPage implements OnInit {
 
   constructor() { }
 
+  public movements = movements;
+
   ngOnInit() {
 
   }
-  public movements = movements;
   
 }
