@@ -13,4 +13,5 @@ export class MovementsPage implements OnInit {
   ngOnInit() {
   }
   public movements = movements;
+  
 }

@@ -14,26 +14,31 @@
   <!-- First an explicit search bar -->
   <ion-searchbar></ion-searchbar>
 
-  
+<!-- Then print a list of all the movements -->
+<ion-list>
 
-  <!-- Then print a list of all the movements -->
-  <ion-list>
+  <!-- Create a list item for each search result.
+    Here I had to guess the routerLink, but that can be changed later.
+    async allows the results to change by making a new search.
+    -->
+  <ion-item button *ngFor="let movement of movements">
+  <!-- Right now, this just shows every single movement -->
 
-    <!-- Create a list item for each search result.
-      Here I had to guess the routerLink, but that can be changed later.
-      async allows the results to change by making a new search.
-      -->
-    <ion-item button *ngFor="let movement of movements">
+    <!-- Display the title on the left -->
+    <ion-label text-wrap>
+      <h3>{{ movement.name }}</h3>
+      <p>{{ movement.shortDescription }}</p>
+    </ion-label>
 
-      <!-- Display the title on the left -->
-      <ion-label text-wrap>
-        <h3>{{ movement.name }}</h3>
-      </ion-label>
+    <!-- Display the interval (like, weekly, monthly etc.) on the right -->
+    <ion-label slot="end">
+      d
+    </ion-label>
 
-      <!-- Display the intervall (like, weekly, monthly etc.) on the right -->
-      <ion-label slot="end">
-        {{ movement.period }}
-      </ion-label>
-    </ion-item>
-  </ion-list>
+    <!-- Display movement description underneath title upon clicking the button -->
+
+  </ion-item>
+
+</ion-list>
+
 </ion-content>

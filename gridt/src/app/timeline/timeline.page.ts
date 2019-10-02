@@ -13,6 +13,10 @@ export class TimelinePage implements OnInit {
   ngOnInit() {
   }
 
+  get filterBySubscribed() {
+    return movements.filter(movement => movement.subscribed);
+  }
+
   public movements = movements;
 
 }

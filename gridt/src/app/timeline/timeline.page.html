@@ -7,7 +7,7 @@
 <ion-content padding>
 
   <!-- Create a list item for each movement the user is in. -->
-  <ion-card *ngFor = "let movement of movements">
+  <ion-card *ngFor = "let movement of filterBySubscribed">
     <!-- Display the title on top -->
     <ion-card-header>
       <ion-card-title>{{ movement.name }}</ion-card-title>

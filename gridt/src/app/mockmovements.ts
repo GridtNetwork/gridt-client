@@ -12,7 +12,7 @@ export const movements: Movements = [
     },
     {
       name: 'Running: 3k/3d',
-      subscribed: false,
+      subscribed: true,
       leaders: leaders,
       shortDescription: 'Get into those running shoes! The world is your treadmill. Run 3k every 3 days.',
       description: '',
