@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { movements } from '../mockmovements'
+import { leaders } from '../mockleaders'
+import { Subscriber } from 'rxjs';
 
 @Component({
   selector: 'app-timeline',
@@ -11,5 +14,11 @@ export class TimelinePage implements OnInit {
 
   ngOnInit() {
   }
+
+  get filterBySubscribed() {
+    return movements.filter(movement => movement.subscribed);
+  }
+
+  public movements = movements;
 
 }
