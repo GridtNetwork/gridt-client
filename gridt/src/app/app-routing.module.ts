@@ -4,19 +4,58 @@ import { Routes, RouterModule } from '@angular/router';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'login',
     pathMatch: 'full'
   },
-  {
-    path: 'home',
-    loadChildren: './home/home.module#HomePageModule'
-  },
-  { path: 'timeline', loadChildren: './timeline/timeline.module#TimelinePageModule' },
-  { path: 'movements', loadChildren: './movements/movements.module#MovementsPageModule' },
-  { path: 'profile', loadChildren: './profile/profile.module#ProfilePageModule' },
-  { path: 'login', loadChildren: './login/login.module#LoginPageModule' },  { path: 'register', loadChildren: './register/register.module#RegisterPageModule' },
-  { path: 'welcome', loadChildren: './welcome/welcome.module#WelcomePageModule' }
 
+  {
+    path: 'timeline',
+    children: [
+      {
+        path: '',
+        loadChildren: './timeline/timeline.module#TimelinePageModule'
+      }
+    ]
+  },
+  {
+    path: 'movements',
+    children:[
+      {
+        path: '',
+        loadChildren: './movements/movements.module#MovementsPageModule' 
+      },
+      {
+        path: ':movementId',
+        loadChildren: './movements/movements-detail/movements-detail.module#MovementsDetailPageModule' 
+      }
+    ]
+  },
+  {
+    path: 'profile',
+    loadChildren: './profile/profile.module#ProfilePageModule' },
+  {
+    path: 'login',
+    children: [
+      {
+        path: '',
+        loadChildren: './login/login.module#LoginPageModule'
+      },
+      {
+        path: ':register',
+        children:[
+          {
+            path:'',
+            loadChildren: './login/register/register.module#RegisterPageModule'
+          },
+          {
+            path: ':welcome',
+            loadChildren: './login/register/welcome/welcome.module#WelcomePageModule'
+          }
+        ]
+      }
+    ]
+
+  },
 
 ];
 
