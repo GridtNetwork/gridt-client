@@ -25,32 +25,28 @@
     Here I had to guess the routerLink, but that can be changed later.
     async allows the results to change by making a new search.
     -->
-    <ion-row>
-            <ion-col size-md="6" offset-md="3">
-              <ion-item button *ngFor="let movement of movements">
-  <!-- Right now, this just shows every single movement -->
-
-    <!-- Display the title on the left -->
-    
-      <ion-label text-wrap>
-        <h3>{{ movement.name }}</h3>
-        <p>{{ movement.shortDescription }}</p> 
-      
-
-      </ion-label>
+      <ion-row>
+        <ion-col size-md="6" offset-md="3">
+          <ion-item button *ngFor="let movement of movements">
+           <!-- Right now, this just shows every single movement -->
+           <!-- Display the title on the left -->
+           <ion-label text-wrap>
+             <h3>{{ movement.name }}</h3>
+             <p>{{ movement.shortDescription }}</p> 
+           </ion-label>
            
-    <!-- Display the interval (like, weekly, monthly etc.) on the right -->
-      <ion-label slot="end"> Hours:
-      {{movement.interval.hours}} Days: {{movement.interval.days}} Weeks:{{movement.interval.weeks}} 
-      Months:{{movement.interval.months}}
-      </ion-label>
-
-    <!-- Display movement description underneath title upon clicking the button -->
-
-    </ion-item>
-  </ion-col>
-          </ion-row> 
-  </ion-grid>
+           <!-- Display the interval (like, weekly, monthly etc.) on the right -->
+           <ion-label slot="end"> 
+              Hours: {{ movement.interval.hours }}
+              Days: {{ movement.interval.days }}
+              Weeks: {{ movement.interval.weeks }} 
+              Months: {{ movement.interval.months }}
+           </ion-label>
+          </ion-item>
+         </ion-col>
+        </ion-row> 
+     </ion-grid>
+  
 </ion-list>
 
 </ion-content>

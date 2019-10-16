@@ -56,6 +56,6 @@ export const movements: Movements = [
       leaders: leaders,
       shortDescription: 'Take your bike or public transport instead of your car one day a week, to reduce traffic jams and GHG emissions.',
       description: '',
-      interval: {hours: 0, days: 0, weeks: 1, months: 0}
+      interval: {hours: 0, days: 1, weeks: 0, months: 0}
     },
   ];
