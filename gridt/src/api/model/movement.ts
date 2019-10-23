@@ -18,6 +18,7 @@ export interface Movement {
      * Name of the movement
      */
     name: string;
+    id: string;
     /**
      * True if the user is subscribed to this movement.
      */

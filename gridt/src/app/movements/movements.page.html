@@ -27,7 +27,7 @@
     -->
       <ion-row>
         <ion-col size-md="6" offset-md="3">
-          <ion-item button *ngFor="let movement of movements">
+          <ion-item button *ngFor="let movement of movements" (click)="onJoin()">
            <!-- Right now, this just shows every single movement -->
            <!-- Display the title on the left -->
            <ion-label text-wrap>

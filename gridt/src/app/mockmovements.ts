@@ -1,8 +1,9 @@
-import { Movements } from '../../src/api/model/movements'
-import { leaders } from './mockleaders'
+import { Movements } from '../../src/api/model/movements';
+import { leaders } from './mockleaders';
 
 export const movements: Movements = [
-    {
+    { 
+      id: 'm1',
       name: 'Flossing',
       subscribed: true,
       leaders: leaders.filter(user => [0,1,2,3].includes(user.id)),
@@ -11,6 +12,7 @@ export const movements: Movements = [
       interval: {hours: 0, days: 1, weeks: 0, months: 0}
     },
     {
+      id: 'm2',
       name: 'Running: 3k/3d',
       subscribed: true,
       leaders: leaders.filter(user => [4,5,6,7].includes(user.id)),
@@ -19,6 +21,7 @@ export const movements: Movements = [
       interval: {hours: 0, days: 3, weeks: 0, months: 0}
     },
     {
+      id: 'm3',
       name: 'Guitar Heroes',
       subscribed: true,
       leaders: leaders.filter(user => [0,8,9,10].includes(user.id)),
@@ -27,6 +30,7 @@ export const movements: Movements = [
       interval: {hours: 0, days: 1, weeks: 0, months: 0}
     },
     {
+      id: 'm4',
       name: 'Meatless Mondays',
       subscribed: false,
       leaders: leaders,
@@ -35,6 +39,7 @@ export const movements: Movements = [
       interval: {hours: 0, days: 0, weeks: 1, months: 0}
     },
     {
+      id: 'm5',
       name: 'Calisthenics Workout',
       subscribed: false,
       leaders: leaders,
@@ -43,6 +48,7 @@ export const movements: Movements = [
       interval: {hours: 0, days: 3, weeks: 0, months: 0}
     },
     {
+      id: 'm6',
       name: 'Study Buddies',
       subscribed: false,
       leaders: leaders,
@@ -51,6 +57,7 @@ export const movements: Movements = [
       interval: {hours: 0, days: 1, weeks: 0, months: 0}
     },
     {
+      id: 'm7',
       name: 'Bike/Public Transport Day',
       subscribed: false,
       leaders: leaders,

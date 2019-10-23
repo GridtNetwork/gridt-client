@@ -2,14 +2,12 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Movement } from 'src/api/model/movement';
 import { ModalController } from '@ionic/angular';
 
-
 @Component({
-  selector: 'app-movements-detail',
-  templateUrl: './movements-detail.page.html',
-  styleUrls: ['./movements-detail.page.scss'],
+  selector: 'app-movement-join',
+  templateUrl: './movement-join.component.html',
+  styleUrls: ['./movement-join.component.scss'],
 })
-export class MovementsDetailPage implements OnInit {
-
+export class MovementJoinComponent implements OnInit {
   @Input() selectedMovement: Movement;
 
   constructor(private modalCtrl: ModalController) { }
@@ -24,5 +22,6 @@ export class MovementsDetailPage implements OnInit {
   onJoin() {
     this.modalCtrl.dismiss({ message: 'This is a dummy message!' }, 'confirm');
   }
+
 
 }

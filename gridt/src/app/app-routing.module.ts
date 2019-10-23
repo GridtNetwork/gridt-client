@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { LoginGuard } from './login/login.guard';
 
 const routes: Routes = [
   {
@@ -13,26 +14,32 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: './timeline/timeline.module#TimelinePageModule'
+        loadChildren: './timeline/timeline.module#TimelinePageModule',
+        canLoad: [LoginGuard]
       }
     ]
   },
   {
     path: 'movements',
-    children:[
+    children: [
       {
         path: '',
-        loadChildren: './movements/movements.module#MovementsPageModule' 
+        loadChildren: './movements/movements.module#MovementsPageModule',
+        canLoad: [LoginGuard] 
       },
       {
         path: ':movementId',
-        loadChildren: './movements/movements-detail/movements-detail.module#MovementsDetailPageModule' 
+        loadChildren: './movements/movements-detail/movements-detail.module#MovementsDetailPageModule',
+        canLoad: [LoginGuard]
       }
     ]
   },
   {
     path: 'profile',
-    loadChildren: './profile/profile.module#ProfilePageModule' },
+    loadChildren: './profile/profile.module#ProfilePageModule',
+    canLoad: [LoginGuard]
+   },
+    
   {
     path: 'login',
     children: [
@@ -49,7 +56,8 @@ const routes: Routes = [
           },
           {
             path: ':welcome',
-            loadChildren: './login/register/welcome/welcome.module#WelcomePageModule'
+            loadChildren: './login/register/welcome/welcome.module#WelcomePageModule',
+            canLoad: [LoginGuard]
           }
         ]
       }

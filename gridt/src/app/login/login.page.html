@@ -1,8 +1,5 @@
 <ion-header>
     <ion-toolbar >
-        <ion-buttons slot="start">
-          <ion-menu-button></ion-menu-button>
-        </ion-buttons>
         <ion-title>
           Login
         </ion-title>
@@ -14,7 +11,7 @@
   <ion-img style="width: 200px; height: 100px;" src="/assets/gridt_logo.png"></ion-img>
   <ion-input type="text" placeholder="Username"></ion-input>
   <ion-input type="password" placeholder="Password"></ion-input>
-  <ion-button>Login</ion-button>
+  <ion-button (click)="onLogin()">Login</ion-button>
 
   <p>I don't have an account yet. <a href="login/register">Register</a></p>
 
