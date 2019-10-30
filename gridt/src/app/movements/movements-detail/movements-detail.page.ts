@@ -1,6 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Movement } from 'src/api/model/movement';
-import { ModalController } from '@ionic/angular';
+import { ModalController, NavController, AlertController } from '@ionic/angular';
+import { MovementsService } from '../movement.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MovementJoinComponent } from '../movement-join/movement-join.component';
 
 
 @Component({
@@ -12,17 +15,57 @@ export class MovementsDetailPage implements OnInit {
 
   @Input() selectedMovement: Movement;
 
-  constructor(private modalCtrl: ModalController) { }
+  movements: Movement[];
+  movement: Movement;
+
+  constructor(
+    private movementsService: MovementsService,
+    private navCtrl: NavController,
+    private route: ActivatedRoute,
+    private modalCtrl: ModalController,
+    private alertCtrl: AlertController,
+    private router: Router
+    ) { }
 
   ngOnInit() {
-  }
-
-  onCancel() {
-    this.modalCtrl.dismiss(null, 'cancel');
+    this.route.paramMap.subscribe(paramMap => {
+      this.movement = this.movementsService.getMovement(paramMap.get('movementId'));
+      console.log(paramMap);
+      
+    });
   }
 
   onJoin() {
-    this.modalCtrl.dismiss({ message: 'This is a dummy message!' }, 'confirm');
-  }
+
+    this.alertCtrl
+    .create({
+      header: 'Are you sure?',
+      message: 'Do you wanna join this movement',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Connect me with people I know',
+          handler: () => {
+            this.movementsService.IsSubscribed(this.movement.subscribed);
+            this.router.navigate(['/timeline']);
+          },
+        },
+        {
+          text: 'Connect me with random people',
+          handler: () => {
+            this.movementsService.IsSubscribed(this.movement.subscribed);
+            this.router.navigate(['/timeline']);
+          },
+        },
+      ]
+    })
+    .then(alertEl => {
+      alertEl.present();
+    });
+}
+
 
 }

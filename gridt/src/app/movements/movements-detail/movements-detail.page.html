@@ -1,15 +1,34 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>{{ selectedMovement.name }}</ion-title>
-    <ion-buttons slot="primary">
-      <ion-button (click)="onCancel()">
-        <ion-icon name="close"></ion-icon>
-      </ion-button>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/movements"></ion-back-button>
     </ion-buttons>
+    <ion-title>{{ movement.name }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content text-center padding>
-  <p>{{ selectedMovement.description }}</p>
-  <ion-button color="primary" (click)="onJoin()">Join!</ion-button>
+<ion-content>
+  <ion-grid>
+      <ion-row>
+        <ion-col size-md="6" offset-md="3">
+          <ion-item lines="none">
+             <ion-label text-wrap>{{ movement.name }}
+             </ion-label>
+          </ion-item>
+          <ion-item >
+              <p>{{ movement.shortDescription }}</p> 
+          </ion-item >
+          <ion-item lines="none">
+             <ion-label> 
+                Hours: {{ movement.interval.hours }}
+                Days: {{ movement.interval.days }}
+                Weeks: {{ movement.interval.weeks }} 
+                Months: {{ movement.interval.months }}
+             </ion-label>
+           </ion-item>
+           </ion-col>
+          </ion-row> 
+  </ion-grid>
+  <ion-button ion-button color="primary" margin (click)="onJoin()">Join</ion-button>
+ 
 </ion-content>

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { movements } from '../mockmovements'
-import { leaders } from '../mockleaders'
-import { Subscriber } from 'rxjs';
+import { Movement } from 'src/api/model/movement';
+import { MovementsService } from '../movements/movement.service';
 
 @Component({
   selector: 'app-timeline',
@@ -9,16 +8,18 @@ import { Subscriber } from 'rxjs';
   styleUrls: ['./timeline.page.scss'],
 })
 export class TimelinePage implements OnInit {
-
-  constructor() { }
+  movements: Movement[];
+  movement: Movement;
+  constructor(private movementsService: MovementsService) { }
+  
 
   ngOnInit() {
+    this.movements = this.movementsService.movements;
   }
 
   get filterBySubscribed() {
-    return movements.filter(movement => movement.subscribed);
+    return this.movements.filter(movement => movement.subscribed);
   }
 
-  public movements = movements;
 
 }

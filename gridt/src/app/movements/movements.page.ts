@@ -25,16 +25,18 @@ export class MovementsPage implements OnInit {
     
 
   ngOnInit() {
-
-    this.route.paramMap.subscribe(paramMap => {
-      this.movement = this.movementsService.getMovement(paramMap.get('movementId'));
-      console.log(this.movement.name);
-    });
-    
     this.movements = this.movementsService.movements;
   }
 
   onJoin() {
+
+    this.route.paramMap.subscribe(paramMap => {
+      const movementId = paramMap.get('movementId');
+      this.movement = this.movementsService.getMovement(movementId);
+      console.log(paramMap);
+      console.log("eferfger1" + this.movementsService.getMovement(paramMap.get('movementId')));
+      
+    });
     console.log(this.movement.name);
 
     this.modalCtrl

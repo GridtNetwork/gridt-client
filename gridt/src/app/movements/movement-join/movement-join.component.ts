@@ -1,6 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
+
+import { ModalController } from '@ionic/angular'; 
 import { Movement } from 'src/api/model/movement';
-import { ModalController } from '@ionic/angular';
+
+
 
 @Component({
   selector: 'app-movement-join',

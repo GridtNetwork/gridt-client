@@ -1,3 +1,4 @@
+import { Movements } from './../../api/model/movements';
 
 
 import { Injectable } from '@angular/core';
@@ -11,14 +12,14 @@ import { leaders } from '../mockleaders';
     providedIn: 'root'
   })
 
-  export class MovementsService { 
+  export class MovementsService {
 
     private _movements: Movement[] = [
 
         { 
             id: 'm1',
             name: 'Flossing',
-            subscribed: true,
+            subscribed: false,
             leaders: leaders.filter(user => [0,1,2,3].includes(user.id)),
             shortDescription: 'We floss daily to keep our gums happy.',
             description: '',
@@ -27,7 +28,7 @@ import { leaders } from '../mockleaders';
           {
             id: 'm2',
             name: 'Running: 3k/3d',
-            subscribed: true,
+            subscribed: false,
             leaders: leaders.filter(user => [4,5,6,7].includes(user.id)),
             shortDescription: 'Get into those running shoes! The world is your treadmill. Run 3k every 3 days.',
             description: '',
@@ -36,7 +37,7 @@ import { leaders } from '../mockleaders';
           {
             id: 'm3',
             name: 'Guitar Heroes',
-            subscribed: true,
+            subscribed: false,
             leaders: leaders.filter(user => [0,8,9,10].includes(user.id)),
             shortDescription: 'Take out your guitar and start strumming/picking/whatever takes your fancy. Let\'s become guitar heroes by playing daily!',
             description: '',
@@ -80,22 +81,24 @@ import { leaders } from '../mockleaders';
           }
 
     ];
+  constructor() {}
 
     get movements() {
-
-        return [...this._movements];
+       return [...this._movements];
     }
-    
-      constructor() {}
-    
+     
       getMovement(id: string) {
-        console.log(this._movements.find(m => m.id === id));
+       
         return {
-          ...this._movements.find(movement => {
-            return movement.id === id;
-          })
+          ...this._movements.find(m =>  m.id === id)
         };
-        
+    }
+
+    IsSubscribed(subscribed: boolean){
+      this._movements= this.movements.filter(movement => {
+        return movement.subscribed = true;
+      });
+      
     }
 
 

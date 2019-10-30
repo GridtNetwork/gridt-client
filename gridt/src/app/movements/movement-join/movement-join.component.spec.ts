@@ -1,22 +1,22 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MovementJoinPage } from './movement-join.page';
+import { MovementJoinComponent } from './movement-join.component';
 
 describe('MovementJoinPage', () => {
-  let component: MovementJoinPage;
-  let fixture: ComponentFixture<MovementJoinPage>;
+  let component: MovementJoinComponent;
+  let fixture: ComponentFixture<MovementJoinComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MovementJoinPage ],
+      declarations: [ MovementJoinComponent ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MovementJoinPage);
+    fixture = TestBed.createComponent(MovementJoinComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
