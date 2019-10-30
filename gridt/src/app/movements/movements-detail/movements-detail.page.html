@@ -26,9 +26,10 @@
                 Months: {{ movement.interval.months }}
              </ion-label>
            </ion-item>
+           
+           <ion-button  *ngIf=" movement.subscribed ==  false" ion-button color="primary" margin (click)="onJoin()">Join</ion-button>
+           
            </ion-col>
           </ion-row> 
   </ion-grid>
-  <ion-button ion-button color="primary" margin (click)="onJoin()">Join</ion-button>
- 
 </ion-content>

@@ -37,6 +37,7 @@ export class MovementsDetailPage implements OnInit {
 
   onJoin() {
 
+    console.log(this.movement.subscribed);
     this.alertCtrl
     .create({
       header: 'Are you sure?',
@@ -49,14 +50,15 @@ export class MovementsDetailPage implements OnInit {
         {
           text: 'Connect me with people I know',
           handler: () => {
-            this.movementsService.IsSubscribed(this.movement.subscribed);
+            this.movementsService.IsSubscribed( this.movement.id);
             this.router.navigate(['/timeline']);
           },
         },
         {
           text: 'Connect me with random people',
           handler: () => {
-            this.movementsService.IsSubscribed(this.movement.subscribed);
+            this.movementsService.IsSubscribed(this.movement.id);
+            console.log(this.movement.subscribed);
             this.router.navigate(['/timeline']);
           },
         },

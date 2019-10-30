@@ -1,6 +1,3 @@
-import { Movements } from './../../api/model/movements';
-
-
 import { Injectable } from '@angular/core';
 import { Movement } from 'src/api/model/movement';
 import { leaders } from '../mockleaders';
@@ -19,7 +16,7 @@ import { leaders } from '../mockleaders';
         { 
             id: 'm1',
             name: 'Flossing',
-            subscribed: false,
+            subscribed: true,
             leaders: leaders.filter(user => [0,1,2,3].includes(user.id)),
             shortDescription: 'We floss daily to keep our gums happy.',
             description: '',
@@ -94,10 +91,16 @@ import { leaders } from '../mockleaders';
         };
     }
 
-    IsSubscribed(subscribed: boolean){
-      this._movements= this.movements.filter(movement => {
-        return movement.subscribed = true;
+    IsSubscribed( id: string){
+
+       this._movements.filter(movement => {
+         if(movement.id === id){
+          movement.subscribed = true;
+         }
+
       });
+
+
       
     }
 
