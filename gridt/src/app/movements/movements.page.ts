@@ -55,4 +55,12 @@ export class MovementsPage implements OnInit {
         }
       });
   }
+
+
+  getInterval(){
+
+    if(this.movement.interval.days == 0){
+
+    }
+  }
 }

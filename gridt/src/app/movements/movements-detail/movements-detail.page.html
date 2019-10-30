@@ -19,12 +19,13 @@
               <p>{{ movement.shortDescription }}</p> 
           </ion-item >
           <ion-item lines="none">
-             <ion-label> 
-                Hours: {{ movement.interval.hours }}
-                Days: {{ movement.interval.days }}
-                Weeks: {{ movement.interval.weeks }} 
-                Months: {{ movement.interval.months }}
-             </ion-label>
+            <ion-label slot="end" *ngIf=" movement.interval.hours !=  0" > 
+              Hours per day: {{ movement.interval.hours }}
+            </ion-label>
+            <ion-label  slot="end" *ngIf=" movement.interval.days !=  0" >   Times per day: {{ movement.interval.days }}</ion-label>
+            <ion-label  slot="end" *ngIf=" movement.interval.weeks !=  0" >   Times per week: {{ movement.interval.weeks }}</ion-label>
+            <ion-label  slot="end" *ngIf=" movement.interval.months !=  0" >   Months per Year: {{ movement.interval.months }}
+            </ion-label>
            </ion-item>
            
            <ion-button  *ngIf=" movement.subscribed ==  false" ion-button color="primary" margin (click)="onJoin()">Join</ion-button>
