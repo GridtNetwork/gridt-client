@@ -31,8 +31,14 @@ const routes: Routes = [
         path: ':movementId',
         loadChildren: './movements/movements-detail/movements-detail.module#MovementsDetailPageModule',
         canLoad: [LoginGuard]
-      }
+      },
+   
     ]
+  },   
+  { 
+    path: 'add',
+    loadChildren: './movements/add-movement/add-movement.module#AddMovementPageModule',
+    canLoad: [LoginGuard]
   },
   {
     path: 'profile',
@@ -64,6 +70,8 @@ const routes: Routes = [
     ]
 
   },
+  
+
 
 ];
 

@@ -1,3 +1,4 @@
+import { UserId } from './userId';
 /**
  * The Gridt Network API
  * Interact with the gridt network via this API. It provides several endpoints for creating and subscribing (to) movements and switching leaders.
@@ -23,7 +24,7 @@ export interface Movement {
      * True if the user is subscribed to this movement.
      */
     subscribed?: boolean;
-    leaders?: Array<User>;
+
     /**
      * A comprehensive description of the movement
      */
@@ -32,5 +33,5 @@ export interface Movement {
      * A much longer description that is used to 'sell' a movement to it's users.
      */
     description?: string;
-    interval: MovementInterval;
+
 }

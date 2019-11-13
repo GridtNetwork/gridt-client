@@ -1,66 +1,57 @@
-import { Component, OnInit } from '@angular/core';
 
-import { MovementsService } from './movement.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Movement } from 'src/api/model/movement';
-import { ModalController, NavController } from '@ionic/angular';
-import { ActivatedRoute } from '@angular/router';
-import { MovementJoinComponent } from './movement-join/movement-join.component';
+import { ModalController, NavController, MenuController } from '@ionic/angular';
+
+import { Subscription } from 'rxjs';
+import { MovementsService } from './movements.service';
+
 
 @Component({
   selector: 'app-movements',
   templateUrl: './movements.page.html',
   styleUrls: ['./movements.page.scss'],
 })
-export class MovementsPage implements OnInit {
+export class MovementsPage implements OnInit, OnDestroy {
+  
 
   movements: Movement[];
-  movement: Movement;
+  isLoading = false;
+  private sub : Subscription;
   constructor(
     private movementsService: MovementsService,
-    private navCtrl: NavController,
-    private route: ActivatedRoute,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private menuCtrl: MenuController
+
     ) { }
 
     
 
   ngOnInit() {
-    this.movements = this.movementsService.movements;
-  }
-
-  onJoin() {
-
-    this.route.paramMap.subscribe(paramMap => {
-      const movementId = paramMap.get('movementId');
-      this.movement = this.movementsService.getMovement(movementId);
-      console.log(paramMap);
-      console.log("eferfger1" + this.movementsService.getMovement(paramMap.get('movementId')));
-      
+    
+    this.sub = this.movementsService.movements.subscribe(mm => {
+      this.movements = mm;
     });
-    console.log(this.movement.name);
+   
+  }
 
-    this.modalCtrl
-      .create({
-        component: MovementJoinComponent,
-        componentProps: { selectedMovement: this.movement }
-      })
-      .then(modalEl => {
-        modalEl.present();
-        return modalEl.onDidDismiss();
-      })
-      .then(resultData => {
-        console.log(resultData.data, resultData.role);
-        if (resultData.role === 'confirm') {
+  ionViewWillEnter() {
   
-        }
-      });
+    this.isLoading = true;
+    this.movementsService.fetchMovements().subscribe(() => {
+      this.isLoading = false;
+    });
+  }
+
+  onOpenMenu() {
+    this.menuCtrl.toggle();
   }
 
 
-  getInterval(){
-
-    if(this.movement.interval.days == 0){
-
+  ngOnDestroy() {
+    if (this.sub) {
+      this.sub.unsubscribe();
     }
   }
+
 }

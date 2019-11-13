@@ -1,9 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
+
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Movement } from 'src/api/model/movement';
-import { ModalController, NavController, AlertController } from '@ionic/angular';
-import { MovementsService } from '../movement.service';
+import { ModalController, NavController, AlertController, LoadingController } from '@ionic/angular';
+
 import { ActivatedRoute, Router } from '@angular/router';
 import { MovementJoinComponent } from '../movement-join/movement-join.component';
+import { Subscription } from 'rxjs';
+import { MovementsService } from '../movements.service';
 
 
 @Component({
@@ -11,12 +14,15 @@ import { MovementJoinComponent } from '../movement-join/movement-join.component'
   templateUrl: './movements-detail.page.html',
   styleUrls: ['./movements-detail.page.scss'],
 })
-export class MovementsDetailPage implements OnInit {
+export class MovementsDetailPage implements OnInit, OnDestroy {
 
   @Input() selectedMovement: Movement;
 
   movements: Movement[];
   movement: Movement;
+  isSubscribe = false;
+  isLoading = false;
+  private sub: Subscription;
 
   constructor(
     private movementsService: MovementsService,
@@ -24,13 +30,32 @@ export class MovementsDetailPage implements OnInit {
     private route: ActivatedRoute,
     private modalCtrl: ModalController,
     private alertCtrl: AlertController,
-    private router: Router
+    private router: Router,
+    private loadingCtrl: LoadingController
     ) { }
 
   ngOnInit() {
+    
     this.route.paramMap.subscribe(paramMap => {
-      this.movement = this.movementsService.getMovement(paramMap.get('movementId'));
-      console.log(paramMap);
+      if (!paramMap.has('movementId')) {
+        this.navCtrl.navigateBack('/movements');
+       
+        return;
+        
+      }
+      this.isLoading = true;
+      this.sub = this.movementsService
+        .getMovements(paramMap.get('movementId'))
+        .subscribe(
+          movement => {
+            
+            this.movement = movement;
+            
+            //this.isSubscribe = movement.subscribed === false;
+            this.isLoading = false;
+          },
+          
+        );
       
     });
   }
@@ -50,14 +75,14 @@ export class MovementsDetailPage implements OnInit {
         {
           text: 'Connect me with people I know',
           handler: () => {
-            this.movementsService.IsSubscribed( this.movement.id);
+            this.movementsService.Subscribe( this.movement.id);
             this.router.navigate(['/timeline']);
           },
         },
         {
           text: 'Connect me with random people',
           handler: () => {
-            this.movementsService.IsSubscribed(this.movement.id);
+            this.movementsService.Subscribe(this.movement.id);
             console.log(this.movement.subscribed);
             this.router.navigate(['/timeline']);
           },
@@ -69,5 +94,10 @@ export class MovementsDetailPage implements OnInit {
     });
 }
 
+ngOnDestroy() {
+  if (this.sub) {
+    this.sub.unsubscribe();
+  }
+}
 
 }

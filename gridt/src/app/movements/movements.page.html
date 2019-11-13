@@ -6,6 +6,11 @@
     <ion-title>
       Movements
     </ion-title>
+    <ion-buttons slot="primary">
+      <ion-button routerLink="/add">
+        <ion-icon name="add" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -19,7 +24,22 @@
   </ion-row>
 <!-- Then print a list of all the movements -->
 <ion-list>
-    <ion-grid>
+  <ion-grid *ngIf="isLoading">
+      <ion-row>
+        <ion-col size="12" size-sm="8" offset-sm="2" text-center>
+          <ion-spinner color="primary"></ion-spinner>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+    <ion-grid
+    *ngIf="!isLoading && movements.length <= 0">
+    <ion-row>
+      <ion-col size="12" size-sm="8" offset-sm="2" text-center>
+        <p>There are no movements  right now, please come back later!</p>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+    <ion-grid *ngIf="!isLoading && movements.length > 0">
         
   <!-- Create a list item for each search result.
     Here I had to guess the routerLink, but that can be changed later.
@@ -27,7 +47,13 @@
     -->
       <ion-row>
         <ion-col size-md="6" offset-md="3">
-          <ion-item button *ngFor="let movement of movements" [routerLink]="['/', 'movements', movement.id]" >
+            <ion-virtual-scroll
+            [items]="movements"
+            approxItemHeight="70px"
+          >
+          <ion-item button [routerLink]="['/', 'movements', movement.id]" detail
+          *virtualItem="let movement" 
+           >
            <!-- Right now, this just shows every single movement -->
            <!-- Display the title on the left -->
            <ion-label text-wrap>
@@ -35,15 +61,16 @@
              <p>{{ movement.shortDescription }}</p> 
            </ion-label>
            
-           <!-- Display the interval (like, weekly, monthly etc.) on the right -->
+           <!-- Display the interval (like, weekly, monthly etc.) on the right
            <ion-label slot="end" *ngIf=" movement.interval.hours !=  0" > 
               Hours per day: {{ movement.interval.hours }}
             </ion-label>
             <ion-label  slot="end" *ngIf=" movement.interval.days !=  0" >   Times per day: {{ movement.interval.days }}</ion-label>
             <ion-label  slot="end" *ngIf=" movement.interval.weeks !=  0" >   Times per week: {{ movement.interval.weeks }}</ion-label>
             <ion-label  slot="end" *ngIf=" movement.interval.months !=  0" >   Months per Year: {{ movement.interval.months }}
-            </ion-label>
+            </ion-label> -->
           </ion-item>
+            </ion-virtual-scroll>
          </ion-col>
         </ion-row> 
      </ion-grid>

@@ -8,10 +8,13 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
-
+<ion-content >
+  <ion-virtual-scroll
+    [items]="movements"
+    approxItemHeight="70px"
+  >
   <!-- Create a list item for each movement the user is in. -->
-  <ion-card *ngFor = "let movement of filterBySubscribed">
+  <ion-card detail *virtualItem= "let movement">
     <!-- Display the title on top -->
     <ion-card-header>
       <ion-card-title>{{ movement.name }}</ion-card-title>
@@ -21,12 +24,13 @@
     <ion-card-content>
       <ion-toggle></ion-toggle>
       <ion-list>
-        <ion-item *ngFor = "let leader of movement.leaders">
+        <ion-item >
           <ion-label slot="start"></ion-label>
-          {{ leader.username }}
+
           <ion-toggle slot="end"></ion-toggle>
         </ion-item>
       </ion-list>
     </ion-card-content>
   </ion-card>
+</ion-virtual-scroll>
 </ion-content>

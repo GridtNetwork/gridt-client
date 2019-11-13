@@ -16,6 +16,7 @@ export class LoginPage implements OnInit {
 
   onLogin() {
     this.loginService.login();
-    this.router.navigateByUrl('/movements');
+    this.router.navigateByUrl('/timeline');
+    console.log('this.movements');
   }
 }
