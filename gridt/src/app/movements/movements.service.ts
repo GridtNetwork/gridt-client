@@ -116,22 +116,24 @@ import { HttpClient } from '@angular/common/http';
   Subscribe(movementId: string) {
     
     let updated: MovementModel[];
+    console.log('kkk');
     return this.movements.pipe(
-      take(1),
+      
       switchMap(movements => {
-        
+        console.log('kkk');
         if (!movements || movements.length <= 0) {
           return this.fetchMovements();
         } else {
-          
+          console.log('ddd');
           return of(movements);
         }
       }),
       switchMap(movements => {
+        console.log('ddd');
         const updatedMovementIndex = movements.findIndex(m => m.id === movementId);
         updated = [...movements]; 
         updated[updatedMovementIndex].subscribed = true;
-        console.log(updated[updatedMovementIndex].id);
+        console.log('kkk');
         const oldSubscription = updated[updatedMovementIndex];
        
         updated[updatedMovementIndex] = new MovementModel(

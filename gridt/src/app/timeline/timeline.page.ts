@@ -19,8 +19,25 @@ export class TimelinePage implements OnInit, OnDestroy {
   ngOnInit() {
     console.log('hello');
     this.sub = this.movementsService.movements.subscribe(movements => {
-      this.movements = movements;
-   });
+      this.movements= movements;
+      return this.movements.map(movement => {
+
+        movement.subscribed === true; 
+      });
+    }
+      );
+    
+    //this.movementsService.movements.subscribe(movements => {
+      //this.movements = movements;
+   //});
+  }
+
+  ionViewWillEnter() {
+  
+    this.isLoading = true;
+    this.movementsService.fetchMovements().subscribe(() => {
+      this.isLoading = false;
+    });
   }
 
   get filterBySubscribed() {
