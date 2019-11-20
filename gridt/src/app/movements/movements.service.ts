@@ -1,11 +1,13 @@
-import { TimelineService } from './../timeline/timeline.service';
 import { Movement } from '../../api/model/movement';
 import { LoginService } from '../login/login.service';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, of } from 'rxjs';
 import { take, map, tap, delay, switchMap } from 'rxjs/operators';
 import { MovementModel } from './movement.model';
+import { User, MovementInterval } from 'src/api';
 import { HttpClient } from '@angular/common/http';
+
+import { TimelineService } from '../timeline/timeline.service';
 
 @Injectable({
     providedIn: 'root'
@@ -117,6 +119,7 @@ import { HttpClient } from '@angular/common/http';
     
     let updated: MovementModel[];
     console.log('kkk');
+    this.timeline.addOne(movementId);
     return this.movements.pipe(
       take(1),
       switchMap(movements => {
@@ -129,7 +132,7 @@ import { HttpClient } from '@angular/common/http';
         }
       }),
       switchMap(movements => {
-        console.log('ddgfd');
+        console.log('ddd');
         const updatedMovementIndex = movements.findIndex(m => m.id === movementId);
         updated = [...movements]; 
         updated[updatedMovementIndex].subscribed = true;
@@ -143,20 +146,17 @@ import { HttpClient } from '@angular/common/http';
           oldSubscription.description,
           oldSubscription.shortDescription
         );
-        this.timeline.addOne(movementId);
         updated[updatedMovementIndex].subscribed = true;
         console.log(updated[updatedMovementIndex].subscribed);
         return this.http.put(
           `https://gridt-f6485.firebaseio.com/movements/${movementId}.json`,
-          { ...updated[updatedMovementIndex], id: null}
+          { ...updated[updatedMovementIndex], id: null, subscribed: true }
         );
       }),
       tap(() => {
         this._movements.next(updated);
-        
       })
     );
-    
   }
 
 

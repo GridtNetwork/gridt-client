@@ -27,26 +27,26 @@ export class TimelineService {
   addOne(
     movementId: string,
   ) {
-    let generatedId: string;
+
     const newInfo = new Timeline(
       movementId,
       this.authService.userId,
       false
     );
-    console.log('bbbb');
+    console.log('newInfo');
     return this.http
-      .post<{ name: string }>(
-        'https://gridt-f6485.firebaseio.com/timeline.json',
-        { ...newInfo, id: null }
+      .post(
+        'https://gridt-f6485.firebaseio.com/timelines.json',
+        { ...newInfo}
       )
       .pipe(
-        switchMap(resData => {
-          generatedId = resData.name;
+        switchMap(()=> {
           return this.timelines;
         }),
         take(1),
         tap(timeline => {
-          
+          console.log('newInfo');
+         
           this._timeline.next(timeline.concat(newInfo));
         })
       );
