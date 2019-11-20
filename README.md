@@ -25,5 +25,5 @@ If you'd like to contribute to project, please contact @ddvduuren trough GitHub.
 
 You can also support this project by donating money on our [OpenCollective](https://opencollective.com/gridt).
 
+
 ## License
-pending
