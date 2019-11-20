@@ -10,9 +10,7 @@ import { MovementsService } from '../movements/movements.service';
 })
 export class TimelinePage implements OnInit, OnDestroy {
   
-  loadedMovements: Movement[];
-  listedmovements: Movement[];
-  relevantMovements: Movement[];
+  movements: Movement[];
   isLoading = false;
  private sub: Subscription;
   constructor(private movementsService: MovementsService) {  }
@@ -21,11 +19,11 @@ export class TimelinePage implements OnInit, OnDestroy {
   ngOnInit() {
     console.log('hello');
     this.sub = this.movementsService.movements.subscribe(movements => {
-      this.loadedMovements= movements;
-      this.relevantMovements = this.loadedMovements.filter(
-        movement => movement.subscribed === true
-      );
-      this.listedmovements =this.relevantMovements;
+      this.movements= movements;
+      return this.movements.map(movement => {
+
+        movement.subscribed === true; 
+      });
     }
       );
     
@@ -42,7 +40,13 @@ export class TimelinePage implements OnInit, OnDestroy {
     });
   }
 
-  
+  get filterBySubscribed() {
+    return this.movementsService.movements.subscribe(movements => {
+      this.movements= movements;
+      return this.movements.filter(movement => movement.subscribed );
+    }
+      );
+  }
 
   ngOnDestroy() {
     if (this.sub) {
