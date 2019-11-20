@@ -1,10 +1,10 @@
+import { TimelineService } from './../timeline/timeline.service';
 import { Movement } from '../../api/model/movement';
 import { LoginService } from '../login/login.service';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, of } from 'rxjs';
 import { take, map, tap, delay, switchMap } from 'rxjs/operators';
 import { MovementModel } from './movement.model';
-import { User, MovementInterval } from 'src/api';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
@@ -24,7 +24,7 @@ import { HttpClient } from '@angular/common/http';
    
 
         
-  constructor(private auth: LoginService,private http: HttpClient) {}
+  constructor(private auth: LoginService,private http: HttpClient, private timeline: TimelineService) {}
 
 
   fetchMovements() {
@@ -118,7 +118,7 @@ import { HttpClient } from '@angular/common/http';
     let updated: MovementModel[];
     console.log('kkk');
     return this.movements.pipe(
-      
+      take(1),
       switchMap(movements => {
         console.log('kkk');
         if (!movements || movements.length <= 0) {
@@ -129,7 +129,7 @@ import { HttpClient } from '@angular/common/http';
         }
       }),
       switchMap(movements => {
-        console.log('ddd');
+        console.log('ddgfd');
         const updatedMovementIndex = movements.findIndex(m => m.id === movementId);
         updated = [...movements]; 
         updated[updatedMovementIndex].subscribed = true;
@@ -143,17 +143,20 @@ import { HttpClient } from '@angular/common/http';
           oldSubscription.description,
           oldSubscription.shortDescription
         );
+        this.timeline.addOne(movementId);
         updated[updatedMovementIndex].subscribed = true;
         console.log(updated[updatedMovementIndex].subscribed);
         return this.http.put(
-          `https://ionic-course-b67a0.firebaseio.com/offered-places/${movementId}.json`,
-          { ...updated[updatedMovementIndex], id: null, subscribed: true }
+          `https://gridt-f6485.firebaseio.com/movements/${movementId}.json`,
+          { ...updated[updatedMovementIndex], id: null}
         );
       }),
       tap(() => {
         this._movements.next(updated);
+        
       })
     );
+    
   }
 
 

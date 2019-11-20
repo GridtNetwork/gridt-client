@@ -75,16 +75,14 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
         {
           text: 'Connect me with people I know',
           handler: () => {
-            this.movementsService.Subscribe( this.movement.id);
-            this.router.navigate(['/timeline']);
+            this.Joining();
+
           },
         },
         {
           text: 'Connect me with random people',
           handler: () => {
-            this.movementsService.Subscribe(this.movement.id);
-            console.log(this.movement.subscribed);
-            this.router.navigate(['/timeline']);
+            this.Joining();
           },
         },
       ]
@@ -92,6 +90,27 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
     .then(alertEl => {
       alertEl.present();
     });
+}
+
+
+Joining(){
+
+  this.loadingCtrl
+      .create({
+        message: 'Updating info...'
+      })
+      .then(loadingEl => {
+        loadingEl.present();
+        this.movementsService
+          .Subscribe(
+            this.movement.id,
+          )
+          .subscribe(() => {
+            loadingEl.dismiss();
+
+            this.router.navigate(['/timeline']);
+          });
+      });
 }
 
 ngOnDestroy() {

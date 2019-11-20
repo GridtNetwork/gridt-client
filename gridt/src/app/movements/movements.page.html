@@ -19,7 +19,11 @@
   <!-- First an explicit search bar -->
   <ion-row>
     <ion-col size-md="6" offset-md="3">
-      <ion-searchbar ></ion-searchbar>
+      <ion-toolbar>
+        <ion-searchbar (ionInput)="Searchbar($event)">
+
+        </ion-searchbar>
+      </ion-toolbar>
     </ion-col>
   </ion-row>
 <!-- Then print a list of all the movements -->
