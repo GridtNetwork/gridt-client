@@ -25,7 +25,7 @@ export class MovementsPage implements OnInit, OnDestroy {
 
     ) { }
 
-  public movements = movements;
+    
 
   ngOnInit() {
     
