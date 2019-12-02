@@ -33,23 +33,30 @@ export class TimelineService {
       this.authService.userId,
       false
     );
-    console.log('newInfo');
+    console.log(newInfo);
     return this.http
       .post(
         'https://gridt-f6485.firebaseio.com/timelines.json',
         { ...newInfo}
-      )
-      .pipe(
-        switchMap(()=> {
-          return this.timelines;
-        }),
-        take(1),
-        tap(timeline => {
-          console.log('newInfo');
-         
-          this._timeline.next(timeline.concat(newInfo));
-        })
       );
+  }
+
+  DidIt(movementId: string) {
+    console.log('aici');
+    let updated: Timeline[];
+    return this.timelines.pipe(
+      take(1),
+      switchMap(timelines => {
+        const updatedTimelineIndex = timelines.findIndex(m => m.movementId === movementId);
+        updated = [...timelines]; 
+        updated[updatedTimelineIndex].didIt = true;
+        console.log(updated[updatedTimelineIndex].didIt);
+        return this.http.put(
+          `https://gridt-f6485.firebaseio.com/timelines/${movementId}.json`,
+          { ...updated[updatedTimelineIndex] }
+        );
+      })
+    );
   }
 
  

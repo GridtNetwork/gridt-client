@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Movement } from 'src/api/model/movement';
 import { Subscription } from 'rxjs';
 import { MovementsService } from '../movements/movements.service';
+import { TimelineService } from './timeline.service';
 
 @Component({
   selector: 'app-timeline',
@@ -15,7 +16,7 @@ export class TimelinePage implements OnInit, OnDestroy {
   relevantMovements: Movement[];
   isLoading = false;
  private sub: Subscription;
-  constructor(private movementsService: MovementsService) {  }
+  constructor(private movementsService: MovementsService,  private timelineService: TimelineService) {  }
   
 
   ngOnInit() {
@@ -40,6 +41,10 @@ export class TimelinePage implements OnInit, OnDestroy {
     this.movementsService.fetchMovements().subscribe(() => {
       this.isLoading = false;
     });
+  }
+
+  DidIt(movementId: string){
+    this.timelineService.DidIt(movementId);
   }
 
   

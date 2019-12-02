@@ -1,12 +1,10 @@
-
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Movement } from 'src/api/model/movement';
 import { ModalController, NavController, AlertController, LoadingController } from '@ionic/angular';
-
 import { ActivatedRoute, Router } from '@angular/router';
-import { MovementJoinComponent } from '../movement-join/movement-join.component';
 import { Subscription } from 'rxjs';
 import { MovementsService } from '../movements.service';
+import { TimelineService } from 'src/app/timeline/timeline.service';
 
 
 @Component({
@@ -28,41 +26,30 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
     private movementsService: MovementsService,
     private navCtrl: NavController,
     private route: ActivatedRoute,
-    private modalCtrl: ModalController,
     private alertCtrl: AlertController,
     private router: Router,
-    private loadingCtrl: LoadingController
+    private loadingCtrl: LoadingController,
     ) { }
 
   ngOnInit() {
-    
     this.route.paramMap.subscribe(paramMap => {
       if (!paramMap.has('movementId')) {
         this.navCtrl.navigateBack('/movements');
-       
         return;
-        
       }
       this.isLoading = true;
       this.sub = this.movementsService
         .getMovements(paramMap.get('movementId'))
         .subscribe(
           movement => {
-            
             this.movement = movement;
-            
-            //this.isSubscribe = movement.subscribed === false;
             this.isLoading = false;
           },
-          
         );
-      
     });
   }
 
   onJoin() {
-
-    console.log(this.movement.subscribed);
     this.alertCtrl
     .create({
       header: 'Are you sure?',
@@ -93,9 +80,8 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
 }
 
 
-Joining(){
-
-  this.loadingCtrl
+  Joining() {
+    this.loadingCtrl
       .create({
         message: 'Updating info...'
       })
@@ -111,12 +97,11 @@ Joining(){
             this.router.navigate(['/timeline']);
           });
       });
-}
-
-ngOnDestroy() {
-  if (this.sub) {
-    this.sub.unsubscribe();
   }
-}
 
+  ngOnDestroy() {
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
+  }
 }

@@ -34,11 +34,10 @@
           </ion-card-header>
       
           <ion-card-content>
-            <ion-toggle></ion-toggle>
+            <ion-toggle (ionChange)="DidIt($event)"></ion-toggle>
             <ion-list>
               <ion-item  >
                 <ion-label slot="start"></ion-label>
-      
                 <ion-toggle slot="end"></ion-toggle>
               </ion-item>
             </ion-list>

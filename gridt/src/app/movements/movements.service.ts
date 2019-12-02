@@ -2,11 +2,9 @@ import { Movement } from '../../api/model/movement';
 import { LoginService } from '../login/login.service';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, of } from 'rxjs';
-import { take, map, tap, delay, switchMap } from 'rxjs/operators';
+import { take, map, tap, switchMap } from 'rxjs/operators';
 import { MovementModel } from './movement.model';
-import { User, MovementInterval } from 'src/api';
 import { HttpClient } from '@angular/common/http';
-
 import { TimelineService } from '../timeline/timeline.service';
 
 @Injectable({
@@ -17,17 +15,11 @@ import { TimelineService } from '../timeline/timeline.service';
 
    private _movements = new BehaviorSubject<Movement[]>([]);
 
-
-
   get movements() {
-    
        return this._movements.asObservable();
     }
-   
 
-        
   constructor(private auth: LoginService,private http: HttpClient, private timeline: TimelineService) {}
-
 
   fetchMovements() {
     return this.http
@@ -115,30 +107,23 @@ import { TimelineService } from '../timeline/timeline.service';
       );
   }
 
-  Subscribe(movementId: string) {
-    
+  Subscribe(movementId: string) {  
     let updated: MovementModel[];
-    console.log('kkk');
     this.timeline.addOne(movementId);
     return this.movements.pipe(
       take(1),
       switchMap(movements => {
-        console.log('kkk');
         if (!movements || movements.length <= 0) {
           return this.fetchMovements();
         } else {
-          console.log('ddd');
           return of(movements);
         }
       }),
       switchMap(movements => {
-        console.log('ddd');
         const updatedMovementIndex = movements.findIndex(m => m.id === movementId);
-        updated = [...movements]; 
+        updated = [...movements];
         updated[updatedMovementIndex].subscribed = true;
-        console.log('kkk');
         const oldSubscription = updated[updatedMovementIndex];
-       
         updated[updatedMovementIndex] = new MovementModel(
           oldSubscription.id,
           oldSubscription.name,
@@ -158,30 +143,4 @@ import { TimelineService } from '../timeline/timeline.service';
       })
     );
   }
-
-
 }
-
-   /* get movements() {
-       return ;
-    }
-     
-      getMovement(id: string, ) {
-       
-        return {
-          ...this._movements.find(m =>  m.id === id)
-        };
-    }
-
-    IsSubscribed( id: string){
-
-       this._movements.filter(movement => {
-         if(movement.id === id){
-          movement.subscribed = true;
-         }
-
-      });
-
-
-      
-    }*/
