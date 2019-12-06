@@ -30,7 +30,7 @@ export class TimelineService {
 
     const newInfo = new Timeline(
       movementId,
-      this.authService.userId,
+      'abc',
       false
     );
     console.log(newInfo);
