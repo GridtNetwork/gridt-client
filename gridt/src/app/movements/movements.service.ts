@@ -1,4 +1,4 @@
-import { Movement } from '../../api/model/movement';
+
 import { LoginService } from '../login/login.service';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, of } from 'rxjs';
@@ -7,10 +7,32 @@ import { MovementModel } from './movement.model';
 import { HttpClient } from '@angular/common/http';
 import { TimelineService } from '../timeline/timeline.service';
 
+
+
+   export interface Movement { 
+    /**
+     * Name of the movement
+     */
+    name: string;
+    id: string;
+    /**
+     * True if the user is subscribed to this movement.
+     */
+    subscribed?: boolean;
+
+    /**
+     * A comprehensive description of the movement
+     */
+    shortDescription: string;
+    /**
+     * A much longer description that is used to 'sell' a movement to it's users.
+     */
+    description?: string;
+
+}
 @Injectable({
     providedIn: 'root'
   })
-
   export class MovementsService {
 
    private _movements = new BehaviorSubject<Movement[]>([]);
@@ -22,12 +44,14 @@ import { TimelineService } from '../timeline/timeline.service';
   constructor(private auth: LoginService,private http: HttpClient, private timeline: TimelineService) {}
 
   fetchMovements() {
-    return this.http
-      .get<{ [key: string]: Movement }>(
-        'https://gridt-f6485.firebaseio.com/movements.json'
-      )
-      .pipe(
-        map(resData => {
+    return this.auth.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.get<{ [key: string]: Movement }>(
+          `https://gridt-f6485.firebaseio.com/movements/.json?auth=${token}`
+        );
+      }),
+      map(resData => {
           const movements = [];
           for (const key in resData) {
             if (resData.hasOwnProperty(key)) {
@@ -54,11 +78,13 @@ import { TimelineService } from '../timeline/timeline.service';
 
   getMovements(id: string) {
 
-    return this.http
-      .get<Movement>(
-        `https://gridt-f6485.firebaseio.com/movements/${id}.json`
-      )
-      .pipe(
+    return this.auth.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.get<Movement>(
+          `https://gridt-f6485.firebaseio.com/movements/${id}.json?auth=${token}`
+        );
+      }),
         map(movementData => {
           return new MovementModel(
             id,
@@ -78,23 +104,45 @@ import { TimelineService } from '../timeline/timeline.service';
     shortDescription: string
   ) {
     let generatedId: string;
-    const newMovement = new MovementModel(
+    let fetchedUserId: string;
+    let newMovement: MovementModel;
+     newMovement = new MovementModel(
       Math.random().toString(),
       name,
       true,
       description,
       shortDescription
     );
+    return this.auth.userId.pipe(
+      take(1),
+      switchMap(userId => {
+        fetchedUserId = userId;
+        console.log(fetchedUserId);
+        return this.auth.token;
+      }),
+      take(1),
+      switchMap(token => {
+        if (!fetchedUserId) {
+          throw new Error('No user found!');
+        }
+        newMovement = new MovementModel(
+          Math.random().toString(),
+          name,
+          true,
+          description,
+          shortDescription
+        );
+
     return this.http
       .post<{ name: string }>(
-        'https://gridt-f6485.firebaseio.com/movements.json',
+        `https://gridt-f6485.firebaseio.com/movements.json?auth=${token}`,
         {
           ...newMovement,
           id: null,
           subscribed: true
         }
-      )
-      .pipe(
+      );
+    }),
         switchMap(resData => {
           generatedId = resData.name;
           return this.movements;
@@ -103,15 +151,19 @@ import { TimelineService } from '../timeline/timeline.service';
         tap(movements => {
           newMovement.id = generatedId;
           this._movements.next(movements.concat(newMovement));
-        })
-      );
+        }));
   }
 
   Subscribe(movementId: string) {  
     let updated: MovementModel[];
-    this.timeline.addOne(movementId);
-    return this.movements.pipe(
+    let fetchedToken: string;
+    return this.auth.token.pipe(
       take(1),
+      switchMap(token => {
+        fetchedToken = token;
+        return this.movements;
+      }),
+    take(1),
       switchMap(movements => {
         if (!movements || movements.length <= 0) {
           return this.fetchMovements();
@@ -134,7 +186,7 @@ import { TimelineService } from '../timeline/timeline.service';
         updated[updatedMovementIndex].subscribed = true;
         console.log(updated[updatedMovementIndex].subscribed);
         return this.http.put(
-          `https://gridt-f6485.firebaseio.com/movements/${movementId}.json`,
+          `https://gridt-f6485.firebaseio.com/movements/${movementId}.json?auth=${fetchedToken}`,
           { ...updated[updatedMovementIndex], id: null, subscribed: true }
         );
       }),

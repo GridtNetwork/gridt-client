@@ -1,5 +1,7 @@
 {
   "name": "gridt",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "angular"
 }

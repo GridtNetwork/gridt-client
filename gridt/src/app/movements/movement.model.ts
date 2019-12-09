@@ -1,4 +1,4 @@
-import { MovementInterval, User } from 'src/api';
+
 
 export class MovementModel {
    constructor(

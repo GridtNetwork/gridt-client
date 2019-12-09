@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Movement } from 'src/api/model/movement';
+
 import { Subscription } from 'rxjs';
-import { MovementsService } from '../movements/movements.service';
+import { MovementsService, Movement } from '../movements/movements.service';
 import { TimelineService } from './timeline.service';
 
 @Component({
@@ -29,10 +29,6 @@ export class TimelinePage implements OnInit, OnDestroy {
       this.listedmovements =this.relevantMovements;
     }
       );
-    
-    //this.movementsService.movements.subscribe(movements => {
-      //this.movements = movements;
-   //});
   }
 
   ionViewWillEnter() {

@@ -1,9 +1,10 @@
+import { MovementModel } from './../movement.model';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { Movement } from 'src/api/model/movement';
+
 import { ModalController, NavController, AlertController, LoadingController } from '@ionic/angular';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { MovementsService } from '../movements.service';
+import { MovementsService} from '../movements.service';
 import { TimelineService } from 'src/app/timeline/timeline.service';
 
 
@@ -14,10 +15,10 @@ import { TimelineService } from 'src/app/timeline/timeline.service';
 })
 export class MovementsDetailPage implements OnInit, OnDestroy {
 
-  @Input() selectedMovement: Movement;
+  @Input() selectedMovement: MovementModel;
 
-  movements: Movement[];
-  movement: Movement;
+  movements: MovementModel[];
+  movement: MovementModel;
   isSubscribe = false;
   isLoading = false;
   private sub: Subscription;

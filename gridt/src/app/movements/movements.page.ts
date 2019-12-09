@@ -1,10 +1,10 @@
 
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Movement } from 'src/api/model/movement';
+
 import { ModalController, NavController, MenuController } from '@ionic/angular';
 
 import { Subscription } from 'rxjs';
-import { MovementsService } from './movements.service';
+import { MovementsService, Movement} from './movements.service';
 
 
 @Component({

@@ -41,7 +41,7 @@ export class LoginPage implements OnInit {
             console.log(resData);
             this.isLoading = false;
             loadingEl.dismiss();
-            this.router.navigateByUrl('/places/tabs/discover');
+            this.router.navigateByUrl('/timeline');
           },
           errRes => {
             loadingEl.dismiss();
