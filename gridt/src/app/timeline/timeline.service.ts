@@ -8,6 +8,7 @@ import { take, tap, delay, switchMap, map } from 'rxjs/operators';
 
 
 interface TimelineData{
+    movementName: string;
     movementId: string;
     userId: string;
     didIt: boolean;
@@ -25,10 +26,11 @@ export class TimelineService {
   constructor(private authService: LoginService, private http: HttpClient) {}
 
   addOne(
-    movementId: string,
+    movementId: string, movementName: string
   ) {
 
     const newInfo = new Timeline(
+      movementName,
       movementId,
       'abc',
       false

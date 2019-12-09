@@ -27,7 +27,7 @@ import { TimelineService } from '../timeline/timeline.service';
     /**
      * A much longer description that is used to 'sell' a movement to it's users.
      */
-    description?: string;
+    description: string;
 
 }
 @Injectable({
