@@ -48,7 +48,7 @@ import { TimelineService } from '../timeline/timeline.service';
       take(1),
       switchMap(token => {
         return this.http.get<{ [key: string]: Movement }>(
-          `https://gridt-f6485.firebaseio.com/movements/.json?auth=${token}`
+          `https://gridt-85476.firebaseio.com/movements/.json?auth=${token}`
         );
       }),
       map(resData => {
@@ -82,7 +82,7 @@ import { TimelineService } from '../timeline/timeline.service';
       take(1),
       switchMap(token => {
         return this.http.get<Movement>(
-          `https://gridt-f6485.firebaseio.com/movements/${id}.json?auth=${token}`
+          `https://gridt-85476.firebaseio.com/movements/${id}.json?auth=${token}`
         );
       }),
         map(movementData => {
@@ -135,7 +135,7 @@ import { TimelineService } from '../timeline/timeline.service';
 
     return this.http
       .post<{ name: string }>(
-        `https://gridt-f6485.firebaseio.com/movements.json?auth=${token}`,
+        `https://gridt-85476.firebaseio.com/movements.json?auth=${token}`,
         {
           ...newMovement,
           id: null,
@@ -186,7 +186,7 @@ import { TimelineService } from '../timeline/timeline.service';
         updated[updatedMovementIndex].subscribed = true;
         console.log(updated[updatedMovementIndex].subscribed);
         return this.http.put(
-          `https://gridt-f6485.firebaseio.com/movements/${movementId}.json?auth=${fetchedToken}`,
+          `https://gridt-85476.firebaseio.com/movements/${movementId}.json?auth=${fetchedToken}`,
           { ...updated[updatedMovementIndex], id: null, subscribed: true }
         );
       }),

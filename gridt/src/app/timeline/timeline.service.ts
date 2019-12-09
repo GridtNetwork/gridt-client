@@ -38,7 +38,7 @@ export class TimelineService {
     console.log(newInfo);
     return this.http
       .post(
-        'https://gridt-f6485.firebaseio.com/timelines.json',
+        'https://gridt-85476.firebaseio.com/timelines.json',
         { ...newInfo}
       );
   }
@@ -54,7 +54,7 @@ export class TimelineService {
         updated[updatedTimelineIndex].didIt = true;
         console.log(updated[updatedTimelineIndex].didIt);
         return this.http.put(
-          `https://gridt-f6485.firebaseio.com/timelines/${movementId}.json`,
+          `https://gridt-85476.firebaseio.com/timelines/${movementId}.json`,
           { ...updated[updatedTimelineIndex] }
         );
       })
