@@ -79,7 +79,7 @@ export class TimelineService {
         updated[updatedTimelineIndex].didIt = true;
         console.log(updated[updatedTimelineIndex].didIt);
         return this.http.put(
-          `https://gridt-f6485.firebaseio.com/timelines/${timelineId}.json`,
+          `https://gridt-85476.firebaseio.com/timelines/${movementId}.json`,
           { ...updated[updatedTimelineIndex] }
         );
       })

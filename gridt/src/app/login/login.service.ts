@@ -145,7 +145,7 @@ constructor(private http: HttpClient) {}
 
   private setUserData(userData: AuthResponseData) {
     const expirationTime = new Date(
-      new Date().getTime() + +userData.expiresIn * 1000
+      new Date().getTime() + +userData.expiresIn * 100
     );
     const user = new User(
       userData.localId,

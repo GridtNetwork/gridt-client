@@ -10,11 +10,11 @@ const fbAdmin = require('firebase-admin');
 const { Storage } = require('@google-cloud/storage');
 
 const storage = new Storage({
-  projectId: 'gridt-f6485'
+  projectId: 'gridt-85476'
 });
 
 fbAdmin.initializeApp({
-  credential: fbAdmin.credential.cert(require('./gridt-f6485-firebase-adminsdk-wkxv6-a4b22b30cb.json'))
+  credential: fbAdmin.credential.cert(require('./gridt-85476-firebase-adminsdk-zt8zx-73fe8559e5.json'))
 });
 
 exports.storeImage = functions.https.onRequest((req, res) => {
@@ -60,7 +60,7 @@ exports.storeImage = functions.https.onRequest((req, res) => {
         .then(decodedToken => {
           console.log(uploadData.type);
           return storage
-            .bucket('gridt-f6485.appspot.com')
+            .bucket('gridt-85476.appspot.com')
             .upload(uploadData.filePath, {
               uploadType: 'media',
               destination: imagePath,
@@ -76,7 +76,7 @@ exports.storeImage = functions.https.onRequest((req, res) => {
           return res.status(201).json({
             imageUrl:
               'https://firebasestorage.googleapis.com/v0/b/' +
-              storage.bucket('gridt-f6485.appspot.com').name +
+              storage.bucket('gridt-85476.appspot.com').name +
               '/o/' +
               encodeURIComponent(imagePath) +
               '?alt=media&token=' +
