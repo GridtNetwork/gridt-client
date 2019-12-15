@@ -59,7 +59,6 @@ import { TimelineService } from '../timeline/timeline.service';
                 new MovementModel(
                   key,
                   resData[key].name,
-                  resData[key].subscribed,
                   resData[key].description,
                   resData[key].shortDescription,
                 )
@@ -89,7 +88,6 @@ import { TimelineService } from '../timeline/timeline.service';
           return new MovementModel(
             id,
             movementData.name,
-            movementData.subscribed,
             movementData.description,
             movementData.shortDescription
           );
@@ -109,7 +107,6 @@ import { TimelineService } from '../timeline/timeline.service';
      newMovement = new MovementModel(
       Math.random().toString(),
       name,
-      true,
       description,
       shortDescription
     );
@@ -128,7 +125,6 @@ import { TimelineService } from '../timeline/timeline.service';
         newMovement = new MovementModel(
           Math.random().toString(),
           name,
-          true,
           description,
           shortDescription
         );
@@ -154,7 +150,7 @@ import { TimelineService } from '../timeline/timeline.service';
         }));
   }
 
-  Subscribe(movementId: string) {  
+ /* Subscribe(movementId: string) {  
     let updated: MovementModel[];
     let fetchedToken: string;
     return this.auth.token.pipe(
@@ -194,5 +190,5 @@ import { TimelineService } from '../timeline/timeline.service';
         this._movements.next(updated);
       })
     );
-  }
+  }*/
 }
