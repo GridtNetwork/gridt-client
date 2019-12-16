@@ -120,7 +120,7 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
       })
       .then(loadingEl => {
         loadingEl.present();
-        this.movementsService.Join(this.movement.id, this.userid);
+        this.movementsService.Join(this.movement.id,  this.movement, this.userid,);
         this.timeline
           .addOne(
             this.movement.id,

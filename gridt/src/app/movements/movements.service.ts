@@ -156,7 +156,7 @@ import { TimelineService } from '../timeline/timeline.service';
         }));
   }
 
-  Join(movementId: string, userId: string) {  
+ /* Join(movementId: string, userId: string) {  
     let updated: MovementModel[];
     let fetchedUserId: string;
     let fetchedToken: string;
@@ -205,5 +205,27 @@ import { TimelineService } from '../timeline/timeline.service';
       })
     );
     console.log(fetchedToken);
+  }*/
+
+  Join(movementId: string, movement:Movement, userId: string) {  
+
+    let fetchedUserId: string;
+    let userList=[];
+    fetchedUserId= userId;
+    userList = movement.userList;
+    userList.push(fetchedUserId);
+    movement.userList= userList;
+    console.log( 'kkk');
+    console.log(movement);
+    return this.auth.token.pipe(
+      switchMap(token => {
+        console.log( 'kk');
+        return this.http.put(
+          `https://gridt-85476.firebaseio.com/movements/${movementId}.json?auth=${token}`,
+          { ...movement, userList, id: null }
+        );
+      })
+     
+    );
   }
 }

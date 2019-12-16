@@ -72,6 +72,8 @@ export class TimelineService {
   DidIt(timelineId: string, timeline:Timeline) {
     timeline.didIt=true;
     console.log(timeline);
+    console.log(timeline.id);
+
 
     return this.authService.token.pipe(
       take(1),
