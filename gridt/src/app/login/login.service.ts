@@ -39,13 +39,26 @@ export class LoginService implements OnDestroy{
   }
 
   
-
+get token() {
+    return this._user.asObservable().pipe(
+      map(user => {
+        if (user) {
+          console.log('dddd');
+          return user.token;
+        } else {
+          console.log('dddd');
+          return null;
+          
+        }
+      })
+    );
+  }
 
   get userId() {
     return this._user.asObservable().pipe(
       map(user => {
         if (user) {
-          console.log(user.id);
+          console.log('user.id');
           return user.id;
         } else {
           return null;
@@ -54,17 +67,7 @@ export class LoginService implements OnDestroy{
     );
   }
 
-  get token() {
-    return this._user.asObservable().pipe(
-      map(user => {
-        if (user) {
-          return user.token;
-        } else {
-          return null;
-        }
-      })
-    );
-  }
+  
 constructor(private http: HttpClient) {}
 
   autoLogin() {

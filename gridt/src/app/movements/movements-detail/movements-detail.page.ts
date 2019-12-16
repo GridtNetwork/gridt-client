@@ -1,3 +1,4 @@
+import { LoginService } from './../../login/login.service';
 import { MovementModel } from './../movement.model';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 
@@ -6,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { MovementsService} from '../movements.service';
 import { TimelineService } from 'src/app/timeline/timeline.service';
+import { take, switchMap } from 'rxjs/operators';
 
 
 @Component({
@@ -22,6 +24,7 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
   isSubscribe = false;
   isLoading = false;
   private sub: Subscription;
+  private userid: string;
 
   constructor(
     private movementsService: MovementsService,
@@ -30,6 +33,8 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
     private alertCtrl: AlertController,
     private router: Router,
     private loadingCtrl: LoadingController,
+    private timeline: TimelineService,
+    private authService: LoginService
     ) { }
 
   ngOnInit() {
@@ -39,13 +44,40 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
         return;
       }
       this.isLoading = true;
-      this.sub = this.movementsService
-        .getMovements(paramMap.get('movementId'))
+      let fetchedUserId: string;
+      this.authService.userId
+        .pipe(
+          take(1),
+          switchMap(userId => {
+            if (!userId) {
+              throw new Error('Found no user!');
+            }
+            fetchedUserId = userId;
+            this.userid=userId;
+            return this.movementsService.getMovements(paramMap.get('movementId'));
+          })
+        )
         .subscribe(
           movement => {
             this.movement = movement;
             this.isLoading = false;
           },
+          error => {
+            this.alertCtrl
+              .create({
+                header: 'An error ocurred!',
+                message: 'Could not load place.',
+                buttons: [
+                  {
+                    text: 'Okay',
+                    handler: () => {
+                      this.router.navigate(['/timeline']);
+                    }
+                  }
+                ]
+              })
+              .then(alertEl => alertEl.present());
+          }
         );
     });
   }
@@ -88,14 +120,17 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
       })
       .then(loadingEl => {
         loadingEl.present();
-        this.movementsService
-          .Subscribe(
+        this.movementsService.Join(this.movement.id, this.userid);
+        this.timeline
+          .addOne(
             this.movement.id,
+            this.movement.name
           )
           .subscribe(() => {
             loadingEl.dismiss();
 
-            this.router.navigate(['/timeline']);
+
+            //this.router.navigate(['/timeline']);
           });
       });
   }

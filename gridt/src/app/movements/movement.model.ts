@@ -6,5 +6,8 @@ export class MovementModel {
    public name: string,
    public shortDescription: string,
    public description: string,
+   public userList: Array<string>
+   
+
 ){}
 }

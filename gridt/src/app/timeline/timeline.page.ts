@@ -1,3 +1,4 @@
+import { Timeline } from './timeline.model';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { Subscription } from 'rxjs';
@@ -11,36 +12,28 @@ import { TimelineService } from './timeline.service';
 })
 export class TimelinePage implements OnInit, OnDestroy {
   
-  loadedMovements: Movement[];
-  listedmovements: Movement[];
-  relevantMovements: Movement[];
+  loadedMovements: Timeline[];
   isLoading = false;
  private sub: Subscription;
   constructor(private movementsService: MovementsService,  private timelineService: TimelineService) {  }
   
 
   ngOnInit() {
-    console.log('hello');
-    this.sub = this.movementsService.movements.subscribe(movements => {
-      this.loadedMovements= movements;
-      this.relevantMovements = this.loadedMovements.filter(
-        movement => movement.subscribed === true
-      );
-      this.listedmovements =this.relevantMovements;
-    }
-      );
+    this.sub = this.timelineService.timelines.subscribe(timeline => {
+      this.loadedMovements= timeline;
+    });
   }
 
   ionViewWillEnter() {
   
     this.isLoading = true;
-    this.movementsService.fetchMovements().subscribe(() => {
+    this.timelineService.fetchOne().subscribe(() => {
       this.isLoading = false;
     });
   }
 
-  DidIt(movementId: string){
-    this.timelineService.DidIt(movementId);
+  DidIt(timeline: Timeline, timelineId: string){
+    this.timelineService.DidIt(timelineId, timeline);
   }
 
   

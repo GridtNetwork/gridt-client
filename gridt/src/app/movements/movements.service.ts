@@ -1,8 +1,8 @@
 
 import { LoginService } from '../login/login.service';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, of } from 'rxjs';
-import { take, map, tap, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, of, throwError } from 'rxjs';
+import { take, map, tap, switchMap, mergeMap, catchError } from 'rxjs/operators';
 import { MovementModel } from './movement.model';
 import { HttpClient } from '@angular/common/http';
 import { TimelineService } from '../timeline/timeline.service';
@@ -28,6 +28,7 @@ import { TimelineService } from '../timeline/timeline.service';
      * A much longer description that is used to 'sell' a movement to it's users.
      */
     description: string;
+    userList: Array<string>;
 
 }
 @Injectable({
@@ -61,6 +62,7 @@ import { TimelineService } from '../timeline/timeline.service';
                   resData[key].name,
                   resData[key].description,
                   resData[key].shortDescription,
+                  resData[key].userList
                 )
               );
             }
@@ -80,6 +82,7 @@ import { TimelineService } from '../timeline/timeline.service';
     return this.auth.token.pipe(
       take(1),
       switchMap(token => {
+        console.log(token);
         return this.http.get<Movement>(
           `https://gridt-85476.firebaseio.com/movements/${id}.json?auth=${token}`
         );
@@ -89,7 +92,8 @@ import { TimelineService } from '../timeline/timeline.service';
             id,
             movementData.name,
             movementData.description,
-            movementData.shortDescription
+            movementData.shortDescription,
+            movementData.userList
           );
         })
       );
@@ -104,17 +108,18 @@ import { TimelineService } from '../timeline/timeline.service';
     let generatedId: string;
     let fetchedUserId: string;
     let newMovement: MovementModel;
+    const userList=[];
      newMovement = new MovementModel(
       Math.random().toString(),
       name,
       description,
-      shortDescription
+      shortDescription,
+      userList
     );
     return this.auth.userId.pipe(
       take(1),
       switchMap(userId => {
         fetchedUserId = userId;
-        console.log(fetchedUserId);
         return this.auth.token;
       }),
       take(1),
@@ -122,11 +127,13 @@ import { TimelineService } from '../timeline/timeline.service';
         if (!fetchedUserId) {
           throw new Error('No user found!');
         }
+        userList.push(fetchedUserId);
         newMovement = new MovementModel(
           Math.random().toString(),
           name,
           description,
-          shortDescription
+          shortDescription,
+          userList
         );
 
     return this.http
@@ -135,7 +142,6 @@ import { TimelineService } from '../timeline/timeline.service';
         {
           ...newMovement,
           id: null,
-          subscribed: true
         }
       );
     }),
@@ -150,45 +156,54 @@ import { TimelineService } from '../timeline/timeline.service';
         }));
   }
 
- /* Subscribe(movementId: string) {  
+  Join(movementId: string, userId: string) {  
     let updated: MovementModel[];
+    let fetchedUserId: string;
     let fetchedToken: string;
+    let userList=[];
+    fetchedUserId= userId;
+    console.log( 'kkk');
     return this.auth.token.pipe(
+      catchError(err => {
+        console.log(err);
+        return throwError(err);
+        }),
       take(1),
+      catchError(err => of('Error: ${err}')),
       switchMap(token => {
+
         fetchedToken = token;
+        console.log( 'ddddd');
         return this.movements;
+        
       }),
-    take(1),
+      take(1),
+      
       switchMap(movements => {
         if (!movements || movements.length <= 0) {
           return this.fetchMovements();
         } else {
+          console.log( 'ddddd');
           return of(movements);
         }
       }),
       switchMap(movements => {
+        console.log( 'ddddd');
         const updatedMovementIndex = movements.findIndex(m => m.id === movementId);
-        updated = [...movements];
-        updated[updatedMovementIndex].subscribed = true;
-        const oldSubscription = updated[updatedMovementIndex];
-        updated[updatedMovementIndex] = new MovementModel(
-          oldSubscription.id,
-          oldSubscription.name,
-          oldSubscription.subscribed,
-          oldSubscription.description,
-          oldSubscription.shortDescription
-        );
-        updated[updatedMovementIndex].subscribed = true;
-        console.log(updated[updatedMovementIndex].subscribed);
+        updated = [...movements]; 
+        userList = updated[updatedMovementIndex].userList;
+        userList.push(fetchedUserId);
+        updated[updatedMovementIndex].userList = userList;
+         console.log(userList, 'ddddd');
         return this.http.put(
           `https://gridt-85476.firebaseio.com/movements/${movementId}.json?auth=${fetchedToken}`,
-          { ...updated[updatedMovementIndex], id: null, subscribed: true }
+          { ...updated[updatedMovementIndex], id: null }
         );
       }),
       tap(() => {
         this._movements.next(updated);
       })
     );
-  }*/
+    console.log(fetchedToken);
+  }
 }

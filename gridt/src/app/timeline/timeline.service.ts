@@ -45,14 +45,15 @@ export class TimelineService {
       switchMap(token => {
         newOne = new Timeline(
           Math.random().toString(),
+          false,
           movementId,
-          fetchedUserId,
           movementName,
-          false
+          
+          fetchedUserId,
           
         );
         return this.http.post<{ name: string }>(
-          `https://gridt-f6485.firebaseio.com/timelines.json?auth=${token}`,
+          `https://gridt-85476.firebaseio.com/timelines.json?auth=${token}`,
           { ...newOne, id: null }
         );
       }),
@@ -68,30 +69,52 @@ export class TimelineService {
     );
   }
 
-  DidIt(movementId: string) {
-    console.log('aici');
-    let updated: Timeline[];
-    return this.timelines.pipe(
+  DidIt(timelineId: string, timeline:Timeline) {
+    timeline.didIt=true;
+    console.log(timeline);
+
+    return this.authService.token.pipe(
       take(1),
-      switchMap(timelines => {
-        const updatedTimelineIndex = timelines.findIndex(m => m.movementId === movementId);
-        updated = [...timelines]; 
-        updated[updatedTimelineIndex].didIt = true;
-        console.log(updated[updatedTimelineIndex].didIt);
+      switchMap(token=> {
+        console.log(timeline);
+
         return this.http.put(
-          `https://gridt-85476.firebaseio.com/timelines/${movementId}.json`,
-          { ...updated[updatedTimelineIndex] }
+          `https://gridt-85476.firebaseio.com/timelines/${timelineId}.json?auth=${token}`,
+          { ...timeline }
         );
       })
     );
   }
-
+/* DidIt(timelineId: string, timeline:Timeline) {
+    
+    let updated: Timeline[];
+    console.log('aici');
+    let fetchedToken: string;
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token=> {
+        fetchedToken = token;
+        console.log('aici');
+        return this.timelines;
+      }),
+      switchMap(timelines => {
+        const updatedTimelineIndex = timelines.findIndex(m => m.id === timelineId);
+        updated = [...timelines];
+        updated[updatedTimelineIndex].didIt = true;
+        console.log(updated[updatedTimelineIndex].didIt);
+        return this.http.put(
+          `https://gridt-85476.firebaseio.com/timelines/${timelineId}.json?auth=${fetchedToken}`,
+          { ...updated[updatedTimelineIndex] }
+        );
+      })
+    );
+  }*/
   cancelOne(timelineId: string) {
     return this.authService.token.pipe(
       take(1),
       switchMap(token => {
         return this.http.delete(
-          `https://ionic-angular-course.firebaseio.com/bookings/${timelineId}.json?auth=${token}`
+          `https://gridt-85476.firebaseio.com/timelines/${timelineId}.json?auth=${token}`
         );
       }),
       switchMap(() => {
@@ -104,7 +127,7 @@ export class TimelineService {
     );
   }
 
-  fetchBookings() {
+  fetchOne() {
     let fetchedUserId: string;
     return this.authService.userId.pipe(
       take(1),
@@ -118,7 +141,7 @@ export class TimelineService {
       take(1),
       switchMap(token => {
         return this.http.get<{ [key: string]: TimelineData }>(
-          `https://ionic-angular-course.firebaseio.com/bookings.json?orderBy="userId"&equalTo="${fetchedUserId}"&auth=${token}`
+          `https://gridt-85476.firebaseio.com/timelines.json?orderBy="userId"&equalTo="${fetchedUserId}"&auth=${token}`
         );
       }),
       map(timelineData => {
@@ -128,10 +151,10 @@ export class TimelineService {
             timelines.push(
               new Timeline(
                 key,
-                timelineData[key].userId,
+                timelineData[key].didIt,
                 timelineData[key].movementId,
                 timelineData[key].movementName,
-                timelineData[key].didIt
+                timelineData[key].userId
               )
             );
           }

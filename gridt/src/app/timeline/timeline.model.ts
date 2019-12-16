@@ -1,10 +1,11 @@
 export class Timeline {
     constructor(
-      public timelineid: string,
-      public movementName: string,
-      public movementId: string,
-      public userId: string,
+      public id: string,
       public didIt: boolean,
+      public movementId: string,
+      public movementName: string,
+      public userId: string,
+     
       
     ) {}
   }
