@@ -218,6 +218,7 @@ import { TimelineService } from '../timeline/timeline.service';
     console.log( 'kkk');
     console.log(movement);
     return this.auth.token.pipe(
+      take(1),
       switchMap(token => {
         console.log( 'kk');
         return this.http.put(
