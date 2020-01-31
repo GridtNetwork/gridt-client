@@ -12,12 +12,15 @@ interface TimelineData{
     movementId: string;
     userId: string;
     didIt: boolean;
+    id: string;
 
 }
 
 @Injectable({ providedIn: 'root' })
 export class TimelineService {
   private _timeline = new BehaviorSubject<Timeline[]>([]);
+  public anid: string;
+  public a: string;
 
   get timelines() {
     return this._timeline.asObservable();
@@ -68,7 +71,107 @@ export class TimelineService {
       })
     );
   }
+  Infofor(movementId){
+    let fetchedUserId: string;
+    return this.authService.userId.pipe(
+      take(1),
+      switchMap(userId => {
+        if (!userId) {
+          throw new Error('User not found!');
+        }
+        fetchedUserId = userId;
+        return this.authService.token;
+      }),
+      take(1),
+      switchMap(token => {
+        return this.http.get<{ [key: string]: TimelineData }>(
+          `https://gridt-85476.firebaseio.com/timelines.json?orderBy="userId"&equalTo="${fetchedUserId}"&auth=${token}`
+        );
+      }),
+      map(timelineData => {
+        const timelines = [];
+        for (const key in timelineData) {
+          if (timelineData.hasOwnProperty(key)) {
+            timelines.push(
+              new Timeline(
+                key,
+                timelineData[key].didIt,
+                timelineData[key].movementId,
+                timelineData[key].movementName,
+                timelineData[key].userId
+              )
+            );
+            if(movementId===timelineData[key].movementId){
+               this.a= '1';
 
+          }
+          }
+
+        }
+      })
+    );
+    
+  }
+  Foor(movementId){
+    let fetchedUserId: string;
+    return this.authService.userId.pipe(
+      take(1),
+      switchMap(userId => {
+        if (!userId) {
+          throw new Error('User not found!');
+        }
+        fetchedUserId = userId;
+        return this.authService.token;
+      }),
+      take(1),
+      switchMap(token => {
+        return this.http.get<{ [key: string]: TimelineData }>(
+          `https://gridt-85476.firebaseio.com/timelines.json?orderBy="userId"&equalTo="${fetchedUserId}"&auth=${token}`
+        );
+      }),
+      map(timelineData => {
+        const timelines = [];
+        for (const key in timelineData) {
+          if (timelineData.hasOwnProperty(key)) {
+            timelines.push(
+              new Timeline(
+                key,
+                timelineData[key].didIt,
+                timelineData[key].movementId,
+                timelineData[key].movementName,
+                timelineData[key].userId
+              )
+            );
+            if(movementId===timelineData[key].movementId){
+              this.anid= timelineData[key].id;
+
+          }
+          }
+          
+        }
+
+      })
+    );
+  }
+
+  Unsubscribe() {
+    console.log('aaaaa');
+    return this.authService.token.pipe(
+      take(1),
+      switchMap(token => {
+        return this.http.delete(
+          `https://gridt-85476.firebaseio.com/timelines/${this.anid}.json?auth=${token}`
+        );
+      }),
+      switchMap(() => {
+        return this.timelines;
+      }),
+      take(1),
+      tap(timelines => {
+        this._timeline.next(timelines.filter(t => t.id !== this.anid));
+      })
+    );
+  }
   DidIt(timelineId: string, timeline:Timeline) {
     timeline.didIt=true;
     console.log(timeline);
@@ -111,23 +214,7 @@ export class TimelineService {
       })
     );
   }*/
-  cancelOne(timelineId: string) {
-    return this.authService.token.pipe(
-      take(1),
-      switchMap(token => {
-        return this.http.delete(
-          `https://gridt-85476.firebaseio.com/timelines/${timelineId}.json?auth=${token}`
-        );
-      }),
-      switchMap(() => {
-        return this.timelines;
-      }),
-      take(1),
-      tap(bookings => {
-        this._timeline.next(bookings.filter(t => t.id !== timelineId));
-      })
-    );
-  }
+
 
   fetchOne() {
     let fetchedUserId: string;

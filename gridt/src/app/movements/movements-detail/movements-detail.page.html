@@ -1,5 +1,5 @@
-<ion-header>
-  <ion-toolbar color="primary">
+<ion-header translucent>
+  <ion-toolbar color="light-shade">
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/movements"></ion-back-button>
     </ion-buttons>
@@ -10,7 +10,7 @@
 
 <ion-content>
   <div text-center *ngIf="isLoading">
-    <ion-spinner color="primary"></ion-spinner>
+    <ion-spinner></ion-spinner>
   </div>
   <ion-grid *ngIf="!isLoading">
       <ion-row>
@@ -22,8 +22,12 @@
           <ion-item >
               <p>{{ movement.shortDescription }}</p> 
           </ion-item >
+          <ion-item >
+            <p>{{ movement.description }}</p> 
+        </ion-item >
 
-           <ion-button  ion-button color="primary" margin (click)="onJoin()">Join</ion-button>
+           <ion-button  ion-button  margin *ngIf="id!=movement.id" (click)="onJoin()">Join</ion-button>
+           <ion-button  ion-button  margin *ngIf="id==movement.id" (click)="Unsubscribe()">Unsubscribe</ion-button>
            
            </ion-col>
           </ion-row> 

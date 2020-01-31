@@ -226,7 +226,6 @@ import { TimelineService } from '../timeline/timeline.service';
           { ...movement, userList, id: null }
         );
       })
-     
     );
   }
 }

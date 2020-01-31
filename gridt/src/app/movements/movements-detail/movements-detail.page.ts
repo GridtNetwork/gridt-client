@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
 import { MovementsService} from '../movements.service';
 import { TimelineService } from 'src/app/timeline/timeline.service';
 import { take, switchMap } from 'rxjs/operators';
+import { Timeline } from 'src/app/timeline/timeline.model';
 
 
 @Component({
@@ -21,10 +22,13 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
 
   movements: MovementModel[];
   movement: MovementModel;
+  timeline: Timeline;
   isSubscribe = false;
   isLoading = false;
   private sub: Subscription;
   private userid: string;
+  public id: string;
+  public movementId: string;
 
   constructor(
     private movementsService: MovementsService,
@@ -33,7 +37,7 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
     private alertCtrl: AlertController,
     private router: Router,
     private loadingCtrl: LoadingController,
-    private timeline: TimelineService,
+    private timelineService: TimelineService,
     private authService: LoginService
     ) { }
 
@@ -53,7 +57,8 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
               throw new Error('Found no user!');
             }
             fetchedUserId = userId;
-            this.userid=userId;
+            this.userid=userId;            
+
             return this.movementsService.getMovements(paramMap.get('movementId'));
           })
         )
@@ -81,6 +86,12 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
         );
     });
   }
+  ionViewWillEnter() {
+    this.timelineService.Infofor(this.movementId);
+    this.id=this.timelineService.a;
+    console.log(this.movementId);
+    this.timelineService.Foor(this.movementId);
+  }
 
   onJoin() {
     this.alertCtrl
@@ -93,16 +104,10 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
           role: 'cancel'
         },
         {
-          text: 'Connect me with people I know',
+          text: 'Yes',
           handler: () => {
             this.Joining();
 
-          },
-        },
-        {
-          text: 'Connect me with random people',
-          handler: () => {
-            this.Joining();
           },
         },
       ]
@@ -121,7 +126,7 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
       .then(loadingEl => {
         loadingEl.present();
         this.movementsService.Join(this.movement.id,  this.movement, this.userid,);
-        this.timeline
+        this.timelineService
           .addOne(
             this.movement.id,
             this.movement.name
@@ -130,11 +135,28 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
             loadingEl.dismiss();
 
 
-            //this.router.navigate(['/timeline']);
+          this.router.navigate(['/timeline']);
           });
       });
   }
 
+  Unsubscribe() {
+    this.loadingCtrl
+      .create({
+        message: 'Updating info...'
+      })
+      .then(loadingEl => {
+        loadingEl.present();
+        console.log('aaaaa');
+        this.timelineService.Unsubscribe()
+          .subscribe(() => {
+            loadingEl.dismiss();
+
+
+          this.router.navigate(['/movements']);
+          });
+      });
+  }
   ngOnDestroy() {
     if (this.sub) {
       this.sub.unsubscribe();
