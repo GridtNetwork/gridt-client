@@ -10,7 +10,7 @@ import { take, switchMap, tap } from 'rxjs/operators';
 })
 export class LoginGuard implements CanLoad {
   constructor(private authService: LoginService, private router: Router) {}
-
+//Doesn't let you in the app unless authentificated
   canLoad(
     route: Route,
     segments: UrlSegment[]

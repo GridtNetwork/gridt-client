@@ -23,7 +23,7 @@ export class LoginPage implements OnInit {
 
   ngOnInit() {
   }
-
+//Checks data for log in and lets the user in if correct
   authenticate(email: string, password: string) {
     this.isLoading = true;
     this.loadingCtrl
@@ -63,7 +63,7 @@ export class LoginPage implements OnInit {
   onSwitchAuthMode() {
     this.isLogin = !this.isLogin;
   }
-
+//Submits data
   onSubmit(form: NgForm) {
     if (!form.valid) {
       return;

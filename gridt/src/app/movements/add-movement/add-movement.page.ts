@@ -35,7 +35,7 @@ export class AddMovementPage implements OnInit {
       }),
   });
 }
-
+//Gets the data for the new movement
 onCreateMovement() {
   if (!this.form.valid) {
     return;

@@ -24,7 +24,7 @@ export class RegisterPage implements OnInit {
 
   ngOnInit() {
   }
-
+//Function that gets the data for registering, checks it and lets you in
   authenticate(email: string, password: string) {
     this.isLoading = true;
     this.loadingCtrl
@@ -62,7 +62,7 @@ export class RegisterPage implements OnInit {
   onSwitchAuthMode() {
     this.isLogin = !this.isLogin;
   }
-
+//Submitis the registration info
   onSubmit(form: NgForm) {
     if (!form.valid) {
       return;

@@ -46,7 +46,7 @@ export class MovementsPage implements OnInit, OnDestroy {
   onOpenMenu() {
     this.menuCtrl.toggle();
   }
-
+//It's a searchbar
   Searchbar(ev: any){
 
     this.sub = this.movementsService.movements.subscribe(mm => {

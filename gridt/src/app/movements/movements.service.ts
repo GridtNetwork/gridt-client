@@ -43,7 +43,7 @@ import { TimelineService } from '../timeline/timeline.service';
     }
 
   constructor(private auth: LoginService,private http: HttpClient, private timeline: TimelineService) {}
-
+//Gets all the movements data
   fetchMovements() {
     return this.auth.token.pipe(
       take(1),
@@ -76,7 +76,7 @@ import { TimelineService } from '../timeline/timeline.service';
       );
   }
 
-
+//Get's movement data
   getMovements(id: string) {
 
     return this.auth.token.pipe(
@@ -99,6 +99,7 @@ import { TimelineService } from '../timeline/timeline.service';
       );
       
   }
+//Adds a new movement and stores it in the back-end
 
   addMovements(
     name: string,

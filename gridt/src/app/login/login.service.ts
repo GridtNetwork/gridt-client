@@ -69,7 +69,7 @@ get token() {
 
   
 constructor(private http: HttpClient) {}
-
+//Keeps the user logged in for a limited time
   autoLogin() {
     return from(Plugins.Storage.get({ key: 'authData' })).pipe(
       map(storedData => {
@@ -105,7 +105,7 @@ constructor(private http: HttpClient) {}
       })
     );
   }
-
+//Sends user data to back-end
   signup(email: string, password: string) {
     return this.http.post<AuthResponseData>(
       `https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=${
@@ -136,7 +136,7 @@ constructor(private http: HttpClient) {}
       clearTimeout(this.activeLogoutTimer);
     }
   }
-
+// auto-log for when the token expires
   private autoLogout(duration: number) {
     if (this.activeLogoutTimer) {
       clearTimeout(this.activeLogoutTimer);

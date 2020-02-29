@@ -27,7 +27,7 @@ export class TimelineService {
   }
 
   constructor(private authService: LoginService, private http: HttpClient) {}
-
+//Adds new subscribed movement
   addOne(
     movementId: string, movementName: string
   ) {
@@ -71,6 +71,7 @@ export class TimelineService {
       })
     );
   }
+  
   Infofor(movementId){
     let fetchedUserId: string;
     return this.authService.userId.pipe(
