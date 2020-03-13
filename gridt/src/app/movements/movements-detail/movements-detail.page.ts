@@ -57,7 +57,7 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
               throw new Error('Found no user!');
             }
             fetchedUserId = userId;
-            this.userid=userId;            
+            this.userid=userId;
 
             return this.movementsService.getMovements(paramMap.get('movementId'));
           })
@@ -125,7 +125,7 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
       })
       .then(loadingEl => {
         loadingEl.present();
-        this.movementsService.Join(this.movement.id,  this.movement, this.userid,);
+        this.movementsService.Join(this.movement.id,  this.movement, this.userid).subscribe(data => console.log(data));
         this.timelineService
           .addOne(
             this.movement.id,

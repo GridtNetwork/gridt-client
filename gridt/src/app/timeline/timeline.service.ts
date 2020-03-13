@@ -148,9 +148,7 @@ export class TimelineService {
 
           }
           }
-          
         }
-
       })
     );
   }

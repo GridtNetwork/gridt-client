@@ -82,7 +82,6 @@ import { TimelineService } from '../timeline/timeline.service';
     return this.auth.token.pipe(
       take(1),
       switchMap(token => {
-        console.log(token);
         return this.http.get<Movement>(
           `https://gridt-85476.firebaseio.com/movements/${id}.json?auth=${token}`
         );
@@ -156,57 +155,6 @@ import { TimelineService } from '../timeline/timeline.service';
           this._movements.next(movements.concat(newMovement));
         }));
   }
-
- /* Join(movementId: string, userId: string) {  
-    let updated: MovementModel[];
-    let fetchedUserId: string;
-    let fetchedToken: string;
-    let userList=[];
-    fetchedUserId= userId;
-    console.log( 'kkk');
-    return this.auth.token.pipe(
-      catchError(err => {
-        console.log(err);
-        return throwError(err);
-        }),
-      take(1),
-      catchError(err => of('Error: ${err}')),
-      switchMap(token => {
-
-        fetchedToken = token;
-        console.log( 'ddddd');
-        return this.movements;
-        
-      }),
-      take(1),
-      
-      switchMap(movements => {
-        if (!movements || movements.length <= 0) {
-          return this.fetchMovements();
-        } else {
-          console.log( 'ddddd');
-          return of(movements);
-        }
-      }),
-      switchMap(movements => {
-        console.log( 'ddddd');
-        const updatedMovementIndex = movements.findIndex(m => m.id === movementId);
-        updated = [...movements]; 
-        userList = updated[updatedMovementIndex].userList;
-        userList.push(fetchedUserId);
-        updated[updatedMovementIndex].userList = userList;
-         console.log(userList, 'ddddd');
-        return this.http.put(
-          `https://gridt-85476.firebaseio.com/movements/${movementId}.json?auth=${fetchedToken}`,
-          { ...updated[updatedMovementIndex], id: null }
-        );
-      }),
-      tap(() => {
-        this._movements.next(updated);
-      })
-    );
-    console.log(fetchedToken);
-  }*/
 
   Join(movementId: string, movement:Movement, userId: string) {  
 
