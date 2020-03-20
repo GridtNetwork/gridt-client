@@ -9,13 +9,13 @@ export interface Movement {
     /**
      * True if the user is subscribed to this movement.
      */
-    subscribed: boolean;
+    subscribed?: boolean;
     leaders?: Array<User>;
 
     /**
      * A comprehensive description of the movement
      */
-    shortDescription: string;
+    short_description: string;
 
     /**
      * A much longer description that is used to 'sell' a movement to it's users.
