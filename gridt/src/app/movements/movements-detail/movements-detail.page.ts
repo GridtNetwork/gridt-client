@@ -89,7 +89,6 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
   ionViewWillEnter() {
     this.timelineService.Infofor(this.movementId);
     this.id=this.timelineService.a;
-    console.log(this.movementId);
     this.timelineService.Foor(this.movementId);
   }
 
@@ -147,12 +146,9 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
       })
       .then(loadingEl => {
         loadingEl.present();
-        console.log('aaaaa');
         this.timelineService.Unsubscribe()
           .subscribe(() => {
             loadingEl.dismiss();
-
-
           this.router.navigate(['/movements']);
           });
       });

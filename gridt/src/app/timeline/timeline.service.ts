@@ -154,7 +154,6 @@ export class TimelineService {
   }
 
   Unsubscribe() {
-    console.log('aaaaa');
     return this.authService.token.pipe(
       take(1),
       switchMap(token => {
@@ -173,15 +172,9 @@ export class TimelineService {
   }
   DidIt(timelineId: string, timeline:Timeline) {
     timeline.didIt=true;
-    console.log(timeline);
-    console.log(timeline.id);
-
-
     return this.authService.token.pipe(
       take(1),
       switchMap(token=> {
-        console.log(timeline);
-
         return this.http.put(
           `https://gridt-85476.firebaseio.com/timelines/${timelineId}.json?auth=${token}`,
           { ...timeline }
@@ -189,31 +182,6 @@ export class TimelineService {
       })
     );
   }
-/* DidIt(timelineId: string, timeline:Timeline) {
-    
-    let updated: Timeline[];
-    console.log('aici');
-    let fetchedToken: string;
-    return this.authService.token.pipe(
-      take(1),
-      switchMap(token=> {
-        fetchedToken = token;
-        console.log('aici');
-        return this.timelines;
-      }),
-      switchMap(timelines => {
-        const updatedTimelineIndex = timelines.findIndex(m => m.id === timelineId);
-        updated = [...timelines];
-        updated[updatedTimelineIndex].didIt = true;
-        console.log(updated[updatedTimelineIndex].didIt);
-        return this.http.put(
-          `https://gridt-85476.firebaseio.com/timelines/${timelineId}.json?auth=${fetchedToken}`,
-          { ...updated[updatedTimelineIndex] }
-        );
-      })
-    );
-  }*/
-
 
   fetchOne() {
     let fetchedUserId: string;

@@ -43,10 +43,8 @@ get token() {
     return this._user.asObservable().pipe(
       map(user => {
         if (user) {
-          console.log('dddd');
           return user.token;
         } else {
-          console.log('dddd');
           return null;
           
         }
@@ -58,7 +56,6 @@ get token() {
     return this._user.asObservable().pipe(
       map(user => {
         if (user) {
-          console.log('user.id');
           return user.id;
         } else {
           return null;

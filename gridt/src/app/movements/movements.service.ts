@@ -164,12 +164,9 @@ import { TimelineService } from '../timeline/timeline.service';
     userList = movement.userList;
     userList.push(fetchedUserId);
     movement.userList= userList;
-    console.log( 'kkk');
-    console.log(movement);
     return this.auth.token.pipe(
       take(1),
       switchMap(token => {
-        console.log( 'kk');
         return this.http.put(
           `https://gridt-85476.firebaseio.com/movements/${movementId}.json?auth=${token}`,
           { ...movement, userList, id: null }
