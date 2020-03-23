@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject, throwError, merge, partition } from 'rxjs';
-import { map, tap, pluck, skip, last, catchError, flatMap } from 'rxjs/operators';
+import { map, take, tap, pluck, catchError, flatMap, distinctUntilChanged } from 'rxjs/operators';
 import { Movement } from './movement.model';
 
-interface AccessToken {
+export interface AccessToken {
   access_token: string;
 }
 
@@ -18,13 +18,13 @@ interface ServerMessage {
 })
 export class ApiService {
   private token = new BehaviorSubject<string>(null);
-  private username: string;
+  public username: string;
   private password: string;
 
   /*
    * Subscribe to this observable to ready the API.
    */
-  private ApiReady: Observable<boolean>;
+  public isApiReady$: Observable<boolean>;
 
   public URL = 'http://api.gridt.org';
 
@@ -34,7 +34,8 @@ export class ApiService {
    * well.
    */
   public isLoggedIn$ = this.token.pipe(
-    map(token => !!token) // TODO: Use distinct until changed
+    map(token => !!token),
+    distinctUntilChanged()
   );
 
   constructor (private http: HttpClient) {
@@ -42,38 +43,40 @@ export class ApiService {
      * Determine, using the expiration date on the token, if the API is ready to
      * be called.
      */
-    const ApiIsReady: Observable<boolean> = this.token.pipe(
-      map(token => {
-        if (!token) {
-          return false;
-        }
+    const [ready, notReady] = partition(this.token, token => { 
+      if (!token) {
+        console.debug('No token available.');
+        return false;
+      }
 
-        const exp = JSON.parse(atob(this.token.getValue().split('.')[1]))['exp'];
-        const expiration_date = new Date(exp);
+      const exp = JSON.parse(atob(this.token.getValue().split('.')[1]))['exp'];
+      const expiration_date = new Date(exp * 1000);
 
-        if (expiration_date < new Date()) {
-          return false
-        }
-        return true;
-      })
-    );
+      if (expiration_date < new Date()) {
+        console.debug(`Token expired. Expiration date: ${expiration_date}`);
+        return false
+      }
 
-    const [ready, notReady] = partition(ApiIsReady, val => val);
+      return true;
+    });
 
     notReady.pipe(tap(_ => console.debug('API not ready'))).subscribe();
     ready.pipe(tap(_ => console.debug('API ready'))).subscribe();
 
-    this.ApiReady = merge(ready, notReady.pipe(
-      flatMap(_ => this.authenticate()),
-      map(_ => true) // If authenticate does not error, we are logged in.
-    ));
+    this.isApiReady$ = merge(
+      ready.pipe(map(_ => true)), // If the token is valid we are ready.
+      notReady.pipe(
+        flatMap(_ => this.authenticate$()),
+        map(_ => true) // If authenticate does not error, we are ready.
+      )
+    );
   }
 
   /*
    * Authenticate user on the server using provided credentials or those
    * already stored.
    */
-  private authenticate(username?: string, password?:string): Observable<string> {
+  private authenticate$(username?: string, password?:string): Observable<string> {
     console.debug('Authenticating');
 
     // Store password
@@ -114,8 +117,8 @@ export class ApiService {
    *
    * Currently this is a simple shell around authenticate.
    */
-  public login(username: string, password: string): Observable<boolean> {
-    return this.authenticate(username, password).pipe(
+  public login$(username: string, password: string): Observable<boolean> {
+    return this.authenticate$(username, password).pipe(
       map( token => !!token ),
       tap( val => console.debug(val ?  "Sucessfully logged in." : "Login failed.") )
     );
@@ -124,7 +127,7 @@ export class ApiService {
   /*
    * Register the user on the server.
    */
-  public register(username: string, email: string, password: string): Observable<string> {
+  public register$(username: string, email: string, password: string): Observable<string> {
     console.debug('Registering.');
 
     return this.http.post<ServerMessage>(`${this.URL}/register`, {username, email, password}).pipe(
@@ -166,7 +169,7 @@ export class ApiService {
   /*
    * Request the server to create a new movement.
    */
-  public createMovement (movement: Movement): Observable<string> {
+  public createMovement$ (movement: Movement): Observable<string> {
     console.debug('Creating movement');
 
     const request: Observable<string> = this.http.post<ServerMessage>(
@@ -176,7 +179,7 @@ export class ApiService {
       pluck('message')
     );
 
-    return this.ApiReady.pipe(
+    return this.isApiReady$.pipe(
       flatMap(_ => request)
     );
   }
@@ -184,7 +187,7 @@ export class ApiService {
   /*
    * Request all movements from the server.
    */
-  public getAllMovements (): Observable<Movement[]> {
+  public getAllMovements$ (): Observable<Movement[]> {
     const request = this.http.get<Movement[]>(
       `${this.URL}/movements`,
       this.getOptions()
@@ -192,7 +195,25 @@ export class ApiService {
       catchError( this.handleBadAuth() )
     );
 
-    return this.ApiReady.pipe(
+    return this.isApiReady$.pipe(
+      take(1),
+      flatMap(_ => request)
+    );
+  }
+
+  /* 
+   * Request all movements that the user is subscribed to from the server.
+   */
+  public getSubscribedMovements$ (): Observable<Movement[]> {
+    const request = this.http.get<Movement[]>(
+      `${this.URL}/movements/subscriptions`,
+      this.getOptions()
+    ).pipe(
+      catchError( this.handleBadAuth() )
+    );
+
+    return this.isApiReady$.pipe(
+      take(1),
       flatMap(_ => request)
     );
   }
