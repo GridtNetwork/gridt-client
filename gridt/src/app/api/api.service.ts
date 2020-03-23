@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, BehaviorSubject, throwError, merge, partition } from 'rxjs';
-import { map, take, tap, pluck, catchError, flatMap, distinctUntilChanged } from 'rxjs/operators';
-import { Movement } from './movement.model';
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Observable, BehaviorSubject, throwError, merge, partition } from "rxjs";
+import { map, take, tap, pluck, catchError, flatMap, distinctUntilChanged } from "rxjs/operators";
+import { Movement } from "./movement.model";
 
 export interface AccessToken {
   access_token: string;
@@ -14,7 +14,7 @@ interface ServerMessage {
 
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root"
 })
 export class ApiService {
   private token = new BehaviorSubject<string>(null);
@@ -26,7 +26,7 @@ export class ApiService {
    */
   public isApiReady$: Observable<boolean>;
 
-  public URL = 'http://api.gridt.org';
+  public URL = "http://api.gridt.org";
 
   /*
    * Observe if the user is logged in. The logic here is that if the user was
@@ -43,25 +43,25 @@ export class ApiService {
      * Determine, using the expiration date on the token, if the API is ready to
      * be called.
      */
-    const [ready, notReady] = partition(this.token, token => { 
+    const [ready, notReady] = partition(this.token, token => {
       if (!token) {
-        console.debug('No token available.');
+        console.debug("No token available.");
         return false;
       }
 
-      const exp = JSON.parse(atob(this.token.getValue().split('.')[1]))['exp'];
+      const exp = JSON.parse(atob(this.token.getValue().split(".")[1]))["exp"];
       const expiration_date = new Date(exp * 1000);
 
       if (expiration_date < new Date()) {
         console.debug(`Token expired. Expiration date: ${expiration_date}`);
-        return false
+        return false;
       }
 
       return true;
     });
 
-    notReady.pipe(tap(_ => console.debug('API not ready'))).subscribe();
-    ready.pipe(tap(_ => console.debug('API ready'))).subscribe();
+    notReady.pipe(tap(_ => console.debug("API not ready"))).subscribe();
+    ready.pipe(tap(_ => console.debug("API ready"))).subscribe();
 
     this.isApiReady$ = merge(
       ready.pipe(map(_ => true)), // If the token is valid we are ready.
@@ -76,8 +76,8 @@ export class ApiService {
    * Authenticate user on the server using provided credentials or those
    * already stored.
    */
-  private authenticate$(username?: string, password?:string): Observable<string> {
-    console.debug('Authenticating');
+  private authenticate$(username?: string, password?: string): Observable<string> {
+    console.debug("Authenticating");
 
     // Store password
     if ( username && password ) {
@@ -98,12 +98,12 @@ export class ApiService {
         password: this.password
       }
     ).pipe(
-      pluck('access_token'),
+      pluck("access_token"),
       tap( (new_token) => {
         this.token.next(new_token);
       }),
-      catchError( (error:any) => {
-        if (error.status == 400 || error.status == 401) {
+      catchError( (error: any) => {
+        if (error.status === 400 || error.status === 401) {
           this.token.next(null);
         }
         return throwError("Could not login");
@@ -128,11 +128,11 @@ export class ApiService {
    * Register the user on the server.
    */
   public register$(username: string, email: string, password: string): Observable<string> {
-    console.debug('Registering.');
+    console.debug("Registering.");
 
     return this.http.post<ServerMessage>(`${this.URL}/register`, {username, email, password}).pipe(
-      pluck('message'),
-      catchError( (error) => { return throwError(error.error.message) } )
+      pluck("message"),
+      catchError( (error) =>  throwError(error.error.message) )
     );
   }
 
@@ -151,32 +151,32 @@ export class ApiService {
    * Catch any error that is generated from the user not having a valid token.
    */
   private handleBadAuth () {
-    // This function factory is necessary because the value in 'this' gets
-    // reset to a the 'handleBadAuth' function, instead of the service, which
+    // This function factory is necessary because the value in "this" gets
+    // reset to a the "handleBadAuth" function, instead of the service, which
     // is however necessary to be able to generate a new token if necessary.
     const service = this;
 
     return function (error) {
-      if (error.status == 401) {
+      if (error.status === 401) {
         service.token.next(null);
         return throwError(error.error.description);
       }
 
       return throwError(error.error.message);
-    }
+    };
   }
 
   /*
    * Request the server to create a new movement.
    */
   public createMovement$ (movement: Movement): Observable<string> {
-    console.debug('Creating movement');
+    console.debug("Creating movement");
 
     const request: Observable<string> = this.http.post<ServerMessage>(
       `${this.URL}/movements`, movement, this.getOptions()
     ).pipe(
       catchError( this.handleBadAuth() ),
-      pluck('message')
+      pluck("message")
     );
 
     return this.isApiReady$.pipe(
@@ -201,7 +201,7 @@ export class ApiService {
     );
   }
 
-  /* 
+  /*
    * Request all movements that the user is subscribed to from the server.
    */
   public getSubscribedMovements$ (): Observable<Movement[]> {

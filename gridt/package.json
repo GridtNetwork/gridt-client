@@ -57,7 +57,7 @@
     "karma-jasmine-html-reporter": "^0.2.2",
     "protractor": "^5.4.3",
     "ts-node": "~8.0.0",
-    "tslint": "~5.12.0",
+    "tslint": "^6.1.0",
     "typescript": "~3.7.0"
   },
   "description": "Gridt - A novel type of social network.",

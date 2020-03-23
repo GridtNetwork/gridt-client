@@ -46,7 +46,7 @@
     "no-arg": true,
     "no-bitwise": true,
     "no-console": [
-      true,
+      false,
       "debug",
       "info",
       "time",
@@ -86,7 +86,7 @@
     "prefer-const": true,
     "quotemark": [
       true,
-      "single"
+      "always"
     ],
     "radix": true,
     "semicolon": [
