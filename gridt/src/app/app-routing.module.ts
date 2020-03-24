@@ -47,11 +47,6 @@ const routes: Routes = [
           {
             path:'',
             loadChildren: './login/register/register.module#RegisterPageModule'
-          },
-          {
-            path: ':welcome',
-            loadChildren: './login/register/welcome/welcome.module#WelcomePageModule',
-            canLoad: [LoginGuard]
           }
         ]
       }
