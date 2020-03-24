@@ -275,7 +275,7 @@ export class ApiService {
   /*
    * Notify the server that the user has performed the movement related action.
    */
-  public sendUpdate(movement_id: number | string): Observable<string> {
+  public sendUpdate$(movement_id: number | string): Observable<string> {
     const request = this.http.post<ServerMessage>(
       `${this.URL}/movements/${movement_id}/update`,
       {},

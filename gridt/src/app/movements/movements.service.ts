@@ -5,11 +5,9 @@ import { BehaviorSubject, of, throwError } from 'rxjs';
 import { take, map, tap, switchMap, mergeMap, catchError } from 'rxjs/operators';
 import { MovementModel } from './movement.model';
 import { HttpClient } from '@angular/common/http';
-import { TimelineService } from '../timeline/timeline.service';
 
 
-
-   export interface Movement { 
+export interface Movement { 
     /**
      * Name of the movement
      */
@@ -42,7 +40,7 @@ import { TimelineService } from '../timeline/timeline.service';
        return this._movements.asObservable();
     }
 
-  constructor(private auth: LoginService,private http: HttpClient, private timeline: TimelineService) {}
+  constructor(private auth: LoginService,private http: HttpClient) {}
 //Gets all the movements data
   fetchMovements() {
     return this.auth.token.pipe(

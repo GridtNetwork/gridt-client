@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanLoad, Route, UrlSegment, Router } from '@angular/router';
-import { Observable, of } from 'rxjs';
-import { take, switchMap, tap } from 'rxjs/operators';
+import { Observable  } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { ApiService } from '../api/api.service';
 
 
@@ -10,7 +10,7 @@ import { ApiService } from '../api/api.service';
 })
 export class LoginGuard implements CanLoad {
   constructor(private api: ApiService, private router: Router) {}
-//Doesn't let you in the app unless authentificated
+
   canLoad(
     route: Route,
     segments: UrlSegment[]

@@ -8,17 +8,6 @@ const routes: Routes = [
     redirectTo: 'login',
     pathMatch: 'full'
   },
-
-  {
-    path: 'timeline',
-    children: [
-      {
-        path: '',
-        loadChildren: './timeline/timeline.module#TimelinePageModule',
-        canLoad: [LoginGuard]
-      }
-    ]
-  },
   {
     path: 'movements',
     children: [
@@ -44,8 +33,7 @@ const routes: Routes = [
     path: 'profile',
     loadChildren: './profile/profile.module#ProfilePageModule',
     canLoad: [LoginGuard]
-   },
-    
+  },
   {
     path: 'login',
     children: [
@@ -68,11 +56,16 @@ const routes: Routes = [
         ]
       }
     ]
-
   },
-  
-
-
+  {
+    path: 'home',
+    loadChildren: () => import('./home/home.module').then( m => m.HomePageModule),
+    // canLoad: [LoginGuard]
+  },
+  {
+    path: 'test',
+    loadChildren: () => import('./apitesting/apitesting.module').then( m => m.ApitestingPageModule)
+  }
 ];
 
 @NgModule({

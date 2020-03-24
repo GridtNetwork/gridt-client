@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { LoginService, AuthResponseData } from './login.service';
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { LoadingController, AlertController } from '@ionic/angular';
-import { Observable } from 'rxjs';
 import { ApiService } from '../api/api.service';
 
 @Component({
@@ -14,14 +12,14 @@ import { ApiService } from '../api/api.service';
 export class LoginPage implements OnInit {
 
   constructor(
-    private loginService: LoginService,
     private router: Router,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
     private api: ApiService
     ) { }
 
-  ngOnInit() { }
+  ngOnInit() { 
+  }
 
   /*
    * Log user in with api and handle loading popup
@@ -40,7 +38,7 @@ export class LoginPage implements OnInit {
           el.dismiss();
           this.showAlert("Failed to login");
         }
-        this.router.navigate(['/timeline']);
+        this.router.navigateByUrl('/home');
         el.dismiss();
       },
       error => {
@@ -73,4 +71,3 @@ export class LoginPage implements OnInit {
       .then(alertEl => alertEl.present());
   }
 }
-

@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-toolbar>
+  <ion-title>Api Testing</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-row>
+    <ion-col>
+      <ion-button (click)="getSubscriptions()">Get subscriptions</ion-button>
+    </ion-col>
+    <ion-col>
+      <ion-button (click)="getAllMovements()">Get all movements</ion-button>
+    </ion-col>
+    <ion-col>
+      <ion-button (click)="subscribe()">Subscribe to first movement</ion-button>
+    </ion-col>
+    <ion-col>
+      <ion-button (click)="unsubscribe()">Unsubscribe to first movement</ion-button>
+    </ion-col>
+    <ion-col>
+      <ion-button (click)="createNewMovement()">Create Movement</ion-button>
+    </ion-col>
+    <ion-col>
+      <ion-button (click)="update()">Update</ion-button>
+    </ion-col>
+    <ion-col>
+      <ion-button (click)="swap()">Swap</ion-button>
+    </ion-col>
+  </ion-row>
+  <h3>All movements</h3>
+  <ion-row>
+    <div *ngIf="all_movements"></div>
+    <ion-grid>
+      <ion-row *ngFor="let movement of all_movements">
+        <ion-col>{{ movement.name }}</ion-col>
+        <ion-col>{{ movement.short_description }}</ion-col>
+        <ion-col>{{ movement.subscribed ? "x" : "" }}</ion-col> 
+      </ion-row>
+    </ion-grid>
+  </ion-row>
+  <h3>Subscribed movements</h3>
+  <ion-row>
+    <ion-grid>
+      <ion-row *ngFor="let movement of subscribed_movements">
+        <ion-col>{{ movement.name }}</ion-col>
+        <ion-col>{{ movement.short_description }}</ion-col>
+        <ion-col>{{ movement.subscribed ? "x" : "" }}</ion-col> 
+      </ion-row>
+    </ion-grid>
+  </ion-row> 
+</ion-content>
+

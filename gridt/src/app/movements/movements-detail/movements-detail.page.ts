@@ -6,9 +6,7 @@ import { ModalController, NavController, AlertController, LoadingController } fr
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { MovementsService} from '../movements.service';
-import { TimelineService } from 'src/app/timeline/timeline.service';
 import { take, switchMap } from 'rxjs/operators';
-import { Timeline } from 'src/app/timeline/timeline.model';
 
 
 @Component({
@@ -22,7 +20,6 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
 
   movements: MovementModel[];
   movement: MovementModel;
-  timeline: Timeline;
   isSubscribe = false;
   isLoading = false;
   private sub: Subscription;
@@ -37,7 +34,6 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
     private alertCtrl: AlertController,
     private router: Router,
     private loadingCtrl: LoadingController,
-    private timelineService: TimelineService,
     private authService: LoginService
     ) { }
 
@@ -87,9 +83,9 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
     });
   }
   ionViewWillEnter() {
-    this.timelineService.Infofor(this.movementId);
-    this.id=this.timelineService.a;
-    this.timelineService.Foor(this.movementId);
+    // this.timelineService.Infofor(this.movementId);
+    // this.id=this.timelineService.a;
+    // this.timelineService.Foor(this.movementId);
   }
 
   onJoin() {
@@ -125,7 +121,7 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
       .then(loadingEl => {
         loadingEl.present();
         this.movementsService.Join(this.movement.id,  this.movement, this.userid).subscribe(data => console.log(data));
-        this.timelineService
+        /* this.timelineService
           .addOne(
             this.movement.id,
             this.movement.name
@@ -135,7 +131,7 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
 
 
           this.router.navigate(['/timeline']);
-          });
+          });*/
       });
   }
 
@@ -146,11 +142,12 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
       })
       .then(loadingEl => {
         loadingEl.present();
-        this.timelineService.Unsubscribe()
+        /*this.timelineService.Unsubscribe()
           .subscribe(() => {
             loadingEl.dismiss();
           this.router.navigate(['/movements']);
           });
+          */
       });
   }
   ngOnDestroy() {
