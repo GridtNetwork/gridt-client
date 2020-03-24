@@ -20,15 +20,21 @@
     <ion-col>
       <ion-row>
         <!-- Create a list item for each movement the user is in. -->
-         <ion-card detail *ngFor="let movement of movements$ | async">
+         <ion-card *ngFor="let movement of movements$ | async">
           <!-- Display the title on top -->
           <ion-card-header>
-            <ion-card-title >{{ movement.name }}</ion-card-title>
+            <ion-card-title>{{ movement.name }}</ion-card-title>
           </ion-card-header>
       
           <ion-card-content>
-            <ion-card-subtitle>Have you done it yet?</ion-card-subtitle>
-            <ion-toggle (ionChange)="update(movement)"></ion-toggle>
+            <ion-grid>
+              <ion-row>
+                Have you done it yet?
+              </ion-row>
+              <ion-row>
+                <ion-toggle (ionChange)="update(movement)"></ion-toggle>
+              </ion-row>
+            </ion-grid>
           </ion-card-content>
         </ion-card> 
       </ion-row>

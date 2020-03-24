@@ -60,7 +60,7 @@ const routes: Routes = [
   {
     path: 'home',
     loadChildren: () => import('./home/home.module').then( m => m.HomePageModule),
-    // canLoad: [LoginGuard]
+    canLoad: [LoginGuard]
   },
   {
     path: 'test',
