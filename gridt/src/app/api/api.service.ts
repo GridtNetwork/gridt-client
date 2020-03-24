@@ -12,7 +12,6 @@ interface ServerMessage {
   message: string;
 }
 
-
 @Injectable({
   providedIn: "root"
 })
@@ -128,7 +127,7 @@ export class ApiService {
    * Register the user on the server.
    */
   public register$(username: string, email: string, password: string): Observable<string> {
-    console.debug("Registering.");
+    console.debug(`Registering user ${username}.`);
 
     return this.http.post<ServerMessage>(`${this.URL}/register`, {username, email, password}).pipe(
       pluck("message"),
@@ -170,7 +169,7 @@ export class ApiService {
    * Request the server to create a new movement.
    */
   public createMovement$ (movement: Movement): Observable<string> {
-    console.debug("Creating movement");
+    console.debug(`Creating movement "${movement.name}"`);
 
     const request: Observable<string> = this.http.post<ServerMessage>(
       `${this.URL}/movements`, movement, this.getOptions()
@@ -188,6 +187,8 @@ export class ApiService {
    * Request all movements from the server.
    */
   public getAllMovements$ (): Observable<Movement[]> {
+    console.debug("Getting all movements from the server");
+
     const request = this.http.get<Movement[]>(
       `${this.URL}/movements`,
       this.getOptions()
@@ -205,6 +206,8 @@ export class ApiService {
    * Request all movements that the user is subscribed to from the server.
    */
   public getSubscribedMovements$ (): Observable<Movement[]> {
+    console.debug("Getting all movements that the user is subscribed to.");
+
     const request = this.http.get<Movement[]>(
       `${this.URL}/movements/subscriptions`,
       this.getOptions()
@@ -215,6 +218,74 @@ export class ApiService {
     return this.isApiReady$.pipe(
       take(1),
       flatMap(_ => request)
+    );
+  }
+
+  /*
+   * Subscribe user to a movement.
+   */
+  public subscribeToMovement$ (movement_id: number | string) {
+    const request = this.http.put(
+      `${this.URL}/movements/${movement_id}/subscriber`,
+      {}, // This request does not require input, but the function needs a body.
+      this.getOptions()
+    );
+
+    return this.isApiReady$.pipe(
+      flatMap(() => request),
+      pluck("message"),
+      catchError( this.handleBadAuth() )
+    );
+  }
+
+  /*
+   * Unsubscribe user from a movement.
+   */
+  public unsubscribeFromMovement$ (movement_id: number | string): Observable<string> {
+    const request = this.http.delete<ServerMessage>(
+      `${this.URL}/movements/${movement_id}/subscriber`,
+      this.getOptions()
+    );
+
+    return this.isApiReady$.pipe(
+      flatMap(() => request),
+      pluck("message"),
+      catchError( this.handleBadAuth() )
+    );
+  }
+
+  /**
+   * Swap one of the leaders identified with either username or user id in a
+   * movement identified with a number or string.
+   */
+  public swapLeader$(movement_id: number | string, user_id: number | string): Observable<string> { 
+    const request = this.http.post<ServerMessage>(
+      `${this.URL}/movements/${movement_id}/leader/${user_id}`,
+      {},
+      this.getOptions()
+    )
+
+    return this.isApiReady$.pipe(
+      flatMap(() => request),
+      pluck("message"),
+      catchError( this.handleBadAuth() )
+    );
+  }
+
+  /*
+   * Notify the server that the user has performed the movement related action.
+   */
+  public sendUpdate(movement_id: number | string): Observable<string> {
+    const request = this.http.post<ServerMessage>(
+      `${this.URL}/movements/${movement_id}/update`,
+      {},
+      this.getOptions()
+    )
+
+    return this.isApiReady$.pipe(
+      flatMap(() => request),
+      pluck("message"),
+      catchError( this.handleBadAuth() )
     );
   }
 }
