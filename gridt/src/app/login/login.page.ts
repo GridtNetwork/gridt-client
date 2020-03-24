@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { Observable } from 'rxjs';
+import { ApiService } from '../api/api.service';
 
 @Component({
   selector: 'app-login',
@@ -11,59 +12,47 @@ import { Observable } from 'rxjs';
   styleUrls: ['./login.page.scss'],
 })
 export class LoginPage implements OnInit {
-  isLoading = false;
-  isLogin = true;
 
   constructor(
-    private loginService: LoginService, 
+    private loginService: LoginService,
     private router: Router,
     private loadingCtrl: LoadingController,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private api: ApiService
     ) { }
 
-  ngOnInit() {
-  }
-//Checks data for log in and lets the user in if correct
-  authenticate(email: string, password: string) {
-    this.isLoading = true;
-    this.loadingCtrl
-      .create({ keyboardClose: true, message: 'Logging in...' })
-      .then(loadingEl => {
-        loadingEl.present();
-        let authObs: Observable<AuthResponseData>;
-        if (this.isLogin) {
-          authObs = this.loginService.login(email, password);
-        } else {
-          authObs = this.loginService.signup(email, password);
+  ngOnInit() { }
+
+  /*
+   * Log user in with api and handle loading popup
+   */
+  public async authenticate(email: string, password: string) {
+    const el = await this.loadingCtrl.create({ 
+      keyboardClose: true, 
+      message: 'Logging in...' 
+    });
+
+    el.present();
+
+    this.api.login$(email, password).subscribe(
+      loggedIn => {
+        if (!loggedIn) {
+          el.dismiss();
+          this.showAlert("Failed to login");
         }
-        authObs.subscribe(
-          resData => {
-            console.log(resData);
-            this.isLoading = false;
-            loadingEl.dismiss();
-            this.router.navigateByUrl('/timeline');
-          },
-          errRes => {
-            loadingEl.dismiss();
-            const code = errRes.error.error.message;
-            let message = 'Could not sign you up, please try again.';
-            if (code === 'EMAIL_EXISTS') {
-              message = 'This email address exists already!';
-            } else if (code === 'EMAIL_NOT_FOUND') {
-              message = 'E-Mail address could not be found.';
-            } else if (code === 'INVALID_PASSWORD') {
-              message = 'This password is not correct.';
-            }
-            this.showAlert(message);
-          }
-        );
-      });
+        this.router.navigate(['/timeline']);
+        el.dismiss();
+      },
+      error => {
+        el.dismiss();
+        this.showAlert(error);
+      }
+    );
   }
 
-  onSwitchAuthMode() {
-    this.isLogin = !this.isLogin;
-  }
-//Submits data
+  /*
+   * Handle form validation.
+   */
   onSubmit(form: NgForm) {
     if (!form.valid) {
       return;

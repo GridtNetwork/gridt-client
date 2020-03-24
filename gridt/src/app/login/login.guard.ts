@@ -1,32 +1,27 @@
 import { Injectable } from '@angular/core';
 import { CanLoad, Route, UrlSegment, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { LoginService } from './login.service';
 import { take, switchMap, tap } from 'rxjs/operators';
+import { ApiService } from '../api/api.service';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginGuard implements CanLoad {
-  constructor(private authService: LoginService, private router: Router) {}
+  constructor(private api: ApiService, private router: Router) {}
 //Doesn't let you in the app unless authentificated
   canLoad(
     route: Route,
     segments: UrlSegment[]
-  ): Observable<boolean> | Promise<boolean> | boolean {
-      return this.authService.userIsAuthenticated.pipe(
-      take(1),
-      switchMap(isAuthenticated => {
-        if (!isAuthenticated) {
-          return this.authService.autoLogin();
-        } else {
-          return of(isAuthenticated);
-        }
-      }),
+  ): Observable<boolean> {
+    return this.api.isLoggedIn$.pipe(
       tap(isAuthenticated => {
         if (!isAuthenticated) {
-          this.router.navigateByUrl('/auth');
+          console.error(`User ${this.api.username ? this.api.username + ' ' : ''}is not logged in. Guarding page and returning to /login.`);
+          this.router.navigateByUrl('/login');
+        } else {
+          console.debug('Passed the guard');
         }
       })
     );

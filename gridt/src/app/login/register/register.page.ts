@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthResponseData, LoginService } from '../login.service';
+import { Component, OnInit, KeyValueDiffers } from '@angular/core';
+import { ApiService } from '../../api/api.service';
 import { Router } from '@angular/router';
 import { LoadingController, AlertController } from '@ionic/angular';
-import { Observable } from 'rxjs';
+import { from, throwError, forkJoin } from 'rxjs';
+import { tap, flatMap, catchError } from 'rxjs/operators';
 import { NgForm } from '@angular/forms';
 
 @Component({
@@ -12,57 +13,40 @@ import { NgForm } from '@angular/forms';
 })
 export class RegisterPage implements OnInit {
 
-  isLoading = false;
-  isLogin = true;
 
   constructor(
-    private loginService: LoginService, 
     private router: Router,
     private loadingCtrl: LoadingController,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private api: ApiService,
     ) { }
 
   ngOnInit() {
   }
-//Function that gets the data for registering, checks it and lets you in
-  authenticate(email: string, password: string) {
-    this.isLoading = true;
-    this.loadingCtrl
-      .create({ keyboardClose: true, message: 'Logging in...' })
-      .then(loadingEl => {
-        loadingEl.present();
-        let authObs: Observable<AuthResponseData>;
-        if (this.isLogin) {
-          authObs = this.loginService.signup(email, password);
-        }
-        authObs.subscribe(
-          resData => {
-            console.log(resData);
-            this.isLoading = false;
-            loadingEl.dismiss();
-            this.router.navigateByUrl('/timeline');
-          },
-          errRes => {
-            loadingEl.dismiss();
-            const code = errRes.error.error.message;
-            let message = 'Could not sign you up, please try again.';
-            if (code === 'EMAIL_EXISTS') {
-              message = 'This email address exists already!';
-            } else if (code === 'EMAIL_NOT_FOUND') {
-              message = 'E-Mail address could not be found.';
-            } else if (code === 'INVALID_PASSWORD') {
-              message = 'This password is not correct.';
-            }
-            this.showAlert(message);
-          }
-        );
-      });
+
+  /*
+   * Do API call and handle loading element.
+   */
+  public async register (email: string, password: string) {
+    const el = await this.loadingCtrl.create({ 
+      keyboardClose: true,
+      message: 'Signing you up...' 
+    });
+
+    this.api.register$(email, email, password).subscribe(
+      () => {
+        this.router.navigateByUrl('/login');
+        el.dismiss();
+      },
+      (error) => {
+          this.showAlert(error);
+          el.dismiss();
+      }
+    )
+    el.present();
   }
 
-  onSwitchAuthMode() {
-    this.isLogin = !this.isLogin;
-  }
-//Submitis the registration info
+  //Submits the registration info
   onSubmit(form: NgForm) {
     if (!form.valid) {
       return;
@@ -70,13 +54,13 @@ export class RegisterPage implements OnInit {
     const email = form.value.email;
     const password = form.value.password;
 
-    this.authenticate(email, password);
+    this.register(email, password);
   }
 
   private showAlert(message: string) {
     this.alertCtrl
       .create({
-        header: 'Authentication failed',
+        header: 'Signup failed',
         message: message,
         buttons: ['Okay']
       })
