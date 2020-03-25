@@ -17,6 +17,11 @@ export class AppComponent implements OnInit, OnDestroy{
   private previousAuthState = false;
   public appPages = [
     {
+      title: 'Home',
+      url: '/home',
+      icon: 'home'
+    },
+    {
       title: 'Movements',
       url: '/movements',
       icon: 'fitness'
@@ -26,11 +31,6 @@ export class AppComponent implements OnInit, OnDestroy{
       url: '/profile',
       icon: 'person'
     },
-    {
-      title: 'Timeline',
-      url: '/timeline',
-      icon: 'time'
-    }
   ];
 
   constructor(
