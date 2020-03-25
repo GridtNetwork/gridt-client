@@ -202,15 +202,18 @@ export class ApiService {
    * Request single movement from server.
    */
   public getMovement$ (movement_id: number | string ): Observable<Movement> {
-    console.debug(`Getting movement ${movement_id} from server.`);
+    console.debug(`Getting movement "${movement_id}" from server.`);
 
     function replace_movement_in_bsubject(bsubject, movement) {
         let all_movements = bsubject.getValue();
         const index = all_movements.findIndex(m => m.name == movement.name);
         if (index != -1) {
           all_movements[index] = movement;
-          bsubject.next(all_movements);
+        } else {
+          all_movements.push(movement);
         }
+
+        bsubject.next(all_movements);
     }
 
     const request = this.http.get<Movement>(
