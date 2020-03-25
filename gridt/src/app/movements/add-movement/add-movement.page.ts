@@ -25,14 +25,22 @@ export class AddMovementPage implements OnInit {
     this.form = new FormGroup({
       name: new FormControl("", {
         updateOn: 'blur',
-        validators: [Validators.required]
+        validators: [
+          Validators.required, 
+          Validators.minLength(4),
+          Validators.maxLength(50)
+         ]
       }),
       description: new FormControl("", {
         updateOn: 'blur',
       }),
       short_description: new FormControl("", {
         updateOn: 'blur',
-        validators: [Validators.required, Validators.maxLength(180)]
+        validators: [
+          Validators.required, 
+          Validators.minLength(10),
+          Validators.maxLength(100)
+        ]
       }),
       interval: new FormGroup({
         hours: new FormControl(0, {
