@@ -3,7 +3,7 @@ import { TestBed } from "@angular/core/testing";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 
 import { forkJoin } from "rxjs";
-import { skip, take, flatMap } from "rxjs/operators";
+import { skip, take, flatMap, toArray } from "rxjs/operators";
 
 import { ApiService, AccessToken } from "./api.service";
 import { Movement } from "./movement.model";
@@ -172,7 +172,7 @@ describe("ApiService", () => {
     );
   });
 
-  it("should be able to create movevents", (done: DoneFn) => {
+  it("should be able to create movements", (done: DoneFn) => {
     const mock_token = generate_mock_token(get_date(30000));
     service.login$("Username", "Password").subscribe( val => {
       expect(val).toBeTruthy();
@@ -214,13 +214,21 @@ describe("ApiService", () => {
     const mock_token = generate_mock_token(get_date(30000));
     const login = service.login$("Username", "Password");
 
-    login.subscribe(_ => {
-      service.getAllMovements$().subscribe(
-        movements => expect(movements).toBe(mock_movements),
-        () => fail(),
-        done
-      );
-    });
+    service.allMovements$.pipe(
+      take(2),
+      toArray()
+    ).subscribe(
+      observableHistory => expect(observableHistory).toBe([ [], mock_movements] ),
+      () => fail(),
+      done
+    );
+
+    service.allMovements$.pipe(
+      skip(2),
+      take(1)
+    ).subscribe(() => fail());
+
+    login.subscribe( () => service.getAllMovements() );
 
     httpMock.expectOne(`${service.URL}/auth`).flush(mock_token);
 
@@ -256,14 +264,24 @@ describe("ApiService", () => {
   it("should be able to request the subscribed movements", (done: DoneFn) => {
     const subscribed_movements = mock_movements.filter(m => m.subscribed);
 
-    service.login$("Username", "Password").pipe(
-      flatMap(() => {
-        return service.getSubscribedMovements$();
-      })
+    service.subscriptions$.pipe(
+      take(2),
+      toArray()
     ).subscribe(
-      (movements) => expect(movements).toBe(subscribed_movements),
+      (observableHistory) => expect(observableHistory).toBe([ [], subscribed_movements]),
       () => fail(),
-      () => done()
+      done
+    )
+
+    service.subscriptions$.pipe(
+      skip(2),
+      take(1)
+    ).subscribe(
+      () => fail()
+    )
+
+    service.login$("Username", "Password").subscribe(
+      () => service.getSubscriptions()
     );
 
     httpMock.expectOne(`${service.URL}/auth`).flush(generate_mock_token(get_date(30000)));
@@ -271,22 +289,5 @@ describe("ApiService", () => {
     expect(req.request.method).toBe("GET");
 
     req.flush(subscribed_movements);
-  });
-
-  it("should fail elegantly when the server breaks upon requesting subscriptions", (done: DoneFn) => {
-    service.login$("Username", "Password").pipe(
-      flatMap(() => {
-        return service.getSubscribedMovements$();
-      })
-    ).subscribe(
-      () => fail(),
-      (error) => { expect(error).toBe("Oops, server error"); done(); }
-    );
-
-    httpMock.expectOne(`${service.URL}/auth`).flush(generate_mock_token(get_date(30000)));
-    httpMock.expectOne(`${service.URL}/movements/subscriptions`).flush(
-      {message: "Oops, server error"},
-      {status: 400, statusText: "Server error"}
-    );
   });
 });

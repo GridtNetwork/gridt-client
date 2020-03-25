@@ -24,8 +24,23 @@ export class ApiService {
    * Subscribe to this observable to ready the API.
    */
   public isApiReady$: Observable<boolean>;
-
   public URL = "http://api.gridt.org";
+
+  /**
+   * Reuse all movements that have been previously obtained.
+   */
+  private _allMovements$ = new BehaviorSubject<Movement[]>([]);
+  get allMovements$ (): Observable<Movement[]> {
+    return this._allMovements$.asObservable(); 
+  }
+
+  /**
+   * Reuse all subscriptions that have been previously obtained.
+   */
+  private _subscriptions$ = new BehaviorSubject<Movement[]>([]);
+  get subscriptions$ (): Observable<Movement[]> {
+    return this._subscriptions$.asObservable();
+  }
 
   /*
    * Observe if the user is logged in. The logic here is that if the user was
@@ -184,9 +199,27 @@ export class ApiService {
   }
 
   /*
+   * Request single movement from server.
+   */
+  public getMovement$ (movement_id: number | string ): Observable<Movement> {
+    console.debug(`Getting movement ${movement_id} from server.`);
+
+    const request = this.http.get<Movement>(
+      `${this.URL}/movements/${movement_id}`,
+      this.getOptions()
+    ).pipe(
+      catchError( this.handleBadAuth() )
+    );
+
+    return this.isApiReady$.pipe(
+      flatMap(() => request)
+    )
+  }
+
+  /*
    * Request all movements from the server.
    */
-  public getAllMovements$ (): Observable<Movement[]> {
+  public getAllMovements(): void {
     console.debug("Getting all movements from the server");
 
     const request = this.http.get<Movement[]>(
@@ -196,16 +229,17 @@ export class ApiService {
       catchError( this.handleBadAuth() )
     );
 
-    return this.isApiReady$.pipe(
-      take(1),
-      flatMap(_ => request)
-    );
+    this.isApiReady$.pipe(
+      flatMap(() => request),
+      tap((movements) => this._allMovements$.next(movements)),
+      map( () => true)
+    ).subscribe();
   }
 
   /*
    * Request all movements that the user is subscribed to from the server.
    */
-  public getSubscribedMovements$ (): Observable<Movement[]> {
+  public getSubscriptions(): void {
     console.debug("Getting all movements that the user is subscribed to.");
 
     const request = this.http.get<Movement[]>(
@@ -215,10 +249,10 @@ export class ApiService {
       catchError( this.handleBadAuth() )
     );
 
-    return this.isApiReady$.pipe(
-      take(1),
-      flatMap(_ => request)
-    );
+    this.isApiReady$.pipe(
+      flatMap(() => request),
+      tap( (movements) => this._subscriptions$.next(movements)),
+    ).subscribe();
   }
 
   /*

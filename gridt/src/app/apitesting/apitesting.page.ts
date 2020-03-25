@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
 import { ApiService } from '../api/api.service';
+import { Observable } from 'rxjs';
+import { Movement } from '../api/movement.model';
 
 @Component({
   selector: 'app-apitesting',
@@ -8,26 +10,22 @@ import { ApiService } from '../api/api.service';
   styleUrls: ['./apitesting.page.scss'],
 })
 export class ApitestingPage implements OnInit {
-  subscribed_movements = [];
-  all_movements = [];
+  all_movements: Observable<Movement[]>;
+  subscribed_movements: Observable<Movement[]>;
 
   constructor(private api: ApiService) { }
 
   ngOnInit() {
+    this.all_movements = this.api.allMovements$;
+    this.subscribed_movements = this.api.subscriptions$;
   }
 
   getSubscriptions () {
-    this.api.getSubscribedMovements$().subscribe( movements  => {
-      this.subscribed_movements = movements;
-      console.log(movements);
-    });
+    this.api.getSubscriptions();
   }
 
   getAllMovements () {
-    this.api.getAllMovements$().subscribe( movements => {
-      this.all_movements = movements;
-      console.log(movements);
-    });
+    this.api.getAllMovements();
   }
   subscribe() {
     this.api.subscribeToMovement$(1).subscribe(console.log);

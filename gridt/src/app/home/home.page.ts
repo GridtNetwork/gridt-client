@@ -16,14 +16,11 @@ export class HomePage implements OnInit, OnDestroy {
   constructor(private api: ApiService, private alertCtrl: AlertController) { }
 
   ngOnInit() {
-    this.movements$ = this.api.getSubscribedMovements$();
+    this.movements$ = this.api.subscriptions$;
+    this.api.getSubscriptions();
   }
 
-  ngOnDestroy() {
-    this.subscriptions.forEach( (sub) => {
-      sub.unsubscribe();
-    });
-  }
+  ngOnDestroy() { }
 
   update(movement: Movement) {
     this.api.sendUpdate$(movement.name).subscribe(
