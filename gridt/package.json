@@ -1,8 +1,9 @@
 {
-  "name": "gridt",
+  "name": "gridt-client",
   "version": "0.0.1",
-  "author": "Ionic Framework",
-  "homepage": "https://ionicframework.com/",
+  "author": "The Gridt Network",
+  "homepage": "https://gridt.org",
+  "description": "Gridt - A novel type of social network.",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -58,7 +59,6 @@
     "tslint": "^6.1.0",
     "typescript": "~3.7.0"
   },
-  "description": "Gridt - A novel type of social network.",
   "cordova": {
     "plugins": {}
   }
