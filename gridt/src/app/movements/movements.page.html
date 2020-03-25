@@ -20,7 +20,11 @@
   <ion-row>
     <ion-col size-md="6" offset-md="3">
       <ion-toolbar>
-        <ion-searchbar (ionInput)="Searchbar($event)">
+        <ion-searchbar 
+          showCancelButton="focus" 
+          [ngModel]="search_input"
+          (ionInput)="search(event)"
+          >
 
         </ion-searchbar>
       </ion-toolbar>
@@ -36,48 +40,43 @@
       </ion-row>
     </ion-grid>
     <ion-grid
-    *ngIf="!isLoading && movements.length <= 0">
+    *ngIf="!(movements$ | async)">
     <ion-row>
       <ion-col size="12" size-sm="8" offset-sm="2" text-center>
         <p>There are no movements  right now, please come back later!</p>
       </ion-col>
     </ion-row>
   </ion-grid>
-    <ion-grid *ngIf="!isLoading && movements.length > 0">
-        
+    <ion-grid *ngIf="movements$ | async">
+
   <!-- Create a list item for each search result.
     Here I had to guess the routerLink, but that can be changed later.
     async allows the results to change by making a new search.
-    -->
+  -->
       <ion-row>
         <ion-col size-md="6" offset-md="3">
-            <ion-virtual-scroll
-            [items]="movements"
-            approxItemHeight="70px"
+          <ion-item *ngFor="let movement of movements$ | async"
+            [routerLink]="['/', 'movements', movement.name]" 
+            detail button
           >
-          <ion-item button [routerLink]="['/', 'movements', movement.id]" detail
-          *virtualItem="let movement" 
-           >
-           <!-- Right now, this just shows every single movement -->
-           <!-- Display the title on the left -->
-           <ion-label text-wrap>
-             <h3>{{ movement.name }}</h3>
-             <p>{{ movement.shortDescription }}</p> 
-           </ion-label>
-           
-           <!-- Display the interval (like, weekly, monthly etc.) on the right
-           <ion-label slot="end" *ngIf=" movement.interval.hours !=  0" > 
-              Hours per day: {{ movement.interval.hours }}
+            <!-- Right now, this just shows every single movement -->
+            <!-- Display the title on the left -->
+            <ion-label text-wrap>
+              <h3>{{ movement.name }}</h3>
+              <p>{{ movement.short_description }}</p> 
             </ion-label>
-            <ion-label  slot="end" *ngIf=" movement.interval.days !=  0" >   Times per day: {{ movement.interval.days }}</ion-label>
-            <ion-label  slot="end" *ngIf=" movement.interval.weeks !=  0" >   Times per week: {{ movement.interval.weeks }}</ion-label>
-            <ion-label  slot="end" *ngIf=" movement.interval.months !=  0" >   Months per Year: {{ movement.interval.months }}
-            </ion-label> -->
+          
+            <!-- Display the interval (like, weekly, monthly etc.) on the right -->
+            <ion-label slot="end" *ngIf=" movement.interval.hours !=  0" > 
+              H: {{ movement.interval.hours }}
+            </ion-label>
+            <ion-label  slot="end" *ngIf=" movement.interval.days !=  0" >
+              D: {{ movement.interval.days }}
+            </ion-label>
           </ion-item>
-            </ion-virtual-scroll>
          </ion-col>
-        </ion-row> 
-     </ion-grid>
+      </ion-row> 
+    </ion-grid>
   
 </ion-list>
 

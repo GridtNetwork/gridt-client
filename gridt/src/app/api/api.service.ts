@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable, BehaviorSubject, throwError, merge, partition } from "rxjs";
-import { map, take, tap, pluck, catchError, flatMap, distinctUntilChanged } from "rxjs/operators";
+import { map, tap, pluck, catchError, flatMap, distinctUntilChanged } from "rxjs/operators";
 import { Movement } from "./movement.model";
 
 export interface AccessToken {
@@ -204,11 +204,24 @@ export class ApiService {
   public getMovement$ (movement_id: number | string ): Observable<Movement> {
     console.debug(`Getting movement ${movement_id} from server.`);
 
+    function replace_movement_in_bsubject(bsubject, movement) {
+        let all_movements = bsubject.getValue();
+        const index = all_movements.findIndex(m => m.name == movement.name);
+        if (index != -1) {
+          all_movements[index] = movement;
+          bsubject.next(all_movements);
+        }
+    }
+
     const request = this.http.get<Movement>(
       `${this.URL}/movements/${movement_id}`,
       this.getOptions()
     ).pipe(
-      catchError( this.handleBadAuth() )
+      catchError( this.handleBadAuth() ),
+      tap( (movement) => {
+        replace_movement_in_bsubject(this._subscriptions$, movement);
+        replace_movement_in_bsubject(this._allMovements$, movement);
+      })
     );
 
     return this.isApiReady$.pipe(
@@ -259,6 +272,8 @@ export class ApiService {
    * Subscribe user to a movement.
    */
   public subscribeToMovement$ (movement_id: number | string) {
+    console.debug(`Subscribing to movement "${movement_id}".`);
+
     const request = this.http.put(
       `${this.URL}/movements/${movement_id}/subscriber`,
       {}, // This request does not require input, but the function needs a body.
@@ -276,6 +291,8 @@ export class ApiService {
    * Unsubscribe user from a movement.
    */
   public unsubscribeFromMovement$ (movement_id: number | string): Observable<string> {
+    console.debug(`Unsubscribing from movement "${movement_id}".`);
+
     const request = this.http.delete<ServerMessage>(
       `${this.URL}/movements/${movement_id}/subscriber`,
       this.getOptions()
@@ -293,6 +310,7 @@ export class ApiService {
    * movement identified with a number or string.
    */
   public swapLeader$(movement_id: number | string, user_id: number | string): Observable<string> { 
+    console.debug(`Swapping leader "${user_id}" in movement "${movement_id}".`)
     const request = this.http.post<ServerMessage>(
       `${this.URL}/movements/${movement_id}/leader/${user_id}`,
       {},
@@ -310,6 +328,7 @@ export class ApiService {
    * Notify the server that the user has performed the movement related action.
    */
   public sendUpdate$(movement_id: number | string): Observable<string> {
+    console.debug(`Sending update to movement "${movement_id}"`)
     const request = this.http.post<ServerMessage>(
       `${this.URL}/movements/${movement_id}/update`,
       {},

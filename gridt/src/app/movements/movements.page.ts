@@ -1,10 +1,10 @@
-
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { MenuController } from '@ionic/angular';
+import { Observable, Subject } from 'rxjs';
 
-import { ModalController, NavController, MenuController } from '@ionic/angular';
-
-import { Subscription } from 'rxjs';
-import { MovementsService, Movement} from './movements.service';
+import { MovementsService } from './movements.service';
+import { ApiService } from '../api/api.service';
+import { Movement } from '../api/movement.model';
 
 
 @Component({
@@ -13,65 +13,28 @@ import { MovementsService, Movement} from './movements.service';
   styleUrls: ['./movements.page.scss'],
 })
 export class MovementsPage implements OnInit, OnDestroy {
-  
   searchData: any = [];
-  movements: Movement[];
-  isLoading = false;
-  private sub : Subscription;
+  search_input: string;
+  movements$: Observable<Movement[]>;
+
   constructor(
-    private movementsService: MovementsService,
-    private modalCtrl: ModalController,
+    private api: ApiService,
     private menuCtrl: MenuController
-
-    ) { }
-
-    
+  ) { }
 
   ngOnInit() {
-    
-    this.sub = this.movementsService.movements.subscribe(mm => {
-      this.movements = mm;
-    });
-   
+    this.movements$ = this.api.allMovements$;
+    this.api.getAllMovements();
   }
 
-  ionViewWillEnter() {
-  
-    this.isLoading = true;
-    this.movementsService.fetchMovements().subscribe(() => {
-      this.isLoading = false;
-    });
+  showError(error:string) {
+    // TODO: Implement
   }
 
   onOpenMenu() {
-    this.menuCtrl.toggle();
-  }
-//It's a searchbar
-  Searchbar(ev: any){
-
-    this.sub = this.movementsService.movements.subscribe(mm => {
-      this.movements = mm;
-    });
-    const val = ev.target.value;
-    if (val && val.trim() !== ''){
-
-      this.movementsService.movements.subscribe(mm => {
-        this.movements=  this.movements.filter((item) => {
-          return(item.name.toLowerCase().indexOf(val.toLowerCase()) > - 1);
-        });
-       
-      }
-        );
-    }
-
-    
-  }
-
+    this.menuCtrl.toggle(); 
+  } 
 
   ngOnDestroy() {
-    if (this.sub) {
-      this.sub.unsubscribe();
-    }
   }
-
 }

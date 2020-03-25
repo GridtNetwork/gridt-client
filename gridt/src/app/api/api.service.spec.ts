@@ -3,14 +3,12 @@ import { TestBed } from "@angular/core/testing";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 
 import { forkJoin } from "rxjs";
-import { skip, take, flatMap, toArray } from "rxjs/operators";
+import { skip, take, toArray } from "rxjs/operators";
 
 import { ApiService, AccessToken } from "./api.service";
 import { Movement } from "./movement.model";
-import { LoginGuard } from "../login/login.guard";
-import { CompilerFacadeImpl } from "@angular/compiler/src/jit_compiler_facade";
 
-function generate_mock_token (expiration_date: Date): AccessToken {
+function generate_mock_token(expiration_date: Date): AccessToken {
   const header = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9";
   const payload_object = {
     "exp": expiration_date.getTime() / 1000
@@ -23,7 +21,6 @@ function generate_mock_token (expiration_date: Date): AccessToken {
   };
 }
 
-// I repeat
 function get_date(future: number): Date {
   const now = Date.now();
   return new Date(now + future);
@@ -55,6 +52,16 @@ const mock_movements: Movement[] = [
     description: "We need some way to fake a response from the server, telling the client that it \
      is subscribed to this particular movement",
     subscribed: true,
+    interval: {
+      hours: 0,
+      days: 1
+    }
+  },
+  {
+    name: "Flossing",
+    short_description: "Floss every day",
+    description: "We floss every day because it is good for our theeth.",
+    subscribed: false,
     interval: {
       hours: 0,
       days: 2
@@ -116,7 +123,7 @@ describe("ApiService", () => {
 
   it("should not be ready if the token has expired", () => {
     const mock_token = generate_mock_token(get_date(-3000));
-    console.log(mock_token);
+
     service.login$("username", "password").subscribe(_ => {
       service.isApiReady$.subscribe(
         val => expect(val).toBeFalsy()
@@ -140,8 +147,8 @@ describe("ApiService", () => {
     expect(req.request.method).toEqual("POST");
 
     req.flush(
-      {"description": "Invalid credentials", "error": "Bad Request", "status_code": 401},
-      {status: 401, statusText: "Bad Request" }
+      { "description": "Invalid credentials", "error": "Bad Request", "status_code": 401 },
+      { status: 401, statusText: "Bad Request" }
     );
   });
 
@@ -154,11 +161,11 @@ describe("ApiService", () => {
     const req = httpMock.expectOne(`${service.URL}/register`);
     expect(req.request.method).toEqual("POST");
 
-    req.flush({message: "Succesfully created user."});
+    req.flush({ message: "Succesfully created user." });
   });
 
   it("should be observable that registering failed", () => {
-      service.register$("mockusername", "mockemail", "mockpassword").subscribe(
+    service.register$("mockusername", "mockemail", "mockpassword").subscribe(
       message => fail(),
       error => expect(error).toBe("Username already in use.")
     );
@@ -167,23 +174,23 @@ describe("ApiService", () => {
     expect(req.request.method).toEqual("POST");
 
     req.flush(
-      {message: "Username already in use."},
-      {status: 400, statusText: "Bad Request" }
+      { message: "Username already in use." },
+      { status: 400, statusText: "Bad Request" }
     );
   });
 
   it("should be able to create movements", (done: DoneFn) => {
     const mock_token = generate_mock_token(get_date(30000));
-    service.login$("Username", "Password").subscribe( val => {
+    service.login$("Username", "Password").subscribe(val => {
       expect(val).toBeTruthy();
       service.createMovement$({
         name: "Flossing",
         short_description: "Floss once a day",
         interval: { days: 1, hours: 0 }
       }).subscribe(message => {
-          expect(message).toBe("Successfully created movement.");
-          done();
-        },
+        expect(message).toBe("Successfully created movement.");
+        done();
+      },
         _ => fail()
       );
     });
@@ -194,7 +201,7 @@ describe("ApiService", () => {
     expect(createReq.request.method).toEqual("POST");
 
     createReq.flush(
-      {"message": "Successfully created movement."},
+      { "message": "Successfully created movement." },
       { status: 201, statusText: "" }
     );
   });
@@ -205,8 +212,8 @@ describe("ApiService", () => {
       short_description: "Floss once a day",
       interval: { days: 1, hours: 0 }
     }).subscribe(
-       _ => fail(),
-      error => {expect(error).toEqual("Not logged in yet."); done(); },
+      _ => fail(),
+      error => { expect(error).toEqual("Not logged in yet."); done(); },
     );
   });
 
@@ -218,7 +225,7 @@ describe("ApiService", () => {
       take(2),
       toArray()
     ).subscribe(
-      observableHistory => expect(observableHistory).toBe([ [], mock_movements] ),
+      observableHistory => expect(observableHistory).toEqual([[], mock_movements]),
       () => fail(),
       done
     );
@@ -228,7 +235,7 @@ describe("ApiService", () => {
       take(1)
     ).subscribe(() => fail());
 
-    login.subscribe( () => service.getAllMovements() );
+    login.subscribe(() => service.getAllMovements());
 
     httpMock.expectOne(`${service.URL}/auth`).flush(mock_token);
 
@@ -242,7 +249,7 @@ describe("ApiService", () => {
     const mock_token = generate_mock_token(get_date(30000));
     const login = service.login$("Username", "Password");
 
-    login.subscribe(_ => service.getAllMovements$().subscribe(
+    login.subscribe(_ => service.createMovement$(mock_movements[0]).subscribe(
       () => fail(),
       message => {
         expect(message).toBe("Could not create movement, because movement name is already in use.");
@@ -253,7 +260,7 @@ describe("ApiService", () => {
     httpMock.expectOne(`${service.URL}/auth`).flush(mock_token);
 
     const req = httpMock.expectOne(`${service.URL}/movements`);
-    expect(req.request.method).toEqual("GET");
+    expect(req.request.method).toEqual("POST");
 
     req.flush(
       { message: "Could not create movement, because movement name is already in use." },
@@ -268,7 +275,7 @@ describe("ApiService", () => {
       take(2),
       toArray()
     ).subscribe(
-      (observableHistory) => expect(observableHistory).toBe([ [], subscribed_movements]),
+      (observableHistory) => expect(observableHistory).toEqual([[], subscribed_movements]),
       () => fail(),
       done
     )
@@ -289,5 +296,54 @@ describe("ApiService", () => {
     expect(req.request.method).toBe("GET");
 
     req.flush(subscribed_movements);
+  });
+
+  it("should update movements after getting new movement.", (done: DoneFn) => {
+    let subscribed_movements = mock_movements.filter(m => m.subscribed);
+
+    const flossing_movement = {
+      name: "Flossing",
+      short_description: "Floss every day",
+      description: "We floss every day because it is good for our theeth.",
+      subscribed: true,
+      interval: {
+        hours: 0,
+        days: 2
+      }
+    };
+
+    let new_all_movements = mock_movements;
+    new_all_movements.pop();
+    new_all_movements.push(flossing_movement);
+
+    service.allMovements$.pipe(
+      skip(2),
+      take(1)
+    ).subscribe(
+      (movements) => expect(movements).toBe(mock_movements),
+      () => fail(),
+      done
+    );
+
+    service.subscriptions$.pipe(
+      skip(2),
+      take(1)
+    ).subscribe(
+      (movements) => {
+        subscribed_movements.push(flossing_movement)
+      },
+      () => fail()
+    )
+
+    service.login$('Username', 'Password').subscribe(() => {
+      service.getAllMovements();
+      service.getSubscriptions();
+      service.getMovement$("Flossing").subscribe();
+    });
+
+    httpMock.expectOne(`${service.URL}/auth`).flush(generate_mock_token(get_date(30000)));
+    httpMock.expectOne(`${service.URL}/movements`).flush(mock_movements);
+    httpMock.expectOne(`${service.URL}/movements/subscriptions`).flush(subscribed_movements);
+    httpMock.expectOne(`${service.URL}/movements/Flossing`).flush(flossing_movement);
   });
 });

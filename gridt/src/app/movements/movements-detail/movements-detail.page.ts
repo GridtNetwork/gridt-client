@@ -1,13 +1,11 @@
-import { LoginService } from './../../login/login.service';
-import { MovementModel } from './../movement.model';
+import { AlertController, LoadingController } from '@ionic/angular';
+
+import { Movement } from '../../api/movement.model';
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-
-import { ModalController, NavController, AlertController, LoadingController } from '@ionic/angular';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { MovementsService} from '../movements.service';
-import { take, switchMap } from 'rxjs/operators';
-
+import { ActivatedRoute } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { ApiService } from 'src/app/api/api.service';
+import { map, flatMap, take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-movements-detail',
@@ -16,83 +14,27 @@ import { take, switchMap } from 'rxjs/operators';
 })
 export class MovementsDetailPage implements OnInit, OnDestroy {
 
-  @Input() selectedMovement: MovementModel;
-
-  movements: MovementModel[];
-  movement: MovementModel;
-  isSubscribe = false;
-  isLoading = false;
-  private sub: Subscription;
-  private userid: string;
-  public id: string;
-  public movementId: string;
+  movement$: Observable<Movement>;
 
   constructor(
-    private movementsService: MovementsService,
-    private navCtrl: NavController,
-    private route: ActivatedRoute,
     private alertCtrl: AlertController,
-    private router: Router,
     private loadingCtrl: LoadingController,
-    private authService: LoginService
-    ) { }
+    private route: ActivatedRoute,
+    private api: ApiService
+  ) { }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(paramMap => {
-      if (!paramMap.has('movementId')) {
-        this.navCtrl.navigateBack('/movements');
-        return;
-      }
-      this.isLoading = true;
-      let fetchedUserId: string;
-      this.authService.userId
-        .pipe(
-          take(1),
-          switchMap(userId => {
-            if (!userId) {
-              throw new Error('Found no user!');
-            }
-            fetchedUserId = userId;
-            this.userid=userId;
-
-            return this.movementsService.getMovements(paramMap.get('movementId'));
-          })
-        )
-        .subscribe(
-          movement => {
-            this.movement = movement;
-            this.isLoading = false;
-          },
-          error => {
-            this.alertCtrl
-              .create({
-                header: 'An error ocurred!',
-                message: 'Could not load place.',
-                buttons: [
-                  {
-                    text: 'Okay',
-                    handler: () => {
-                      this.router.navigate(['/timeline']);
-                    }
-                  }
-                ]
-              })
-              .then(alertEl => alertEl.present());
-          }
-        );
-    });
+    const id = this.route.snapshot.paramMap.get('movementId');
+    this.movement$ = this.api.allMovements$.pipe(
+      map(movements => movements.filter( movement => movement.name === id )[0]) 
+    );
   }
-  ionViewWillEnter() {
-    // this.timelineService.Infofor(this.movementId);
-    // this.id=this.timelineService.a;
-    // this.timelineService.Foor(this.movementId);
-  }
-
-  onJoin() {
+  
+  onSubscribe() {
     this.alertCtrl
     .create({
       header: 'Are you sure?',
-      message: 'Do you wanna join this movement',
+      message: 'You are about to subscribe to this movement.',
       buttons: [
         {
           text: 'Cancel',
@@ -101,8 +43,7 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
         {
           text: 'Yes',
           handler: () => {
-            this.Joining();
-
+            this.subscribe();
           },
         },
       ]
@@ -110,49 +51,79 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
     .then(alertEl => {
       alertEl.present();
     });
-}
-
-
-  Joining() {
-    this.loadingCtrl
-      .create({
-        message: 'Updating info...'
-      })
-      .then(loadingEl => {
-        loadingEl.present();
-        this.movementsService.Join(this.movement.id,  this.movement, this.userid).subscribe(data => console.log(data));
-        /* this.timelineService
-          .addOne(
-            this.movement.id,
-            this.movement.name
-          )
-          .subscribe(() => {
-            loadingEl.dismiss();
-
-
-          this.router.navigate(['/timeline']);
-          });*/
-      });
   }
 
-  Unsubscribe() {
-    this.loadingCtrl
-      .create({
-        message: 'Updating info...'
-      })
-      .then(loadingEl => {
-        loadingEl.present();
-        /*this.timelineService.Unsubscribe()
-          .subscribe(() => {
-            loadingEl.dismiss();
-          this.router.navigate(['/movements']);
-          });
-          */
-      });
+  onUnsubscribe() {
+    this.alertCtrl
+    .create({
+      header: 'Are you sure?',
+      message: 'You are about to leave this movement.',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Yes',
+          handler: () => {
+            this.unsubscribe();
+          },
+        },
+      ]
+    })
+    .then(alertEl => {
+      alertEl.present();
+    });
   }
+
+  async subscribe () {
+    const el = await this.loadingCtrl.create({
+      message: 'Updating info...'
+    });
+
+    el.present();
+
+    this.movement$.pipe(
+      take(1), 
+      flatMap( (movement) => this.api.subscribeToMovement$(movement.name)),
+      flatMap( () => this.movement$), // We need the movement name again to reload the movement.
+      take(1),
+      flatMap( (movement) => this.api.getMovement$(movement.name))
+    ).subscribe(
+      () => el.dismiss(),
+      (error) => {
+        el.dismiss();
+        this.showError(error);
+      }
+    );
+  }
+
+  showError(error: string) {
+    // TODO: Implement
+  }
+
+  async unsubscribe() {
+    const el = await this.loadingCtrl.create({
+        message: 'Updating info...'
+    });
+
+    el.present();
+
+    this.movement$.pipe(
+      take(1),
+      flatMap( movement => this.api.unsubscribeFromMovement$(movement.name) ),
+      flatMap( () => this.movement$ ),
+      take(1),
+      flatMap( movement => this.api.getMovement$(movement.name) )
+    ).subscribe(
+      () => el.dismiss(),
+      (error) => {
+        el.dismiss();
+        this.showError(error);
+      }
+    )
+  }
+
   ngOnDestroy() {
-    if (this.sub) {
-      this.sub.unsubscribe();
-    }
   }
 }

@@ -3,33 +3,42 @@
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/movements"></ion-back-button>
     </ion-buttons>
-    <ion-title>{{ isLoading ? 'Loading...' : (!!movement ? movement.name : 'No movement available') }}</ion-title>
+    <ion-title>{{ (movement$ | async)?.name }}</ion-title>
     <ion-title></ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div text-center *ngIf="isLoading">
-    <ion-spinner></ion-spinner>
-  </div>
-  <ion-grid *ngIf="!isLoading && movement">
+  <ion-grid *ngIf="movement$ | async">
       <ion-row>
         <ion-col size-md="6" offset-md="3">
           <ion-item lines="none">
-             <ion-label text-wrap>{{ movement.name }}
+             <ion-label text-wrap>{{ (movement$ | async)?.name }}
              </ion-label>
           </ion-item>
-          <ion-item >
-              <p>{{ movement.shortDescription }}</p>
-          </ion-item >
-          <ion-item >
-            <p>{{ movement.description }}</p>
-        </ion-item >
+          <ion-item lines="none">
+              <p>{{ (movement$ | async)?.short_description }}</p>
+          </ion-item>
+          <ion-item *ngIf="(movement$ | async )?.description">
+            <p>{{ (movement$ | async)?.description }}</p>
+        </ion-item>
 
-           <ion-button  ion-button  margin *ngIf="id!=movement.id" (click)="onJoin()">Join</ion-button>
-           <ion-button  ion-button  margin *ngIf="id==movement.id" (click)="Unsubscribe()">Unsubscribe</ion-button>
+        <ion-button 
+          ion-button margin 
+          *ngIf="( movement$ | async )?.subscribed == false"
+          (click)="onSubscribe()"
+        >
+          Subscribe
+        </ion-button>
+        <ion-button
+         ion-button margin 
+         *ngIf="( movement$ | async )?.subscribed == true"
+         (click)="onUnsubscribe()"
+        >
+          Unsubscribe
+        </ion-button>
 
-           </ion-col>
-          </ion-row>
+      </ion-col>
+    </ion-row>
   </ion-grid>
 </ion-content>

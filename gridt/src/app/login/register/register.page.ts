@@ -1,9 +1,7 @@
-import { Component, OnInit, KeyValueDiffers } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../api/api.service';
 import { Router } from '@angular/router';
 import { LoadingController, AlertController } from '@ionic/angular';
-import { from, throwError, forkJoin } from 'rxjs';
-import { tap, flatMap, catchError } from 'rxjs/operators';
 import { NgForm } from '@angular/forms';
 
 @Component({

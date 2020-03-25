@@ -1,29 +1,34 @@
 import { User } from './user.model';
 
 export interface Movement {
-    /**
-     * Name of the movement
-     */
-    name: string;
+  /**
+   * Number that the movement can be identified with.
+   */
+  id?: number;
 
-    /**
-     * True if the user is subscribed to this movement.
-     */
-    subscribed?: boolean;
-    leaders?: Array<User>;
+  /**
+   * Name of the movement
+   */
+  name: string;
 
-    /**
-     * A comprehensive description of the movement
-     */
-    short_description: string;
+  /**
+   * True if the user is subscribed to this movement.
+   */
+  subscribed?: boolean;
+  leaders?: Array<User>;
 
-    /**
-     * A much longer description that is used to 'sell' a movement to it's users.
-     */
-    description?: string;
+  /**
+   * A comprehensive description of the movement
+   */
+  short_description: string;
 
-    interval: {
-      hours: number;
-      days: number;
-    };
+  /**
+   * A much longer description that is used to 'sell' a movement to it's users.
+   */
+  description?: string;
+
+  interval: {
+    hours: number;
+    days: number;
+  };
 }
