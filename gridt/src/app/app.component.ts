@@ -2,11 +2,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { Platform } from '@ionic/angular';
 
-import { LoginService } from './login/login.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Plugins, AppState, Capacitor } from '@capacitor/core';
 import { take } from 'rxjs/operators';
+import { ApiService } from './api/api.service';
 
 @Component({
   selector: 'app-root',
@@ -35,8 +35,8 @@ export class AppComponent implements OnInit, OnDestroy{
 
   constructor(
     private platform: Platform,
-    private authService: LoginService,
-    private router: Router
+    private router: Router,
+    private api: ApiService
   ) {
     this.initializeApp();
   }
@@ -50,12 +50,6 @@ export class AppComponent implements OnInit, OnDestroy{
   }
 
   ngOnInit() {
-    this.authSub = this.authService.userIsAuthenticated.subscribe(isAuth => {
-      if (!isAuth && this.previousAuthState !== isAuth) {
-        this.router.navigateByUrl('/login');
-      }
-      this.previousAuthState = isAuth;
-    });
     Plugins.App.addListener(
       'appStateChange',
       this.checkAuthOnResume.bind(this)
@@ -63,24 +57,21 @@ export class AppComponent implements OnInit, OnDestroy{
   }
 
   onLogout() {
-    this.authService.logout();
   }
 
   ngOnDestroy() {
     if (this.authSub) {
       this.authSub.unsubscribe();
     }
-    //Plugins.App.removeListener('appStateChange', this.checkAuthOnResume);
   }
 
   private checkAuthOnResume(state: AppState) {
     if (state.isActive) {
-      this.authService
-        .autoLogin()
-        .pipe(take(1))
-        .subscribe(success => {
-          if (!success) {
-            this.onLogout();
+      this.api.isLoggedIn$
+        .subscribe(loggedIn => {
+          if (!loggedIn) {
+            console.log('On resuming the app found user is now logged out. Redirecting to /login');
+            this.router.navigate(['/login']);
           }
         });
     }
