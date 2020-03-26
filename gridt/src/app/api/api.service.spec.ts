@@ -1,4 +1,4 @@
-import { inject, Type } from "@angular/core";
+import {Type } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 
@@ -7,6 +7,12 @@ import { skip, take, toArray } from "rxjs/operators";
 
 import { ApiService, AccessToken } from "./api.service";
 import { Movement } from "./movement.model";
+import { User } from './user.model';
+
+function log_object(...objects: any[]): void {
+  const loggers = objects.map(obj => JSON.stringify(obj));
+  console.log(...loggers);
+}
 
 function generate_mock_token(expiration_date: Date): AccessToken {
   const header = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9";
@@ -28,6 +34,7 @@ function get_date(future: number): Date {
 
 const mock_movements: Movement[] = [
   {
+    id: 10129312983,
     name: "Mock Name",
     short_description: "Mocking the short description",
     description: "I will mock description. You are a fool, description.",
@@ -38,6 +45,7 @@ const mock_movements: Movement[] = [
     }
   },
   {
+    id: 1283912983123,
     name: "Another mocked movement",
     short_description: "This one only has a short description and no long one",
     subscribed: false,
@@ -47,6 +55,7 @@ const mock_movements: Movement[] = [
     }
   },
   {
+    id: 10023123,
     name: "Subscribed movement",
     short_description: "This movement is supposed to come from the server.",
     description: "We need some way to fake a response from the server, telling the client that it \
@@ -58,16 +67,19 @@ const mock_movements: Movement[] = [
     }
   },
   {
+    id: 112312983,
     name: "Flossing",
     short_description: "Floss every day",
     description: "We floss every day because it is good for our theeth.",
-    subscribed: false,
+    subscribed: true,
     interval: {
       hours: 0,
       days: 2
     }
   }
 ];
+
+let mock_subscriptions: Movement[];
 
 describe("ApiService", () => {
   let service: ApiService;
@@ -81,6 +93,7 @@ describe("ApiService", () => {
 
     httpMock = TestBed.inject(HttpTestingController as Type<HttpTestingController>);
     service = TestBed.inject(ApiService as Type<ApiService>);
+    mock_subscriptions = [...mock_movements].filter(m => m.subscribed);
   });
 
   afterEach(() => {
@@ -212,7 +225,7 @@ describe("ApiService", () => {
       short_description: "Floss once a day",
       interval: { days: 1, hours: 0 }
     }).subscribe(
-      _ => fail(),
+      () => fail(),
       error => { expect(error).toEqual("Not logged in yet."); done(); },
     );
   });
@@ -269,13 +282,11 @@ describe("ApiService", () => {
   });
 
   it("should be able to request the subscribed movements", (done: DoneFn) => {
-    const subscribed_movements = mock_movements.filter(m => m.subscribed);
-
     service.subscriptions$.pipe(
       take(2),
       toArray()
     ).subscribe(
-      (observableHistory) => expect(observableHistory).toEqual([[], subscribed_movements]),
+      (observableHistory) => expect(observableHistory).toEqual([[], mock_subscriptions]),
       () => fail(),
       done
     )
@@ -295,12 +306,10 @@ describe("ApiService", () => {
     const req = httpMock.expectOne(`${service.URL}/movements/subscriptions`);
     expect(req.request.method).toBe("GET");
 
-    req.flush(subscribed_movements);
+    req.flush(mock_subscriptions);
   });
 
   it("should update movements after getting new movement.", (done: DoneFn) => {
-    let subscribed_movements = mock_movements.filter(m => m.subscribed);
-
     const flossing_movement = {
       name: "Flossing",
       short_description: "Floss every day",
@@ -312,7 +321,7 @@ describe("ApiService", () => {
       }
     };
 
-    let new_all_movements = mock_movements;
+    let new_all_movements = [...mock_movements];
     new_all_movements.pop();
     new_all_movements.push(flossing_movement);
 
@@ -330,7 +339,8 @@ describe("ApiService", () => {
       take(1)
     ).subscribe(
       (movements) => {
-        subscribed_movements.push(flossing_movement)
+        mock_subscriptions.push(flossing_movement);
+        expect(movements).toEqual(mock_subscriptions);
       },
       () => fail()
     )
@@ -343,7 +353,43 @@ describe("ApiService", () => {
 
     httpMock.expectOne(`${service.URL}/auth`).flush(generate_mock_token(get_date(30000)));
     httpMock.expectOne(`${service.URL}/movements`).flush(mock_movements);
-    httpMock.expectOne(`${service.URL}/movements/subscriptions`).flush(subscribed_movements);
+    httpMock.expectOne(`${service.URL}/movements/subscriptions`).flush(mock_subscriptions);
     httpMock.expectOne(`${service.URL}/movements/Flossing`).flush(flossing_movement);
+  });
+
+  it('should be able to swap a leader.', (done: DoneFn) => {
+    // The reason for this copying is because somehow it was modifying what 
+    // was in the response from the httpMock object. Hard copying it makes 
+    // sure that this can never happen. However, for some reason the change 
+    // already happens before here. It is unclear exactly when, making this 
+    // test always succeed.
+    const idiot_user = { id: 1, username: "idiot" } as User;
+    mock_subscriptions[1].leaders = [idiot_user];
+    const old_subscriptions = [...mock_subscriptions];
+
+    const mock_user = { id: 2, username: "Good Leader Person" } as User;
+    mock_subscriptions[1].leaders = [mock_user];
+    const new_subscriptions = [...mock_subscriptions];
+     
+    service.login$('Username', 'Password').subscribe(() => {
+      service.getSubscriptions();
+      forkJoin({
+        user: service.swapLeader$(old_subscriptions[1], idiot_user),
+        subscriptions: service.subscriptions$.pipe( skip(1), take(1) )
+      }).subscribe(
+        (obj) => {
+          expect(obj.user).toEqual(mock_user);
+
+          log_object(obj.subscriptions);
+          expect(obj.subscriptions).toEqual(new_subscriptions);
+        },
+        () => fail(),
+        done
+      );
+    });
+    
+    httpMock.expectOne(`${service.URL}/auth`).flush(generate_mock_token(get_date(30000)));
+    httpMock.expectOne(`${service.URL}/movements/subscriptions`).flush(old_subscriptions);
+    httpMock.expectOne(`${service.URL}/movements/1/leader/1`).flush(mock_user);
   });
 });

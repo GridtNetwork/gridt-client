@@ -1,8 +1,9 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable, BehaviorSubject, throwError, merge, partition } from "rxjs";
-import { map, tap, pluck, catchError, flatMap, distinctUntilChanged } from "rxjs/operators";
+import { map, tap, pluck, catchError, flatMap, distinctUntilChanged, take } from "rxjs/operators";
 import { Movement } from "./movement.model";
+import { User } from './user.model';
 
 export interface AccessToken {
   access_token: string;
@@ -198,32 +199,37 @@ export class ApiService {
     );
   }
 
+  /**
+   * This simple helper functions grants the ability to update a movement in 
+   * the behavior subject containing a list of all movements.
+   * @param bsubject BehaviorSubject that you want to update.
+   * @param movement The new version of the movement.
+   */
+  private replace_movement_in_bsubject(bsubject: BehaviorSubject<Movement[]>, movement: Movement) {
+      let all_movements = bsubject.getValue();
+      const index = all_movements.findIndex(m => m.name == movement.name);
+      if (index != -1) {
+        all_movements[index] = movement;
+      } else {
+        all_movements.push(movement);
+      }
+
+      bsubject.next(all_movements);
+  }
+
   /*
    * Request single movement from server.
    */
   public getMovement$ (movement_id: number | string ): Observable<Movement> {
     console.debug(`Getting movement "${movement_id}" from server.`);
-
-    function replace_movement_in_bsubject(bsubject, movement) {
-        let all_movements = bsubject.getValue();
-        const index = all_movements.findIndex(m => m.name == movement.name);
-        if (index != -1) {
-          all_movements[index] = movement;
-        } else {
-          all_movements.push(movement);
-        }
-
-        bsubject.next(all_movements);
-    }
-
     const request = this.http.get<Movement>(
       `${this.URL}/movements/${movement_id}`,
       this.getOptions()
     ).pipe(
       catchError( this.handleBadAuth() ),
       tap( (movement) => {
-        replace_movement_in_bsubject(this._subscriptions$, movement);
-        replace_movement_in_bsubject(this._allMovements$, movement);
+        this.replace_movement_in_bsubject(this._subscriptions$, movement);
+        this.replace_movement_in_bsubject(this._allMovements$, movement);
       })
     );
 
@@ -232,7 +238,7 @@ export class ApiService {
     )
   }
 
-  /*
+  /**
    * Request all movements from the server.
    */
   public getAllMovements(): void {
@@ -252,7 +258,7 @@ export class ApiService {
     ).subscribe();
   }
 
-  /*
+  /**
    * Request all movements that the user is subscribed to from the server.
    */
   public getSubscriptions(): void {
@@ -271,8 +277,9 @@ export class ApiService {
     ).subscribe();
   }
 
-  /*
+  /**
    * Subscribe user to a movement.
+   * @param movement_id The movement (id or string) that the user wants to subscribe to.
    */
   public subscribeToMovement$ (movement_id: number | string) {
     console.debug(`Subscribing to movement "${movement_id}".`);
@@ -290,8 +297,9 @@ export class ApiService {
     );
   }
 
-  /*
+  /**
    * Unsubscribe user from a movement.
+   * @param movement_id The movement (id or string) that the user wants to subscribe to.
    */
   public unsubscribeFromMovement$ (movement_id: number | string): Observable<string> {
     console.debug(`Unsubscribing from movement "${movement_id}".`);
@@ -311,18 +319,26 @@ export class ApiService {
   /**
    * Swap one of the leaders identified with either username or user id in a
    * movement identified with a number or string.
+   * 
    */
-  public swapLeader$(movement_id: number | string, user_id: number | string): Observable<string> { 
-    console.debug(`Swapping leader "${user_id}" in movement "${movement_id}".`)
-    const request = this.http.post<ServerMessage>(
-      `${this.URL}/movements/${movement_id}/leader/${user_id}`,
+  public swapLeader$(movement: Movement, user: User): Observable<User> { 
+    console.debug(`Swapping leader "@${user.username}#${user.id}" in movement "%${movement.name}#${movement.id}".`)
+
+    const request = this.http.post<User>(
+      `${this.URL}/movements/${movement.id}/leader/${user.id}`,
       {},
       this.getOptions()
     )
 
     return this.isApiReady$.pipe(
+      take(1),
       flatMap(() => request),
-      pluck("message"),
+      tap((new_user) => {
+        movement.leaders = movement.leaders.filter(u => u.username != user.username);
+        movement.leaders.push(new_user);
+        this.replace_movement_in_bsubject(this._allMovements$, movement);
+        this.replace_movement_in_bsubject(this._subscriptions$, movement);
+      }),
       catchError( this.handleBadAuth() )
     );
   }
@@ -330,10 +346,10 @@ export class ApiService {
   /*
    * Notify the server that the user has performed the movement related action.
    */
-  public sendUpdate$(movement_id: number | string): Observable<string> {
-    console.debug(`Sending update to movement "${movement_id}"`)
+  public sendUpdate$(movement: Movement): Observable<string> {
+    console.debug(`Sending update to movement "${movement.name}"`)
     const request = this.http.post<ServerMessage>(
-      `${this.URL}/movements/${movement_id}/update`,
+      `${this.URL}/movements/${movement.id}/update`,
       {},
       this.getOptions()
     )

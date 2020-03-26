@@ -1,17 +1,19 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
     <ion-title>Home</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content paddinsearchTextg>
   <ion-grid
     *ngIf="!(movements$ | async)">
     <ion-row>
       <ion-col size="12" size-sm="8" offset-sm="2" text-center>
         <p>
-          There are no movements right now, please come back later! 
-          Want to <a [routerLink]="['/test']">test?</a></p>
+          There are no movements right now, please come back later!</p>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -29,10 +31,31 @@
           <ion-card-content>
             <ion-grid>
               <ion-row>
-                Have you done it yet?
+                <ion-col>
+                  Have you done it yet?
+                </ion-col>
+                <ion-col>
+                  <ion-toggle (ionChange)="update(movement)"></ion-toggle>
+                </ion-col>
               </ion-row>
               <ion-row>
-                <ion-toggle (ionChange)="update(movement)"></ion-toggle>
+                <ion-item-group>
+                  <ion-item *ngFor="let leader of movement.leaders" >
+                    <ion-row class="ion-justify-content-end ion-align-items-center">
+                      <ion-col>
+                        <ion-col>
+                          <span>{{ leader.username }}</span>
+                        </ion-col>
+                        <ion-col>
+                          <span>{{ isLeaderDone(leader) ? 'Done!' : 'Pending...' }}</span>
+                        </ion-col>
+                      </ion-col>
+                      <ion-button size="small" (click)="confirmSwapLeader(movement, leader)" fill="clear">
+                        <ion-icon slot="icon-only" name="swap-horizontal-outline"></ion-icon>
+                      </ion-button>
+                    </ion-row>
+                  </ion-item>
+                </ion-item-group>
               </ion-row>
             </ion-grid>
           </ion-card-content>
