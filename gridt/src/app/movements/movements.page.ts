@@ -2,10 +2,9 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MenuController } from '@ionic/angular';
 import { Observable, Subject } from 'rxjs';
 
-import { MovementsService } from './movements.service';
 import { ApiService } from '../api/api.service';
 import { Movement } from '../api/movement.model';
-
+import { MovementsFilterPipe } from './movement-filter.pipe';
 
 @Component({
   selector: 'app-movements',
@@ -13,8 +12,7 @@ import { Movement } from '../api/movement.model';
   styleUrls: ['./movements.page.scss'],
 })
 export class MovementsPage implements OnInit, OnDestroy {
-  searchData: any = [];
-  search_input: string;
+  searchText: string = "";
   movements$: Observable<Movement[]>;
 
   constructor(

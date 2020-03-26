@@ -6,6 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { MovementsPage } from './movements.page';
+import { MovementsFilterPipe } from './movement-filter.pipe';
 
 const routes: Routes = [
   {
@@ -21,6 +22,9 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [MovementsPage]
+  declarations: [
+    MovementsPage,
+    MovementsFilterPipe
+  ]
 })
 export class MovementsPageModule {}
