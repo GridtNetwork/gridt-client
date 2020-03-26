@@ -57,10 +57,6 @@ const routes: Routes = [
     loadChildren: () => import('./home/home.module').then( m => m.HomePageModule),
     canLoad: [LoginGuard]
   },
-  {
-    path: 'test',
-    loadChildren: () => import('./apitesting/apitesting.module').then( m => m.ApitestingPageModule)
-  }
 ];
 
 @NgModule({
