@@ -25,10 +25,10 @@ export class ApiService {
    * Subscribe to this observable to ready the API.
    */
   public isApiReady$: Observable<boolean>;
-  public URL = "http://api.gridt.org";
+  public URL = "https://api.gridt.org";
 
   /**
-   * Reuse all movements that have been previously obtained.
+   * Reuse a policy: Rll movements that have been previously obtained.
    */
   private _allMovements$ = new BehaviorSubject<Movement[]>([]);
   get allMovements$ (): Observable<Movement[]> {
