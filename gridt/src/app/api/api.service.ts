@@ -19,6 +19,7 @@ interface ServerMessage {
 export class ApiService {
   private token = new BehaviorSubject<string>(null);
   public username: string;
+  public email: string;
   private password: string;
 
   /*
@@ -91,16 +92,16 @@ export class ApiService {
    * Authenticate user on the server using provided credentials or those
    * already stored.
    */
-  private authenticate$(username?: string, password?: string): Observable<string> {
+  private authenticate$(email?: string, password?: string): Observable<string> {
     console.debug("Authenticating");
 
     // Store password
-    if ( username && password ) {
-      this.username = username;
+    if ( email && password ) {
+      this.email = email;
       this.password = password;
     }
 
-    if ( !this.username  || !this.password) {
+    if ( !this.email  || !this.password) {
       return new Observable( (observer) => {
         observer.error("Not logged in yet.");
       });
@@ -109,7 +110,7 @@ export class ApiService {
     return this.http.post<AccessToken>(
       `${this.URL}/auth`,
       {
-        username: this.username,
+        username: this.email,
         password: this.password
       }
     ).pipe(
@@ -132,8 +133,8 @@ export class ApiService {
    *
    * Currently this is a simple shell around authenticate.
    */
-  public login$(username: string, password: string): Observable<boolean> {
-    return this.authenticate$(username, password).pipe(
+  public login$(email: string, password: string): Observable<boolean> {
+    return this.authenticate$(email, password).pipe(
       map( token => !!token ),
       tap( val => console.debug(val ?  "Sucessfully logged in." : "Login failed.") )
     );
