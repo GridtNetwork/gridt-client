@@ -4,7 +4,6 @@ import { Observable, Subject } from 'rxjs';
 
 import { ApiService } from '../api/api.service';
 import { Movement } from '../api/movement.model';
-import { MovementsFilterPipe } from './movement-filter.pipe';
 
 @Component({
   selector: 'app-movements',
