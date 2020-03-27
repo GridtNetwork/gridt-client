@@ -25,13 +25,13 @@ export class RegisterPage implements OnInit {
   /*
    * Do API call and handle loading element.
    */
-  public async register (email: string, password: string) {
+  public async register (username:string, email: string, password: string ) {
     const el = await this.loadingCtrl.create({ 
       keyboardClose: true,
       message: 'Signing you up...' 
     });
 
-    this.api.register$(email, email, password).subscribe(
+    this.api.register$(username, email, password).subscribe(
       () => {
         this.router.navigateByUrl('/login');
         el.dismiss();
@@ -49,10 +49,11 @@ export class RegisterPage implements OnInit {
     if (!form.valid) {
       return;
     }
+    const username = form.value.username;
     const email = form.value.email;
     const password = form.value.password;
 
-    this.register(email, password);
+    this.register(username, email, password);
   }
 
   private showAlert(message: string) {
