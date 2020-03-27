@@ -24,7 +24,7 @@ export class LoginPage implements OnInit {
   /*
    * Log user in with api and handle loading popup
    */
-  public async authenticate(email: string, password: string) {
+  public async authenticate(username: string, password: string) {
     const el = await this.loadingCtrl.create({ 
       keyboardClose: true, 
       message: 'Logging in...' 
@@ -32,7 +32,7 @@ export class LoginPage implements OnInit {
 
     el.present();
 
-    this.api.login$(email, password).subscribe(
+    this.api.login$(username, password).subscribe(
       loggedIn => {
         if (!loggedIn) {
           el.dismiss();
@@ -55,10 +55,10 @@ export class LoginPage implements OnInit {
     if (!form.valid) {
       return;
     }
-    const email = form.value.email;
     const password = form.value.password;
+    const username = form.value.username;
 
-    this.authenticate(email, password);
+    this.authenticate(username, password);
   }
 
   private showAlert(message: string) {
