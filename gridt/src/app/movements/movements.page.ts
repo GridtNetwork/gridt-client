@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MenuController } from '@ionic/angular';
+import { MenuController, AlertController } from '@ionic/angular';
 import { Observable, Subject } from 'rxjs';
 
 import { ApiService } from '../api/api.service';
@@ -16,7 +16,8 @@ export class MovementsPage implements OnInit, OnDestroy {
 
   constructor(
     private api: ApiService,
-    private menuCtrl: MenuController
+    private menuCtrl: MenuController,
+    private alertCtrl: AlertController
   ) { }
 
   ngOnInit() {
@@ -24,8 +25,14 @@ export class MovementsPage implements OnInit, OnDestroy {
     this.api.getAllMovements();
   }
 
-  showError(error:string) {
-    // TODO: Implement
+  async showError(error:string) {
+    const el = await this.alertCtrl.create({
+      header: "Something went wrong while creating your movement.", 
+      message: error,
+      buttons: ["Okay"]
+    });
+
+    el.present();
   }
 
   onOpenMenu() {
