@@ -13,7 +13,12 @@ import { Movement } from '../../api/movement.model';
 export class AddMovementPage implements OnInit {
 
   form: FormGroup;
-
+  intervalTypes: string[] = [
+    'daily',
+    'twice daily', 
+    'weekly'
+  ];
+  
   constructor(
     private router: Router,
     private alertCtrl: AlertController,
@@ -42,16 +47,7 @@ export class AddMovementPage implements OnInit {
           Validators.maxLength(100)
         ]
       }),
-      interval: new FormGroup({
-        hours: new FormControl(0, {
-          updateOn: 'blur',
-          validators: [Validators.required]
-        }),
-        days: new FormControl(0, {
-          updateOn: 'blur',
-          validators: [Validators.required]
-        }),
-      })
+      interval: new FormControl("", [Validators.required])
     });
   }
 

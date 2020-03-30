@@ -64,11 +64,8 @@
             </ion-label>
           
             <!-- Display the interval (like, weekly, monthly etc.) on the right -->
-            <ion-label slot="end" *ngIf=" movement.interval.hours !=  0" > 
-              H: {{ movement.interval.hours }}
-            </ion-label>
-            <ion-label  slot="end" *ngIf=" movement.interval.days !=  0" >
-              D: {{ movement.interval.days }}
+            <ion-label slot="end"> 
+              {{ movement.interval }}
             </ion-label>
           </ion-item>
          </ion-col>

@@ -47,7 +47,7 @@
                           <span>{{ leader.username }}</span>
                         </ion-col>
                         <ion-col>
-                          <span>{{ isLeaderDone(leader) ? 'Done!' : 'Pending...' }}</span>
+                          <span>{{ isLeaderDone(leader, movement) ? 'Done!' : 'Pending...' }}</span>
                         </ion-col>
                       </ion-col>
                       <ion-button size="small" (click)="confirmSwapLeader(movement, leader)" fill="clear">

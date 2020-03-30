@@ -5,6 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { IonicModule } from '@ionic/angular';
 
 import { MovementsPage } from './movements.page';
+import { MovementsFilterPipe } from './movement-filter.pipe';
 
 describe('MovementsPage', () => {
   let component: MovementsPage;
@@ -12,9 +13,13 @@ describe('MovementsPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MovementsPage ],
+      declarations: [ MovementsPage, MovementsFilterPipe ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [HttpClientTestingModule, RouterTestingModule.withRoutes([]), IonicModule, ]
+      imports: [
+        HttpClientTestingModule,
+        RouterTestingModule.withRoutes([]), 
+        IonicModule, 
+      ]
     })
     .compileComponents();
   }));

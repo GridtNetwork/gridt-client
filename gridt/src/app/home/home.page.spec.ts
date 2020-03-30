@@ -1,11 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { IonicModule } from '@ionic/angular';
 import { HttpClientModule } from '@angular/common/http';
 import { HomePage } from './home.page';
 
 import { ApiService } from '../api/api.service';
 import { BehaviorSubject } from 'rxjs';
 import { Movement } from '../api/movement.model';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('HomePage', () => {
   let component: HomePage;
@@ -14,7 +14,7 @@ describe('HomePage', () => {
 
   beforeEach(async(() => {
     ApiSpy = jasmine.createSpyObj('ApiService', { 
-      isLoggedIn: new BehaviorSubject(true),
+      isLoggedIn$: new BehaviorSubject(true),
       getSubscriptions: () => {}
     });
 
@@ -22,7 +22,8 @@ describe('HomePage', () => {
  
     TestBed.configureTestingModule({
       declarations: [ HomePage ],
-      imports: [IonicModule.forRoot(), HttpClientModule],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      imports: [HttpClientModule],
       providers: [
         { provide: ApiService, useValue: ApiSpy}
       ]

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { Plugins, AppState, Capacitor } from '@capacitor/core';
 import { ApiService } from './api/api.service';
 
@@ -10,7 +10,6 @@ import { ApiService } from './api/api.service';
   templateUrl: 'app.component.html'
 })
 export class AppComponent implements OnInit, OnDestroy{
-  private authSub: Subscription;
   public appPages = [
     {
       title: 'Home',
@@ -32,6 +31,7 @@ export class AppComponent implements OnInit, OnDestroy{
   constructor(
     private platform: Platform,
     private router: Router,
+    private splashScreen: SplashScreen,
     private api: ApiService
   ) {
     this.initializeApp();
@@ -40,7 +40,7 @@ export class AppComponent implements OnInit, OnDestroy{
   initializeApp() {
     this.platform.ready().then(() => {
       if (Capacitor.isPluginAvailable('SplashScreen')) {
-        Plugins.SplashScreen.hide();
+        this.splashScreen.hide();
       }
     });
   }
@@ -55,11 +55,7 @@ export class AppComponent implements OnInit, OnDestroy{
   onLogout() {
   }
 
-  ngOnDestroy() {
-    if (this.authSub) {
-      this.authSub.unsubscribe();
-    }
-  }
+  ngOnDestroy() { }
 
   private checkAuthOnResume(state: AppState) {
     if (state.isActive) {

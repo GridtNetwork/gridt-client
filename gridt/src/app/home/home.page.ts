@@ -11,7 +11,6 @@ import { User } from '../api/user.model';
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit, OnDestroy {
-  private subscriptions = [];
   movements$ = new Observable<Movement[]>();
  
   constructor(private api: ApiService, private alertCtrl: AlertController) { }

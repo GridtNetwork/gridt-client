@@ -9,11 +9,6 @@ import { ApiService, AccessToken } from "./api.service";
 import { Movement } from "./movement.model";
 import { User } from './user.model';
 
-function log_object(...objects: any[]): void {
-  const loggers = objects.map(obj => JSON.stringify(obj));
-  console.log(...loggers);
-}
-
 function generate_mock_token(expiration_date: Date): AccessToken {
   const header = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9";
   const payload_object = {
@@ -364,8 +359,6 @@ describe("ApiService", () => {
       }).subscribe(
         (obj) => {
           expect(obj.user).toEqual(mock_user);
-
-          log_object(obj.subscriptions);
           expect(obj.subscriptions).toEqual(new_subscriptions);
         },
         () => fail(),
