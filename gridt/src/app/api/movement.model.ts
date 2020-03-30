@@ -27,8 +27,5 @@ export interface Movement {
    */
   description?: string;
 
-  interval: {
-    hours: number;
-    days: number;
-  };
+  interval: "daily" | "twice daily" | "weekly";
 }

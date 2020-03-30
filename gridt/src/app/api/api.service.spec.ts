@@ -39,20 +39,14 @@ const mock_movements: Movement[] = [
     short_description: "Mocking the short description",
     description: "I will mock description. You are a fool, description.",
     subscribed: false,
-    interval: {
-      hours: 0,
-      days: 3
-    }
+    interval: "daily"
   },
   {
     id: 1283912983123,
     name: "Another mocked movement",
     short_description: "This one only has a short description and no long one",
     subscribed: false,
-    interval: {
-      hours: 1,
-      days: 0
-    }
+    interval: "twice daily"
   },
   {
     id: 10023123,
@@ -61,10 +55,7 @@ const mock_movements: Movement[] = [
     description: "We need some way to fake a response from the server, telling the client that it \
      is subscribed to this particular movement",
     subscribed: true,
-    interval: {
-      hours: 0,
-      days: 1
-    }
+    interval: "daily"
   },
   {
     id: 112312983,
@@ -72,10 +63,7 @@ const mock_movements: Movement[] = [
     short_description: "Floss every day",
     description: "We floss every day because it is good for our theeth.",
     subscribed: true,
-    interval: {
-      hours: 0,
-      days: 2
-    }
+    interval: "daily"
   }
 ];
 
@@ -199,7 +187,7 @@ describe("ApiService", () => {
       service.createMovement$({
         name: "Flossing",
         short_description: "Floss once a day",
-        interval: { days: 1, hours: 0 }
+        interval: "daily",
       }).subscribe(message => {
         expect(message).toBe("Successfully created movement.");
         done();
@@ -223,7 +211,7 @@ describe("ApiService", () => {
     service.createMovement$({
       name: "Flossing",
       short_description: "Floss once a day",
-      interval: { days: 1, hours: 0 }
+      interval: "daily"
     }).subscribe(
       () => fail(),
       error => { expect(error).toEqual("Not logged in yet."); done(); },
@@ -315,11 +303,8 @@ describe("ApiService", () => {
       short_description: "Floss every day",
       description: "We floss every day because it is good for our theeth.",
       subscribed: true,
-      interval: {
-        hours: 0,
-        days: 2
-      }
-    };
+      interval: "daily"
+    } as Movement;
 
     let new_all_movements = [...mock_movements];
     new_all_movements.pop();

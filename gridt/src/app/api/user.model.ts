@@ -8,7 +8,7 @@ export interface User {
      */
     username: string;
 
-    last_update?: {
+    last_signal?: {
         time_stamp: string;
     }
 }
