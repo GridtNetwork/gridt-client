@@ -27,7 +27,10 @@ export class HomePage implements OnInit, OnDestroy {
    * @param interval Interval that on which the event is supposed to happen.
    * @param hour_offset Timezone offset to account for the possibility that the server is not in the timezone of the client.
    */
-  public getLastOccurence(interval: "daily" | "twice daily" | "weekly", hour_offset: number){
+  public getLastOccurence(
+    interval: "daily" | "twice daily" | "weekly", 
+    hour_offset: number
+  ): Date {
     let date = new Date();
 
     switch (interval) {
@@ -85,13 +88,20 @@ export class HomePage implements OnInit, OnDestroy {
     el.present(); 
   }
 
-  swapLeader(movement: Movement, leader: User) {
+  swapLeader(movement: Movement, leader: User): void {
     this.api.swapLeader$(movement, leader).subscribe(
-      (user) => {} // TODO: alert user of new leader. 
+      async (user) => {
+        const el = await this.alertCtrl.create({
+          header: "Found new leader",
+          message: `Your new leader is ${user.username}.`
+        });
+        
+        el.present();
+      } 
     )
   }
 
-  update(movement: Movement) {
+  update(movement: Movement): void {
     this.api.sendUpdate$(movement).subscribe(
       () => {this.api.subscriptions$.subscribe(console.log)},
       (error) => {

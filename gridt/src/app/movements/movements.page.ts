@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MenuController, AlertController } from '@ionic/angular';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { ApiService } from '../api/api.service';
 import { Movement } from '../api/movement.model';
@@ -10,7 +10,7 @@ import { Movement } from '../api/movement.model';
   templateUrl: './movements.page.html',
   styleUrls: ['./movements.page.scss'],
 })
-export class MovementsPage implements OnInit, OnDestroy {
+export class MovementsPage implements OnInit {
   searchText: string = "";
   movements$: Observable<Movement[]>;
 
@@ -33,12 +33,5 @@ export class MovementsPage implements OnInit, OnDestroy {
     });
 
     el.present();
-  }
-
-  onOpenMenu() {
-    this.menuCtrl.toggle(); 
-  } 
-
-  ngOnDestroy() {
   }
 }

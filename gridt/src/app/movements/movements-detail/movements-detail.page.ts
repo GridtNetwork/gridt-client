@@ -1,7 +1,7 @@
 import { AlertController, LoadingController } from '@ionic/angular';
 
 import { Movement } from '../../api/movement.model';
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { ApiService } from 'src/app/api/api.service';
@@ -12,7 +12,7 @@ import { map, flatMap, take } from 'rxjs/operators';
   templateUrl: './movements-detail.page.html',
   styleUrls: ['./movements-detail.page.scss'],
 })
-export class MovementsDetailPage implements OnInit, OnDestroy {
+export class MovementsDetailPage implements OnInit {
 
   movement$: Observable<Movement>;
 
@@ -30,9 +30,8 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
     );
   }
   
-  onSubscribe() {
-    this.alertCtrl
-    .create({
+  onSubscribe(): void {
+    this.alertCtrl.create({
       header: 'Are you sure?',
       message: 'You are about to subscribe to this movement.',
       buttons: [
@@ -53,9 +52,8 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
     });
   }
 
-  onUnsubscribe() {
-    this.alertCtrl
-    .create({
+  onUnsubscribe():void {
+    this.alertCtrl.create({
       header: 'Are you sure?',
       message: 'You are about to leave this movement.',
       buttons: [
@@ -98,8 +96,12 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
     );
   }
 
-  showError(error: string) {
-    // TODO: Implement
+  async showError(error: string) {
+    const el = this.alertCtrl.create({
+      header: "Something went wrong.",
+      message: error,
+      buttons: ["Okay"]
+    });
   }
 
   async unsubscribe() {
@@ -122,8 +124,5 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
         this.showError(error);
       }
     )
-  }
-
-  ngOnDestroy() {
   }
 }
