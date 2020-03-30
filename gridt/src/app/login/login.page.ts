@@ -55,8 +55,8 @@ export class LoginPage implements OnInit {
     if (!form.valid) {
       return;
     }
-    const email = form.value.email;
     const password = form.value.password;
+    const email = form.value.email;
 
     this.authenticate(email, password);
   }

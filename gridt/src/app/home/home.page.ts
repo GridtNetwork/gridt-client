@@ -23,7 +23,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   ngOnDestroy() { }
 
-  isLeaderDone(leader: User): boolean {
+  isLeaderDone(leader: User, Movement): boolean {
     return true;
   }
 

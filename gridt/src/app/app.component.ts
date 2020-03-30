@@ -1,11 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-
 import { Platform } from '@ionic/angular';
-
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { Plugins, AppState, Capacitor } from '@capacitor/core';
-import { take } from 'rxjs/operators';
 import { ApiService } from './api/api.service';
 
 @Component({
@@ -14,7 +11,6 @@ import { ApiService } from './api/api.service';
 })
 export class AppComponent implements OnInit, OnDestroy{
   private authSub: Subscription;
-  private previousAuthState = false;
   public appPages = [
     {
       title: 'Home',

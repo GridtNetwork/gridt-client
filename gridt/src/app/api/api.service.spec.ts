@@ -107,7 +107,7 @@ describe("ApiService", () => {
   it("should store a token upon login", (done: DoneFn) => {
     const mock_token = generate_mock_token(get_date(30000));
 
-    const loginObservable = service.login$("username", "password");
+    const loginObservable = service.login$("email", "password");
     const firstLoggedIn = service.isLoggedIn$.pipe(take(1));
     const secondLoggedIn = service.isLoggedIn$.pipe(skip(1), take(1));
     const thirdLoggedIn = service.isLoggedIn$.pipe(skip(2), take(1));
@@ -137,7 +137,7 @@ describe("ApiService", () => {
   it("should not be ready if the token has expired", () => {
     const mock_token = generate_mock_token(get_date(-3000));
 
-    service.login$("username", "password").subscribe(_ => {
+    service.login$("email", "password").subscribe(_ => {
       service.isApiReady$.subscribe(
         val => expect(val).toBeFalsy()
       );
@@ -148,7 +148,7 @@ describe("ApiService", () => {
   });
 
   it("should be logged out after failed authentication", (done: DoneFn) => {
-    const login_observable = service.login$("username", "password").subscribe(
+    const login_observable = service.login$("email", "password").subscribe(
       _ => fail(),
       error => {
         expect(error).toBe("Could not login");
@@ -194,7 +194,7 @@ describe("ApiService", () => {
 
   it("should be able to create movements", (done: DoneFn) => {
     const mock_token = generate_mock_token(get_date(30000));
-    service.login$("Username", "Password").subscribe(val => {
+    service.login$("Email", "Password").subscribe(val => {
       expect(val).toBeTruthy();
       service.createMovement$({
         name: "Flossing",
@@ -232,7 +232,7 @@ describe("ApiService", () => {
 
   it("should be able to load movements", (done: DoneFn) => {
     const mock_token = generate_mock_token(get_date(30000));
-    const login = service.login$("Username", "Password");
+    const login = service.login$("Email", "Password");
 
     service.allMovements$.pipe(
       take(2),
@@ -260,7 +260,7 @@ describe("ApiService", () => {
 
   it("should be able to inform the client when it failed to create a movement.", (done: DoneFn) => {
     const mock_token = generate_mock_token(get_date(30000));
-    const login = service.login$("Username", "Password");
+    const login = service.login$("Email", "Password");
 
     login.subscribe(_ => service.createMovement$(mock_movements[0]).subscribe(
       () => fail(),
@@ -298,7 +298,7 @@ describe("ApiService", () => {
       () => fail()
     )
 
-    service.login$("Username", "Password").subscribe(
+    service.login$("Email", "Password").subscribe(
       () => service.getSubscriptions()
     );
 
@@ -345,7 +345,7 @@ describe("ApiService", () => {
       () => fail()
     )
 
-    service.login$('Username', 'Password').subscribe(() => {
+    service.login$('Email', 'Password').subscribe(() => {
       service.getAllMovements();
       service.getSubscriptions();
       service.getMovement$("Flossing").subscribe();
@@ -371,7 +371,7 @@ describe("ApiService", () => {
     mock_subscriptions[1].leaders = [mock_user];
     const new_subscriptions = [...mock_subscriptions];
      
-    service.login$('Username', 'Password').subscribe(() => {
+    service.login$('Email', 'Password').subscribe(() => {
       service.getSubscriptions();
       forkJoin({
         user: service.swapLeader$(old_subscriptions[1], idiot_user),
