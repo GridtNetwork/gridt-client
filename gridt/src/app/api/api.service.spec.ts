@@ -32,41 +32,7 @@ function get_date(future: number): Date {
   return new Date(now + future);
 }
 
-const mock_movements: Movement[] = [
-  {
-    id: 10129312983,
-    name: "Mock Name",
-    short_description: "Mocking the short description",
-    description: "I will mock description. You are a fool, description.",
-    subscribed: false,
-    interval: "daily"
-  },
-  {
-    id: 1283912983123,
-    name: "Another mocked movement",
-    short_description: "This one only has a short description and no long one",
-    subscribed: false,
-    interval: "twice daily"
-  },
-  {
-    id: 10023123,
-    name: "Subscribed movement",
-    short_description: "This movement is supposed to come from the server.",
-    description: "We need some way to fake a response from the server, telling the client that it \
-     is subscribed to this particular movement",
-    subscribed: true,
-    interval: "daily"
-  },
-  {
-    id: 112312983,
-    name: "Flossing",
-    short_description: "Floss every day",
-    description: "We floss every day because it is good for our theeth.",
-    subscribed: true,
-    interval: "daily"
-  }
-];
-
+let mock_movements: Movement[];
 let mock_subscriptions: Movement[];
 
 describe("ApiService", () => {
@@ -81,6 +47,40 @@ describe("ApiService", () => {
 
     httpMock = TestBed.inject(HttpTestingController as Type<HttpTestingController>);
     service = TestBed.inject(ApiService as Type<ApiService>);
+    mock_movements = [
+      {
+        id: 10129312983,
+        name: "Mock Name",
+        short_description: "Mocking the short description",
+        description: "I will mock description. You are a fool, description.",
+        subscribed: false,
+        interval: "daily"
+      },
+      {
+        id: 1283912983123,
+        name: "Another mocked movement",
+        short_description: "This one only has a short description and no long one",
+        subscribed: false,
+        interval: "twice daily"
+      },
+      {
+        id: 10023123,
+        name: "Subscribed movement",
+        short_description: "This movement is supposed to come from the server.",
+        description: "We need some way to fake a response from the server, telling the client that it \
+         is subscribed to this particular movement",
+        subscribed: true,
+        interval: "daily"
+      },
+      {
+        id: 112312983,
+        name: "Flossing",
+        short_description: "Floss every day",
+        description: "We floss every day because it is good for our theeth.",
+        subscribed: true,
+        interval: "daily"
+      }
+    ];
     mock_subscriptions = [...mock_movements].filter(m => m.subscribed);
   });
 
@@ -373,8 +373,10 @@ describe("ApiService", () => {
       );
     });
     
+    const movement_id = old_subscriptions[1].id;
+
     httpMock.expectOne(`${service.URL}/auth`).flush(generate_mock_token(get_date(30000)));
     httpMock.expectOne(`${service.URL}/movements/subscriptions`).flush(old_subscriptions);
-    httpMock.expectOne(`${service.URL}/movements/1/leader/1`).flush(mock_user);
+    httpMock.expectOne(`${service.URL}/movements/${movement_id}/leader/1`).flush(mock_user);
   });
 });
