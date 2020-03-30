@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
@@ -32,6 +32,7 @@ export class AppComponent implements OnInit, OnDestroy{
     private platform: Platform,
     private router: Router,
     private splashScreen: SplashScreen,
+    private zone: NgZone,
     private api: ApiService
   ) {
     this.initializeApp();
@@ -58,14 +59,15 @@ export class AppComponent implements OnInit, OnDestroy{
   ngOnDestroy() { }
 
   private checkAuthOnResume(state: AppState) {
-    if (state.isActive) {
-      this.api.isLoggedIn$
-        .subscribe(loggedIn => {
+    this.zone.run( () => {
+      if (state.isActive) {
+        this.api.isLoggedIn$.subscribe(loggedIn => {
           if (!loggedIn) {
             console.log('On resuming the app found user is now logged out. Redirecting to /login');
             this.router.navigate(['/login']);
           }
         });
-    }
+      }
+    });
   }
 }
