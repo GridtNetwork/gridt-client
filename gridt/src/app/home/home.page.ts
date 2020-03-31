@@ -60,7 +60,7 @@ export class HomePage implements OnInit, OnDestroy {
     let last_signal: Date; 
     
     if ( 'last_signal' in leader) {  
-      server_timezone = parseInt(leader.last_signal.time_stamp.match(/\+(\d\d):\d\d/sg)[0]);
+      server_timezone = parseInt(leader.last_signal.time_stamp.match(/\+(\d\d):\d\d/g)[0]);
       last_signal = new Date(Date.parse(leader.last_signal.time_stamp));
     } else {
       return false;
