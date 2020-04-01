@@ -17,7 +17,7 @@
              </ion-label>
           </ion-item>
           <ion-item lines="none">
-              <p>{{ (movement$ | async)?.short_description }}</p>
+              <p><strong>{{ (movement$ | async)?.short_description }}</strong></p>
           </ion-item>
           <ion-item *ngIf="(movement$ | async )?.description">
             <p>{{ (movement$ | async)?.description }}</p>

@@ -3,7 +3,7 @@ import { AlertController, LoadingController } from '@ionic/angular';
 import { Movement } from '../../api/movement.model';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ApiService } from 'src/app/api/api.service';
 import { map, flatMap, take } from 'rxjs/operators';
 

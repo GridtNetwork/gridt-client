@@ -4,6 +4,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AddMovementPage } from './add-movement.page';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 describe('AddMovementPage', () => {
   let component: AddMovementPage;
@@ -13,7 +14,12 @@ describe('AddMovementPage', () => {
     TestBed.configureTestingModule({
       declarations: [ AddMovementPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [ RouterTestingModule.withRoutes([]), HttpClientModule ],
+      imports: [ 
+        RouterTestingModule.withRoutes([]), 
+        HttpClientModule, 
+        FormsModule,
+        ReactiveFormsModule 
+      ],
     })
     .compileComponents();
   }));

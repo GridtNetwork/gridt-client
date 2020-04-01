@@ -4,7 +4,6 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientModule } from '@angular/common/http';
 
 import { MovementsDetailPage } from './movements-detail.page';
-import { MovementsPage } from '../movements.page';
 
 describe('MovementsDetailPage', () => {
   let component: MovementsDetailPage;
@@ -12,9 +11,12 @@ describe('MovementsDetailPage', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MovementsDetailPage, MovementsPage ],
+      declarations: [ MovementsDetailPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [ RouterTestingModule.withRoutes([{path: 'movements', component: MovementsPage }]), HttpClientModule ],
+      imports: [ 
+        RouterTestingModule.withRoutes([]), 
+        HttpClientModule 
+      ],
     })
     .compileComponents();
   }));

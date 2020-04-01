@@ -40,8 +40,8 @@ describe("ApiService", () => {
       imports: [HttpClientTestingModule]
     });
 
-    httpMock = TestBed.inject(HttpTestingController as Type<HttpTestingController>);
-    service = TestBed.inject(ApiService as Type<ApiService>);
+    httpMock = TestBed.get(HttpTestingController as Type<HttpTestingController>);
+    service = TestBed.get(ApiService as Type<ApiService>);
     mock_movements = [
       {
         id: 10129312983,
