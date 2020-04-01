@@ -12,32 +12,24 @@
   <ion-grid *ngIf="movement$ | async">
       <ion-row>
         <ion-col size-md="6" offset-md="3">
-          <ion-item lines="none">
-             <ion-label text-wrap>{{ (movement$ | async)?.name }}
-             </ion-label>
-          </ion-item>
-          <ion-item lines="none">
-              <p><strong>{{ (movement$ | async)?.short_description }}</strong></p>
-          </ion-item>
-          <ion-item *ngIf="(movement$ | async )?.description">
-            <p>{{ (movement$ | async)?.description }}</p>
-        </ion-item>
+          <h2>{{ (movement$ | async)?.name }}</h2>
+          <p><strong>{{ (movement$ | async)?.short_description }}</strong></p>
+          <p *ngIf="(movement$ | async )?.description">{{ (movement$ | async)?.description }}</p>
 
-        <ion-button 
-          ion-button margin 
-          *ngIf="( movement$ | async )?.subscribed == false"
-          (click)="onSubscribe()"
-        >
-          Subscribe
-        </ion-button>
-        <ion-button
-         ion-button margin 
-         *ngIf="( movement$ | async )?.subscribed == true"
-         (click)="onUnsubscribe()"
-        >
-          Unsubscribe
-        </ion-button>
-
+          <ion-button 
+            ion-button margin 
+            *ngIf="( movement$ | async )?.subscribed == false"
+            (click)="onSubscribe()"
+          >
+            Subscribe
+          </ion-button>
+          <ion-button
+            ion-button margin 
+            *ngIf="( movement$ | async )?.subscribed == true"
+            (click)="onUnsubscribe()"
+          >
+            Unsubscribe
+          </ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

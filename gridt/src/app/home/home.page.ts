@@ -4,6 +4,7 @@ import { AlertController } from '@ionic/angular';
 import { Movement } from '../api/movement.model';
 import { Observable } from 'rxjs';
 import { User } from '../api/user.model';
+import { last } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -101,9 +102,23 @@ export class HomePage implements OnInit, OnDestroy {
     )
   }
 
+  readyToSignal (movement: Movement): boolean {
+    if ( movement.last_signal_sent ) { 
+      const time_stamp = movement.last_signal_sent.time_stamp;
+      const server_timezone = parseInt(time_stamp.match(/\+(\d\d):\d\d/g)[0]);
+      const last_reset = this.getLastOccurence(movement.interval, server_timezone);
+      const last_signal = new Date(time_stamp);
+      return last_reset > last_signal;
+    } else {
+      return true;
+    }
+  }
+
   update(movement: Movement): void {
     this.api.sendUpdate$(movement).subscribe(
-      () => {this.api.subscriptions$.subscribe(console.log)},
+      () => {
+        this.api.getMovement$(movement.id).subscribe();
+      },
       (error) => {
         this.alertCtrl.create({
             header: 'Something went wrong while sending your update.',

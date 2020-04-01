@@ -3,7 +3,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { HomePage } from './home.page';
 
 import { ApiService } from '../api/api.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { Movement } from '../api/movement.model';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
@@ -115,5 +115,35 @@ describe('HomePage', () => {
     now.setUTCHours(now.getUTCHours() + 24);
     jasmine.clock().mockDate(now);
     expect(component.isLeaderDone(movement.leaders[0], movement)).toBeFalsy();
+  });
+
+  it("should allow a user to only send signals when it hasn't yet in the interval of this movement", () => {
+    // 2020-04-01 15:00
+    let now = new Date(2020, 3, 1, 15, 0);
+    jasmine.clock().mockDate(now);
+
+    const movement_with_time_stamp: Movement = {
+      name: "Flossing",
+      short_description: "Flossing is good for you.",
+      interval: "daily",
+      last_signal_sent: {
+        time_stamp: "2020-04-01 14:00:00+02:00"
+      }
+    } as Movement;
+
+    const movement_without_time_stamp: Movement = {
+      name: "Sleeping on time",
+      short_description: "Having enough sleep in a day helps you work well",
+      interval: "daily",
+      last_signal_sent: null
+    } as Movement;
+
+    expect(component.readyToSignal(movement_with_time_stamp)).toBeFalsy();
+    expect(component.readyToSignal(movement_without_time_stamp)).toBeTruthy();
+
+    // 2020-04-02 15:00
+    now = new Date(2020, 3, 2, 15, 0);
+    jasmine.clock().mockDate(now);
+    expect(component.readyToSignal(movement_with_time_stamp)).toBeTruthy();
   });
 });

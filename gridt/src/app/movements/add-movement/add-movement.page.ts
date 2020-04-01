@@ -13,6 +13,7 @@ import { Movement } from '../../api/movement.model';
 export class AddMovementPage implements OnInit {
 
   form: FormGroup;
+  
   intervalTypes: string[] = [
     'daily',
     'twice daily', 

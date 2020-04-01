@@ -35,7 +35,7 @@
                   Have you done it yet?
                 </ion-col>
                 <ion-col>
-                  <ion-toggle (ionChange)="update(movement)"></ion-toggle>
+                  <ion-button (click)="update(movement)" [attr.disabled]="!readyToSignal(movement) ? '' : null">Yes!</ion-button>
                 </ion-col>
               </ion-row>
               <ion-row>
