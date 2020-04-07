@@ -1,11 +1,12 @@
-import { AlertController, LoadingController } from '@ionic/angular';
-
-import { Movement } from '../../api/movement.model';
 import { Component, OnInit } from '@angular/core';
+import { AlertController, LoadingController } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
+
 import { Observable } from 'rxjs';
-import { ApiService } from 'src/app/api/api.service';
 import { map, flatMap, take } from 'rxjs/operators';
+
+import { ApiService } from '../../core/api.service';
+import { Movement } from '../../core/movement.model';
 
 @Component({
   selector: 'app-movements-detail',

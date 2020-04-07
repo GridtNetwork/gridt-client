@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
-import { ApiService } from '../api/api.service';
+import { ApiService } from '../core/api.service';
 
 import { ProfilePage } from './profile.page';
 import { BehaviorSubject } from 'rxjs';

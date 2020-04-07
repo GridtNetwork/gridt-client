@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { MenuController, AlertController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 
-import { ApiService } from '../api/api.service';
-import { Movement } from '../api/movement.model';
+import { ApiService } from '../core/api.service';
+import { Movement } from '../core/movement.model';
 
 @Component({
   selector: 'app-movements',

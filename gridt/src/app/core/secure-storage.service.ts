@@ -1,20 +1,23 @@
 import 'capacitor-secure-storage-plugin';
 import { Plugins } from '@capacitor/core';
 import { Observable } from 'rxjs';
+import { Injectable } from '@angular/core';
 
 const { SecureStoragePlugin } = Plugins;
 
-export namespace SecureStorage {
-  export function get$ (key: string): Observable<any> {
+@Injectable({
+  providedIn: 'root'
+})
+export class SecureStorageService {
+  get$ (key: string): Observable<any> {
     return new Observable ( (observer) => {
       SecureStoragePlugin.get({key}).then(
         (valueObj: any) => {
           const value = valueObj.value;
           if (value === atob(null) || !value){
-            observer.error(`Key ${key} does not exist in the secure storage.`);
+            observer.error(`Key "${key}" does not exist in the secure storage.`);
             return;
           } else {
-            console.log('Got', value);
             observer.next(value);
             observer.complete();
           }
@@ -23,7 +26,7 @@ export namespace SecureStorage {
     });
   }
 
-  export function set$ (key: string, value: any): Observable<boolean> {
+  set$ (key: string, value: any): Observable<boolean> {
     return new Observable ( (observer) => {
       SecureStoragePlugin.set({key, value}).then( (succesObj) => {
         if (succesObj.value) {
@@ -35,7 +38,7 @@ export namespace SecureStorage {
     });
   }
 
-  export function clear$ (): Observable<boolean> {
+  clear$ (): Observable<boolean> {
     return new Observable ( (observer) => {
       SecureStoragePlugin.clear().then( (succesObj) => {
         if (succesObj.value) {
@@ -48,7 +51,7 @@ export namespace SecureStorage {
     });
   }
 
-  export function remove$ (key: string): Observable<boolean> {
+  remove$ (key: string): Observable<boolean> {
     return new Observable ( (observer) => {
       SecureStoragePlugin.remove().then( (succesObj) => {
         if (succesObj.value) {

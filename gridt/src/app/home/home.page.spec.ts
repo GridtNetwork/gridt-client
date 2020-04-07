@@ -2,9 +2,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { HomePage } from './home.page';
 
-import { ApiService } from '../api/api.service';
+import { ApiService } from '../core/api.service';
 import { BehaviorSubject, of } from 'rxjs';
-import { Movement } from '../api/movement.model';
+import { Movement } from '../core/movement.model';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('HomePage', () => {
@@ -98,14 +98,12 @@ describe('HomePage', () => {
         {
           id: 1,
           username: "Your Leader",
-          last_signal: {
-            time_stamp: "2020-03-30 13:51:15.201643+02:00"
-          }
+          last_signal: "2020-03-30 13:51:15.201643+02:00"
         }
       ]
     } as Movement;
 
-    let now = new Date(Date.parse(movement.leaders[0].last_signal.time_stamp));
+    let now = new Date(Date.parse(movement.leaders[0].last_signal));
 
     // If the signal is 'now', it should definitely be done!
     jasmine.clock().mockDate(now);

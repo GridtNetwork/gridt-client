@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { LoadingController, AlertController } from '@ionic/angular';
-import { ApiService } from '../api/api.service';
+import { AuthService } from '../core/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +15,7 @@ export class LoginPage implements OnInit {
     private router: Router,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
-    private api: ApiService
+    private auth: AuthService
     ) { }
 
   ngOnInit() { 
@@ -32,7 +32,7 @@ export class LoginPage implements OnInit {
 
     el.present();
 
-    this.api.login$(email, password).subscribe(
+    this.auth.login$(email, password).subscribe(
       loggedIn => {
         if (!loggedIn) {
           el.dismiss();

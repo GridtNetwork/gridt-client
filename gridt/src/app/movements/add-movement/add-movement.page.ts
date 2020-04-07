@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
-import { ApiService } from '../../api/api.service';
-import { Movement } from '../../api/movement.model';
+import { ApiService } from '../../core/api.service';
+import { Movement } from '../../core/movement.model';
 
 @Component({
   selector: 'app-add-movement',

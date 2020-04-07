@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ApiService } from '../api/api.service';
 import { AlertController } from '@ionic/angular';
-import { Movement } from '../api/movement.model';
 import { Observable } from 'rxjs';
-import { User } from '../api/user.model';
-import { last } from 'rxjs/operators';
+
+import { ApiService } from '../core/api.service';
+import { Movement } from '../core/movement.model';
+import { User } from '../core/user.model';
 
 @Component({
   selector: 'app-home',

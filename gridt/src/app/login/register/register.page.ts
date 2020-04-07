@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../api/api.service';
 import { Router } from '@angular/router';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { NgForm } from '@angular/forms';
+import { AuthService } from '../../core/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -16,7 +16,7 @@ export class RegisterPage implements OnInit {
     private router: Router,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
-    private api: ApiService,
+    private auth: AuthService,
     ) { }
 
   ngOnInit() {
@@ -31,7 +31,7 @@ export class RegisterPage implements OnInit {
       message: 'Signing you up...' 
     });
 
-    this.api.register$(username, email, password).subscribe(
+    this.auth.register$(username, email, password).subscribe(
       () => {
         this.router.navigateByUrl('/login');
         el.dismiss();

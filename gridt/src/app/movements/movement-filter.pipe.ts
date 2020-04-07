@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Movement } from '../api/movement.model';
+import { Movement } from '../core/movement.model';
 
 @Pipe({
   name: 'movementFilter'

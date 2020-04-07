@@ -2,20 +2,20 @@ import { Injectable } from '@angular/core';
 import { CanLoad, Route, UrlSegment, Router } from '@angular/router';
 import { Observable  } from 'rxjs';
 import { tap, take } from 'rxjs/operators';
-import { ApiService } from '../api/api.service';
-
+import { AuthService } from '../core/auth.service';
+import { ApiService } from '../core/api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginGuard implements CanLoad {
-  constructor(private api: ApiService, private router: Router) {}
+  constructor(private auth: AuthService, private api: ApiService, private router: Router) {}
 
   canLoad(
     route: Route,
     segments: UrlSegment[]
   ): Observable<boolean> {
-    return this.api.isLoggedIn$.pipe(
+    return this.auth.isLoggedIn$.pipe(
       take(1),
       tap(isAuthenticated => {
         if (!isAuthenticated) {
