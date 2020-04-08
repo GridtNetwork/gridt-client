@@ -33,10 +33,10 @@ export class AuthService {
     
     if (expiration_date < new Date()) {
       console.debug(`Token expired. Expiration date: ${expiration_date}`);
-      return false;
+      return true;
     }
     
-    return true;
+    return false;
   }
   
   /**
@@ -113,12 +113,13 @@ export class AuthService {
    */
   public readyAuthentication$: Observable<{headers: HttpHeaders}> = this.secStore.get$("token").pipe(
     map( (token_string: string) => ({ access_token: token_string }) ),
-    tap( 
+    flatMap( 
       token => {
         if (this.isTokenExpired(token)) {
-          console.debug('Token is expired');
-          throwError("Token Expired");
-        } 
+          return throwError("Token expired");
+        } else {
+          return of(token);
+        }
       }
     ),
     catchError( (error) => { 
@@ -127,7 +128,7 @@ export class AuthService {
           catchError( () => throwError("Can't authenticate: no credentials") ),
           this.authenticate(),
           // Bind neccessary to keep "this" pointing to service (instead of tap) 
-          tap(this.storeToken.bind(this)) 
+          tap( this.storeToken.bind(this) ) 
         );
       } else {
         return throwError(error);

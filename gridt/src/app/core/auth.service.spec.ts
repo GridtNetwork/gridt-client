@@ -2,10 +2,10 @@ import { Type } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
 import { AuthService, AccessToken } from './auth.service';
 import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common/http';
-import { pluck, map } from 'rxjs/operators';
+import { pluck, map, tap, take } from 'rxjs/operators';
 import { TestScheduler } from 'rxjs/testing';
 import { SecureStorageService } from './secure-storage.service';
-import { of, throwError } from 'rxjs';
+import { of, throwError, BehaviorSubject } from 'rxjs';
 import 'jasmine-marbles';
 import { cold } from 'jasmine-marbles';
 
@@ -109,7 +109,7 @@ describe("AuthService", () => {
 
   it('should be ready after succesful authentication', async () => {
     const mock_token = generate_mock_token(3000);
-    secStoreStub.get$.and.returnValue(cold('(t|)', {t: mock_token.access_token}))
+    secStoreStub.get$.and.returnValue(cold('(t|)', {t: mock_token.access_token}).pipe( tap( () => console.log('Token given'))))
     
     service = new AuthService(httpClientStub, secStoreStub);
     
@@ -188,35 +188,29 @@ describe("AuthService", () => {
     );
   });
   
-  it('should try to refresh the token if it is expired', () => {
+  it('should try to refresh the token if it is expired before being ready', () => {
     const old_token = generate_mock_token(-3000).access_token;
     const new_token = generate_mock_token(3000).access_token;
     
+    const token_sub = new BehaviorSubject(old_token);
+
     httpClientStub.post.and.returnValue(of({access_token: new_token} as AccessToken));
 
     secStoreStub.get$.and.callFake( function foo (key: string) {
-      
-      // Hack to make the first time it get's called return the old
-      // token and the next time the new token.
-      if ( typeof foo['token'] === 'undefined') {
-        foo['token'] = old_token;
-      } else {
-        foo['token'] = new_token;
-      }
-      
       switch (key) {
         case "token":
-          return cold("(t|)", {t: foo['token']});
+          return token_sub.asObservable().pipe(take(1));
         case "email":
-          return cold("(e|)", {e: "mock_email"});
+          return of("mock_email");
         case "password":
-          return cold("(p|)", {p: "mock_password"});
+          return of("mock_password");
       }
     });
 
     secStoreStub.set$.and.callFake( (key: string, value: string) => {
       expect(key).toBe("token");
       expect(value).toBe(new_token);
+      token_sub.next(new_token);
       return cold("(t|)", {t: true});
     });
 
@@ -226,6 +220,11 @@ describe("AuthService", () => {
       pluck("headers"),
       map( headers => headers.get("Authorization") )
     )).toBeObservable(cold('(m|)', {m: `JWT ${new_token}`})); 
+
+    expect(httpClientStub.post).toHaveBeenCalledWith(
+      'https://api.gridt.org/auth',
+      {username: "mock_email", password: "mock_password"}
+    )
   });
     
   it("should clear the secure storage when logging out", () => {
