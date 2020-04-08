@@ -6,16 +6,30 @@ import { ApiService } from '../core/api.service';
 import { BehaviorSubject, of } from 'rxjs';
 import { Movement } from '../core/movement.model';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { User } from '../core/user.model';
+import { AlertController } from '@ionic/angular';
+import { resolveTxt } from 'dns';
 
 describe('HomePage', () => {
   let component: HomePage;
   let fixture: ComponentFixture<HomePage>;
-  let ApiSpy: ApiService;
+  let apiSpy: ApiService;
+  let alertSpy: AlertController;
 
   beforeEach(async(() => {
-    ApiSpy = jasmine.createSpyObj('ApiService', { 
-      isLoggedIn$: new BehaviorSubject(true),
-      getSubscriptions: () => {}
+    apiSpy = jasmine.createSpyObj('ApiService', 
+      {
+        getSubscriptions: () => {},
+        sendSignal$: of("Success"),
+        swapLeader$: of({
+          username: "Yori", 
+          last_signal: (new Date(2020, 3, 7, 9)).toISOString() 
+        } as User) 
+      }
+    );
+
+    alertSpy = jasmine.createSpyObj('alertSpy', {
+      create: new Promise( resolve => resolve({present: () => {}}) )
     });
 
     jasmine.clock().install;
@@ -25,7 +39,8 @@ describe('HomePage', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [HttpClientModule],
       providers: [
-        { provide: ApiService, useValue: ApiSpy}
+        { provide: ApiService, useValue: apiSpy},
+        { provide: AlertController, useValue: alertSpy}
       ]
     }).compileComponents();
 
@@ -143,5 +158,33 @@ describe('HomePage', () => {
     now = new Date(2020, 3, 2, 15, 0);
     jasmine.clock().mockDate(now);
     expect(component.readyToSignal(movement_with_time_stamp)).toBeTruthy();
+  });
+
+  it('should allow swapping at correct times', () => {
+    jasmine.clock().mockDate(new Date(2020, 3, 8, 15));
+        
+    let movement = {
+      name: "Flossing",
+      short_description: "Good for your teeth.",
+      interval: "daily",
+      leaders: [
+        {username: "Bad leader", last_signal: '2019-01-01 10:00:00+01:00'},
+      ]
+    } as Movement;
+
+    component.swapLeader(movement, movement.leaders[0]);
+  
+    jasmine.clock().mockDate(new Date(2020, 3, 8, 16));
+    expect(component.canSwap(movement)).toBeFalsy();
+
+    jasmine.clock().mockDate(new Date(2020, 3, 8, 17));
+    movement.last_signal_sent = {time_stamp: '2020-04-08 17:00:00+01:00'};
+    expect(component.canSwap(movement)).toBeFalsy();
+
+    jasmine.clock().mockDate(new Date(2020, 3, 9, 10));
+    expect(component.canSwap(movement)).toBeFalsy();
+
+    movement.last_signal_sent.time_stamp = '2020-04-09 10:00:00+01:00';
+    expect(component.canSwap(movement)).toBeTruthy();
   });
 });

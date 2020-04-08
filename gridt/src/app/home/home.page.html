@@ -35,7 +35,7 @@
                   Have you done it yet?
                 </ion-col>
                 <ion-col>
-                  <ion-button (click)="update(movement)" [attr.disabled]="!readyToSignal(movement) ? '' : null">Yes!</ion-button>
+                  <ion-button (click)="signal(movement)" [attr.disabled]="!readyToSignal(movement) ? '' : null">Yes!</ion-button>
                 </ion-col>
               </ion-row>
               <ion-row>
@@ -50,7 +50,11 @@
                           <span>{{ isLeaderDone(leader, movement) ? 'Done!' : 'Pending...' }}</span>
                         </ion-col>
                       </ion-col>
-                      <ion-button size="small" (click)="confirmSwapLeader(movement, leader)" fill="clear">
+                      <ion-button 
+                        size="small" fill="clear"
+                        [attr.disabled]="!canSwap(movement) ? '' : null"
+                        (click)="confirmSwapLeader(movement, leader)"
+                      >
                         <ion-icon slot="icon-only" name="swap-horizontal-outline"></ion-icon>
                       </ion-button>
                     </ion-row>
