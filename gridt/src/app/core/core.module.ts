@@ -4,6 +4,7 @@ import { ApiService } from './api.service';
 import { HttpClientModule } from '@angular/common/http';
 import { AuthService } from './auth.service';
 import { SecureStorageService } from './secure-storage.service';
+import { SwapService } from './swap.service';
 
 @NgModule({
   declarations: [],
@@ -15,6 +16,7 @@ import { SecureStorageService } from './secure-storage.service';
     ApiService,
     AuthService,
     SecureStorageService,
+    SwapService,
   ]
 })
 export class CoreModule { }

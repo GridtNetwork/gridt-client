@@ -22,7 +22,7 @@ export class SecureStorageService {
             observer.complete();
           }
         }
-      ).catch( (error) => observer.error(error) );
+      ).catch( () => observer.error(`Key "${key}" does not exist in the secure storage.`) );
     });
   }
 

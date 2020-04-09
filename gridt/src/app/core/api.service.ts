@@ -183,18 +183,24 @@ export class ApiService {
   /**
    * Swap one of the leaders identified with either username or user id in a
    * movement identified with a number or string.
-   * 
    */
   public swapLeader$(movement: Movement, user: User): Observable<User> { 
     console.debug(`Swapping leader "@${user.username}#${user.id}" in movement "%${movement.name}#${movement.id}".`)
 
     return this.auth.readyAuthentication$.pipe(
-      flatMap((options) => this.http.post<User>(
+      flatMap( options => this.http.post<User | ServerMessage>(
         `${this.URL}/movements/${movement.id}/leader/${user.id}`,
         {},
         options
       )),
-      tap((new_user) => {
+      map( response => {
+        if ("message" in response) {
+          throw response.message;
+        }
+        
+        return response as User;
+      }),
+      tap( new_user => {
         movement.leaders = movement.leaders.filter(u => u.username != user.username);
         movement.leaders.push(new_user);
         this.replace_movement_in_bsubject(this._allMovements$, movement);
@@ -207,12 +213,12 @@ export class ApiService {
   /*
    * Notify the server that the user has performed the movement related action.
    */
-  public sendUpdate$(movement: Movement): Observable<string> {
-    console.debug(`Sending update to movement "${movement.name}"`)
+  public sendSignal$(movement: Movement): Observable<string> {
+    console.debug(`Sending signal to movement "${movement.name}"`)
 
     return this.auth.readyAuthentication$.pipe(
       flatMap((options) => this.http.post<ServerMessage>(
-        `${this.URL}/movements/${movement.id}/update`,
+        `${this.URL}/movements/${movement.id}/signal`,
         {},
         options
       )),

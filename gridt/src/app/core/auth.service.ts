@@ -22,6 +22,13 @@ export class AuthService {
   
   constructor(private http: HttpClient, private secStore: SecureStorageService) {}
   
+  public error_codes = {
+    TOKENEXPIRED: "Token expired", 
+    TOKENUNAVAILABLE: 'Key "token" does not exist in the secure storage.',
+    NOCREDENTIALS: "Can't authenticate: no credentials",
+    INVALIDCREDENTIALS: "Authentication unsuccessful: invalid credentials"
+  }
+
   /**
    * Check if the experiation date in the JWT token is expired.
    * @param token Token to be evaluated
@@ -49,14 +56,14 @@ export class AuthService {
         (credentials: Credentials) => {
           return this.http.post<AccessToken>(
           'https://api.gridt.org/auth', credentials // TODO: Get rid of hardcoded URL
-          )
+          );
         }
       ),
       catchError( (error: HttpErrorResponse) => {
         // JWT error
         if (error.status == 401) {
           this.logout();
-          return throwError("Authentication unsuccessful: invalid credentials");
+          return throwError(this.error_codes.INVALIDCREDENTIALS);
         }
 
         // Error in server response
@@ -105,9 +112,9 @@ export class AuthService {
   private storeToken(token: AccessToken) {
     this.secStore.set$("token", token.access_token).subscribe();
   }
-   
+
   /**
-   * 1 shot observable to ready authentication for API calls.
+   * One-shot observable to ready authentication for API calls.
    * 
    * This observable follows the flow diagram in the documentation.
    */
@@ -116,16 +123,16 @@ export class AuthService {
     flatMap( 
       token => {
         if (this.isTokenExpired(token)) {
-          return throwError("Token expired");
+          return throwError(this.error_codes.TOKENEXPIRED);
         } else {
           return of(token);
         }
       }
     ),
     catchError( (error) => { 
-      if( error == "Token expired" || error == 'Key "token" does not exist in the secure storage.') {
+      if( error == this.error_codes.TOKENEXPIRED || error == this.error_codes.TOKENUNAVAILABLE ) {
         return this.getCredentials.pipe(
-          catchError( () => throwError("Can't authenticate: no credentials") ),
+          catchError( () => throwError(this.error_codes.NOCREDENTIALS) ),
           this.authenticate(),
           // Bind neccessary to keep "this" pointing to service (instead of tap) 
           tap( this.storeToken.bind(this) ) 
@@ -161,7 +168,7 @@ export class AuthService {
       mapTo(true),
       catchError( () => {
         this.secStore.clear$().subscribe();
-        return of(false) // Not sure if this is better, or just leave the error.
+        return of(false); // Not sure if this is better, or just leave the error.
       }) 
     );
   }
