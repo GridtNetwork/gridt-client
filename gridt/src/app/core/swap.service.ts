@@ -31,10 +31,10 @@ export class SwapService {
       events = events.filter( e => e.movement.id === movement.id );
     }
 
-    if (!events) {
+    if (!events.length) {
       return null;
     }
-
+    
     const lastSwapEvent = events.reduce( 
       (prev, current) => (prev.date > current.date) ? prev : current
     );

@@ -3,12 +3,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { HomePage } from './home.page';
 
 import { ApiService } from '../core/api.service';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { Movement } from '../core/movement.model';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { User } from '../core/user.model';
 import { AlertController } from '@ionic/angular';
-import { resolveTxt } from 'dns';
 
 describe('HomePage', () => {
   let component: HomePage;
@@ -22,8 +21,11 @@ describe('HomePage', () => {
         getSubscriptions: () => {},
         sendSignal$: of("Success"),
         swapLeader$: of({
+          id: 1,
           username: "Yori", 
-          last_signal: (new Date(2020, 3, 7, 9)).toISOString() 
+          last_signal: {
+            time_stamp: (new Date(2020, 3, 7, 9)).toISOString() 
+          }
         } as User) 
       }
     );
@@ -113,12 +115,14 @@ describe('HomePage', () => {
         {
           id: 1,
           username: "Your Leader",
-          last_signal: "2020-03-30 13:51:15.201643+02:00"
+          last_signal: {
+            time_stamp: "2020-03-30 13:51:15.201643+02:00"
+          }
         }
       ]
     } as Movement;
 
-    let now = new Date(Date.parse(movement.leaders[0].last_signal));
+    let now = new Date(Date.parse(movement.leaders[0].last_signal.time_stamp));
 
     // If the signal is 'now', it should definitely be done!
     jasmine.clock().mockDate(now);
@@ -168,7 +172,13 @@ describe('HomePage', () => {
       short_description: "Good for your teeth.",
       interval: "daily",
       leaders: [
-        {username: "Bad leader", last_signal: '2019-01-01 10:00:00+01:00'},
+        {
+          username: "Bad leader",
+          id: 1,
+          last_signal: {
+            time_stamp: '2019-01-01 10:00:00+01:00'
+          }
+        },
       ]
     } as Movement;
 

@@ -35,31 +35,32 @@
                   Have you done it yet?
                 </ion-col>
                 <ion-col>
-                  <ion-button (click)="signal(movement)" [attr.disabled]="!readyToSignal(movement) ? '' : null">Yes!</ion-button>
+                  <ion-button (click)="confirmSignal(movement)" [attr.disabled]="!readyToSignal(movement) ? '' : null">Yes!</ion-button>
                 </ion-col>
               </ion-row>
               <ion-row>
-                <ion-item-group>
+                <ion-list class="leader-list">
                   <ion-item *ngFor="let leader of movement.leaders" >
-                    <ion-row class="ion-justify-content-end ion-align-items-center">
-                      <ion-col>
-                        <ion-col>
-                          <span>{{ leader.username }}</span>
-                        </ion-col>
-                        <ion-col>
-                          <span>{{ isLeaderDone(leader, movement) ? 'Done!' : 'Pending...' }}</span>
-                        </ion-col>
-                      </ion-col>
-                      <ion-button 
+                    <ion-label>
+                      <div class="leader-container">
+                        <h2>
+                          {{ leader.username }}
+                        </h2>
+                        <p>{{ isLeaderDone(leader, movement) ? 'Done!' : 'Pending...' }}</p>
+                      </div>
+                      <small *ngIf="isLeaderDone(leader, movement) && leader.last_signal.message">
+                        {{ leader.last_signal.message }}
+                      </small>
+                    </ion-label>
+                    <ion-button 
                         size="small" fill="clear"
                         [attr.disabled]="!canSwap(movement) ? '' : null"
                         (click)="confirmSwapLeader(movement, leader)"
                       >
-                        <ion-icon slot="icon-only" name="swap-horizontal-outline"></ion-icon>
-                      </ion-button>
-                    </ion-row>
+                      <ion-icon slot="end" name="swap-horizontal-outline"></ion-icon>
+                    </ion-button>
                   </ion-item>
-                </ion-item-group>
+                </ion-list>
               </ion-row>
             </ion-grid>
           </ion-card-content>

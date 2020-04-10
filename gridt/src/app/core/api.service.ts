@@ -213,13 +213,15 @@ export class ApiService {
   /*
    * Notify the server that the user has performed the movement related action.
    */
-  public sendSignal$(movement: Movement): Observable<string> {
+  public sendSignal$(movement: Movement, message: string): Observable<string> {
     console.debug(`Sending signal to movement "${movement.name}"`)
+
+    const body = message ?  { message } : message;
 
     return this.auth.readyAuthentication$.pipe(
       flatMap((options) => this.http.post<ServerMessage>(
         `${this.URL}/movements/${movement.id}/signal`,
-        {},
+        body,
         options
       )),
       pluck("message"),

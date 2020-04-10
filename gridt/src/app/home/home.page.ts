@@ -82,7 +82,7 @@ export class HomePage implements OnInit, OnDestroy {
     let timezone: number; 
     for (let leader of movement.leaders) {
       if (leader.last_signal) {
-        timezone = this.extract_timezone(leader.last_signal);
+        timezone = this.extract_timezone(leader.last_signal.time_stamp);
         break;
       }
     }
@@ -106,8 +106,8 @@ export class HomePage implements OnInit, OnDestroy {
     let last_signal: Date; 
     
     if ( leader.last_signal ) {  
-      server_timezone = this.extract_timezone(leader.last_signal);
-      last_signal = new Date(Date.parse(leader.last_signal));
+      server_timezone = this.extract_timezone(leader.last_signal.time_stamp);
+      last_signal = new Date(Date.parse(leader.last_signal.time_stamp));
     } else {
       return false;
     }
@@ -170,8 +170,37 @@ export class HomePage implements OnInit, OnDestroy {
     }
   }
 
-  signal(movement: Movement): void {
-    this.api.sendSignal$(movement).subscribe(
+  async confirmSignal (movement: Movement) {
+    const el = await this.alertCtrl.create({
+      header: "Want to send a message with your signal?",
+      inputs: [
+        {
+          name: "message",
+          placeholder: "message",
+          type: "text",
+        }
+      ],
+      buttons: [
+        {
+          text: "No",
+          handler: () => {
+            this.signal(movement);
+          }
+        },
+        {
+          text: "Yes",
+          handler: (data) => {
+            this.signal(movement, data.message);
+          }
+        }
+      ]
+    });
+
+    el.present();
+  }
+
+  async signal(movement: Movement, message?: string) {
+    this.api.sendSignal$(movement, message).subscribe(
       () => {
         this.api.getMovement$(movement.id).subscribe();
       },
