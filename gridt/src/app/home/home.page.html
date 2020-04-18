@@ -17,17 +17,17 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  
+
   <ion-grid *ngIf="movements$ | async">
     <ion-col>
       <ion-row>
         <!-- Create a list item for each movement the user is in. -->
-         <ion-card *ngFor="let movement of movements$ | async">
+         <ion-card *ngFor="let movement of movements$ | async" class="movement-card">
           <!-- Display the title on top -->
           <ion-card-header>
             <ion-card-title>{{ movement.name }}</ion-card-title>
           </ion-card-header>
-      
+
           <ion-card-content>
             <ion-grid>
               <ion-row>
@@ -52,7 +52,7 @@
                         {{ leader.last_signal.message }}
                       </small>
                     </ion-label>
-                    <ion-button 
+                    <ion-button
                         size="small" fill="clear"
                         [attr.disabled]="!canSwap(movement) ? '' : null"
                         (click)="confirmSwapLeader(movement, leader)"
@@ -64,9 +64,9 @@
               </ion-row>
             </ion-grid>
           </ion-card-content>
-        </ion-card> 
+        </ion-card>
       </ion-row>
     </ion-col>
   </ion-grid>
- 
+
 </ion-content>
