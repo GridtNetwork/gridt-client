@@ -1,15 +1,19 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { Router } from '@angular/router';
+import { Router, NavigationStart } from '@angular/router';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { Plugins, AppState, Capacitor } from '@capacitor/core';
 import { AuthService } from './core/auth.service';
+import { Observable } from 'rxjs';
+import { filter, flatMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html'
 })
 export class AppComponent implements OnInit, OnDestroy{
+  public isLoggedIn$: Observable<boolean>;
+
   public appPages = [
     {
       title: 'Home',
@@ -36,6 +40,10 @@ export class AppComponent implements OnInit, OnDestroy{
     private auth: AuthService
   ) {
     this.initializeApp();
+    this.isLoggedIn$=this.router.events.pipe(
+      filter(event => event instanceof NavigationStart),
+      flatMap(() => this.auth.isLoggedIn$)
+    );
   }
 
   initializeApp() {

@@ -1,7 +1,7 @@
 <ion-app>
 
-    <ion-menu contentId="main" side="start" menuId="first">
-      <ion-header >
+    <ion-menu contentId="main" side="start" menuId="first" *ngIf="isLoggedIn$|async">
+      <ion-header>
         <ion-toolbar>
           <ion-title>Menu</ion-title>
         </ion-toolbar>
