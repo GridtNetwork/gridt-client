@@ -174,7 +174,7 @@ export class HomePage implements OnInit, OnDestroy {
     const el = await this.alertCtrl.create({
       header: "Want to send a message with your signal?",
       message: '',
-      cssClass: "confirmSignal_alert",
+      cssClass: "confirmSignal-alert", // makes message text go red
       inputs: [
         {
           name: "message",
@@ -192,10 +192,19 @@ export class HomePage implements OnInit, OnDestroy {
         {
           text: "Yes",
           handler: (data) => {
-            if(data.message !==null && data.message.length < 140){
+            if ( data.message !== null && data.message.length < 140){
               this.signal(movement, data.message);
-            }else{
-              el.message = ('Your message is longer than 140 characters.');
+            }
+            else if ( data.message == null ){
+              el.message = ('Your message is empty!');
+              return false;
+            }
+            else if ( data.message.length > 140 ){
+              el.message = ('Your message is longer than 140 characters!');
+              return false;
+            }
+            else {
+              el.message = ('Something went wrong, please try again.');
               return false;
             }
           }
