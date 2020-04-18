@@ -26,8 +26,8 @@ export class AppComponent implements OnInit, OnDestroy{
       icon: 'fitness'
     },
     {
-      title: 'Profile',
-      url: '/profile',
+      title: 'Settings',
+      url: '/settings',
       icon: 'person'
     },
   ];
@@ -40,7 +40,7 @@ export class AppComponent implements OnInit, OnDestroy{
     private auth: AuthService
   ) {
     this.initializeApp();
-    // this.auth.isLoggedIn$ is a one-shot observable, which means that it is 
+    // this.auth.isLoggedIn$ is a one-shot observable, which means that it is
     // not updated when we navigate to another page. Therefore, we look at
     // navigation events to track the change of this.auth.isLoggedIn$.
     this.isLoggedIn$ = this.router.events.pipe(
