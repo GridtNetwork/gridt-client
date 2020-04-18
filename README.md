@@ -22,7 +22,7 @@ npm install -g @angular/cli
 Documentation and download for api https://app.swaggerhub.com/apis/Gridt/GridtServer/0.0.1?loggedInWithGitHub=true
 
 ## Contributing
-If you'd like to contribute to project, please contact @ddvduuren or @Drvanon trough GitHub or slack.
+If you'd like to contribute to project, please contact @ddvduuren or @Drvanon through GitHub or Slack.
 
 You can also support this project by donating money on our [OpenCollective](https://opencollective.com/gridt).
 
