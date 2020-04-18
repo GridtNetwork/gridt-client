@@ -40,7 +40,10 @@ export class AppComponent implements OnInit, OnDestroy{
     private auth: AuthService
   ) {
     this.initializeApp();
-    this.isLoggedIn$=this.router.events.pipe(
+    // this.auth.isLoggedIn is a one-shot observable, which means that it is 
+    // not updated when we navigate to another page. Therefore, we look at
+    // navigation events to track the change of this.auth.isLoggedIn.
+    this.isLoggedIn$ = this.router.events.pipe(
       filter(event => event instanceof NavigationStart),
       flatMap(() => this.auth.isLoggedIn$)
     );
