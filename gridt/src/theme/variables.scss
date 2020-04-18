@@ -66,3 +66,9 @@
   --ion-color-light-shade: #1e2023;
   --ion-color-light-tint: #383a3e;
 }
+
+.confirmSignal-alert{
+  .alert-message {
+        color: red; // text color for confirm alerts
+    }
+}

@@ -14,9 +14,9 @@ import { SwapService } from '../core/swap.service';
 })
 export class HomePage implements OnInit, OnDestroy {
   movements$ = new Observable<Movement[]>();
- 
+
   constructor(
-    private api: ApiService, 
+    private api: ApiService,
     private alertCtrl: AlertController,
     private swapService: SwapService
   ) { }
@@ -42,7 +42,7 @@ export class HomePage implements OnInit, OnDestroy {
    * @param hour_offset Timezone offset to account for the possibility that the server is not in the timezone of the client.
    */
   public getLastOccurence(
-    interval: "daily" | "twice daily" | "weekly", 
+    interval: "daily" | "twice daily" | "weekly",
     hour_offset: number
   ): Date {
     let date = new Date();
@@ -61,7 +61,7 @@ export class HomePage implements OnInit, OnDestroy {
       case "weekly":
         date.setUTCHours(hour_offset, 0, 0, 0);
         // On monday go back an entire week.
-        const reduction = date.getUTCDay() ?  date.getUTCDay(): 7 
+        const reduction = date.getUTCDay() ?  date.getUTCDay(): 7
         date.setUTCDate(date.getUTCDate() - reduction);
         break;
     }
@@ -79,39 +79,39 @@ export class HomePage implements OnInit, OnDestroy {
     }
 
     const last_signal_sent = new Date(movement.last_signal_sent.time_stamp);
-    let timezone: number; 
+    let timezone: number;
     for (let leader of movement.leaders) {
       if (leader.last_signal) {
         timezone = this.extract_timezone(leader.last_signal.time_stamp);
         break;
       }
     }
-    
+
     if (timezone === undefined) {
       return true;
     }
-    
-    const last_reset = this.getLastOccurence(movement.interval, timezone); 
+
+    const last_reset = this.getLastOccurence(movement.interval, timezone);
 
     if (this.swapService.getLastSwapEvent(movement)) {
       const last_swap = this.swapService.getLastSwapEvent(movement).date;
       return (last_swap < last_reset) && (last_reset < last_signal_sent);
     };
-    
+
     return last_signal_sent > last_reset;
   }
 
   isLeaderDone(leader: User, movement: Movement): boolean {
     let server_timezone: number = null;
-    let last_signal: Date; 
-    
-    if ( leader.last_signal ) {  
+    let last_signal: Date;
+
+    if ( leader.last_signal ) {
       server_timezone = this.extract_timezone(leader.last_signal.time_stamp);
       last_signal = new Date(Date.parse(leader.last_signal.time_stamp));
     } else {
       return false;
     }
-  
+
     return this.getLastOccurence(movement.interval, server_timezone) < last_signal;
   }
 
@@ -130,8 +130,8 @@ export class HomePage implements OnInit, OnDestroy {
         }
       ]
     });
-    
-    el.present(); 
+
+    el.present();
   }
 
   swapLeader(movement: Movement, leader: User): void {
@@ -143,7 +143,7 @@ export class HomePage implements OnInit, OnDestroy {
           message: `Your new leader is ${user.username}.`,
           buttons: ["okay"]
         });
-        
+
         el.present();
       },
       async error => {
@@ -159,7 +159,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   readyToSignal (movement: Movement): boolean {
-    if ( movement.last_signal_sent ) { 
+    if ( movement.last_signal_sent ) {
       const time_stamp = movement.last_signal_sent.time_stamp;
       const server_timezone = this.extract_timezone(time_stamp);
       const last_reset = this.getLastOccurence(movement.interval, server_timezone);
@@ -173,6 +173,8 @@ export class HomePage implements OnInit, OnDestroy {
   async confirmSignal (movement: Movement) {
     const el = await this.alertCtrl.create({
       header: "Want to send a message with your signal?",
+      message: '',
+      cssClass: "confirmSignal-alert", // makes message text go red
       inputs: [
         {
           name: "message",
@@ -190,7 +192,21 @@ export class HomePage implements OnInit, OnDestroy {
         {
           text: "Yes",
           handler: (data) => {
-            this.signal(movement, data.message);
+            if ( data.message !== null && data.message.length < 140){
+              this.signal(movement, data.message);
+            }
+            else if ( data.message == null ){
+              el.message = ('Your message is empty!');
+              return false;
+            }
+            else if ( data.message.length > 140 ){
+              el.message = ('Your message is longer than 140 characters!');
+              return false;
+            }
+            else {
+              el.message = ('Something went wrong, please try again.');
+              return false;
+            }
           }
         }
       ]
