@@ -7,9 +7,13 @@
     justify-content: space-between;
 }
 
+.movement-card{
+  min-width: 300px;
+}
+
 // The width of cards on the home page should match the width of the screen for small enough screens. Issue #60
-@media screen and (max-width: 600px) {
-  ion-card{
+@media screen and (max-width: 576px) {
+  .movement-card{
     display: flex;
     flex-direction: column;
     width: 100% !important;
