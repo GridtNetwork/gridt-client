@@ -28,7 +28,7 @@ export class AppComponent implements OnInit, OnDestroy{
     {
       title: 'Settings',
       url: '/settings',
-      icon: 'person'
+      icon: 'settings'
     },
   ];
 

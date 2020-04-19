@@ -11,5 +11,206 @@
 
 
 <ion-content padding>
+  <!-- Future error if no user data is received -->
+  <ion-grid *ngIf="False">
+    <ion-row justify-content-center>
+      <ion-col size="12" size-sm="6" offset-sm="3" text-center>
+        <p>There are no settings  right now, please come back later!</p>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
+  <ion-grid>
+    <ion-row justify-content-center>
+      <ion-col size="12" size-sm="8" offset-sm="2" size-md="6" offset-md="3" text-center>
+        <ion-card>
+
+          <!-- <img src="https://www.gravatar.com/avatar/HASH"> -->
+          <ion-card-header>
+            <img src="https://www.gravatar.com/avatar/HASH">
+            <ion-card-title>John Doe</ion-card-title>
+          </ion-card-header>
+
+          <ion-card-content>
+            <ion-list>
+              <ion-item-group>
+                <ion-item-divider>
+                  <ion-label>
+                    Bio
+                  </ion-label>
+                </ion-item-divider>
+
+                <ion-item *ngIf="false">
+                  "No bio? I'm sure there's something to tell about yourself!"
+                </ion-item>
+
+                <ion-item lines="none"> <!--*ngFor="False"-->
+                  <ion-text class="ion-padding">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                      Pellentesque sapien dolor, auctor at augue tincidunt,
+                      efficitur malesuada nibh. Donec ut neque lacinia, pretium
+                      nisl id, rutrum nulla. Maecenas orci nulla, vulputate a
+                      fermentum pretium, vestibulum eget nunc. Proin id ligula
+                      vel leo commodo posuere. Integer blandit viverra mauris a
+                      rhoncus.
+                    </p>
+                  </ion-text>
+                </ion-item>
+              </ion-item-group>
+
+              <ion-item-group>
+                <ion-item-divider>
+                  <ion-label>
+                    Recent messages
+                  </ion-label>
+                </ion-item-divider>
+
+                <ion-item *ngIf="false">
+                  "You have not sent any messages yet.."
+                </ion-item>
+
+                <ion-item lines="none"> <!--*ngFor="False"-->
+                  <ion-note slot="start">
+                    <ion-text color="secondary">
+                      19-4-2020 <br>
+                      20:00h
+                    </ion-text>
+                  </ion-note>
+
+                  <ion-label class="ion-text-wrap">
+                    <ion-text color="primary">
+                      <h3>Movement Name</h3>
+                    </ion-text>
+                    <p>My awesome message.</p>
+                  </ion-label>
+
+                </ion-item>
+
+                <ion-item lines="none"> <!--*ngFor="False"-->
+                  <ion-note slot="start">
+                    <ion-text color="secondary">
+                      19-4-2020 <br>
+                      19:56h
+                    </ion-text>
+                  </ion-note>
+
+                  <ion-label class="ion-text-wrap">
+                    <ion-text color="primary">
+                      <h3>Movement Name</h3>
+                    </ion-text>
+                    <p>My awesome message.</p>
+                  </ion-label>
+
+                </ion-item>
+
+                <ion-item lines="none"> <!--*ngFor="False"-->
+                  <ion-note slot="start">
+                    <ion-text color="secondary">
+                      19-4-2020 <br>
+                      13:34h
+                    </ion-text>
+                  </ion-note>
+
+                  <ion-label class="ion-text-wrap">
+                    <ion-text color="primary">
+                      <h3>Movement Name</h3>
+                    </ion-text>
+                    <p>My awesome message.</p>
+                  </ion-label>
+
+                </ion-item>
+              </ion-item-group>
+
+              <ion-item-group>
+                <ion-item-divider>
+                  <ion-label>
+                    Account settings
+                  </ion-label>
+                </ion-item-divider>
+
+                <ion-item>
+                  <ion-label slot="start">
+                    Display name
+                  </ion-label>
+                  <ion-text>
+                    John Doe
+                  </ion-text>
+                  <ion-button slot="end" size="small">change</ion-button>
+                </ion-item>
+
+                <ion-item>
+                  <ion-label slot="start">
+                    E-mail address
+                  </ion-label>
+                  <ion-text>
+                    johndoe@gridt.org
+                  </ion-text>
+                  <ion-button slot="end" size="small">change</ion-button>
+                </ion-item>
+
+                <ion-item>
+                  <ion-label slot="start">
+                    Password
+                  </ion-label>
+                  <ion-text>
+                    *****************
+                  </ion-text>
+                  <ion-button slot="end" size="small">change</ion-button>
+                </ion-item>
+              </ion-item-group>
+
+              <ion-item-group>
+                <ion-item-divider>
+                  <ion-label>
+                    Gridt settings
+                  </ion-label>
+                </ion-item-divider>
+
+                <ion-item lines="none">
+                  <ion-label>
+                    Receive Gridt emails
+                  </ion-label>
+                  <ion-toggle></ion-toggle>
+                </ion-item>
+
+                <ion-item lines="none">
+                  <ion-label>
+                    Receive nudges
+                  </ion-label>
+                  <ion-toggle></ion-toggle>
+                </ion-item>
+
+                <ion-item lines="none">
+                  <ion-label>
+                    Receive kudos
+                  </ion-label>
+                  <ion-toggle></ion-toggle>
+                </ion-item>
+
+                <ion-item lines="none">
+                  <ion-label>
+                    Use Gravatar for profile picture
+                  </ion-label>
+                  <ion-toggle></ion-toggle>
+                </ion-item>
+
+              </ion-item-group>
+
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Server</ion-card-title>
+            <ion-card-subtitle>Change which server you're on</ion-card-subtitle>
+          </ion-card-header>
+
+          <ion-card-content>
+            This option will become available in the future.
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
