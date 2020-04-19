@@ -15,12 +15,13 @@
               </ion-label>
             </ion-item>
           </ion-menu-toggle>
-        </ion-list>
-        
-        <ion-button expand="full">
-          Logout
-        </ion-button>
+        </ion-list>      
       </ion-content>
+      <ion-footer>
+        <ion-button expand="full" (click)="auth.logout()" href="/">
+          Logout
+      </ion-button>
+      </ion-footer>
     </ion-menu>
     <ion-router-outlet id="main"></ion-router-outlet>
 </ion-app>
