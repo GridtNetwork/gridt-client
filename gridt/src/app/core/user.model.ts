@@ -16,5 +16,5 @@ export interface User {
     /**
      * The URL linking to the user's profile picture on gravatar.com
      */
-    avatar: string;
+    avatar?: string;
 }
