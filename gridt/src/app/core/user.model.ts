@@ -12,4 +12,6 @@ export interface User {
         time_stamp: string;
         message?: string
     } | null;
+
+    avatar: string;
 }
