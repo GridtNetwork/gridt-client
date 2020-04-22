@@ -41,11 +41,14 @@
               <ion-row>
                 <ion-list class="leader-list">
                   <ion-item *ngFor="let leader of movement.leaders" >
+                    <ion-avatar slot="start">
+                      <img src="https://gravatar.com/avatar/{{ leader.avatar }}">
+                    </ion-avatar>
                     <ion-label>
                       <div class="leader-container">
-                        <h2>
+                        <h3>
                           {{ leader.username }}
-                        </h2>
+                        </h3>
                         <p>{{ isLeaderDone(leader, movement) ? 'Done!' : 'Pending...' }}</p>
                       </div>
                       <small *ngIf="isLeaderDone(leader, movement) && leader.last_signal.message">
