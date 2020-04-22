@@ -13,5 +13,8 @@ export interface User {
         message?: string
     } | null;
 
+    /**
+     * The URL linking to the user's profile picture on gravatar.com
+     */
     avatar: string;
 }
