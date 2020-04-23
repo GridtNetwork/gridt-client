@@ -45,17 +45,12 @@
                 </ion-item>
 
                 <ion-item lines="none"> <!--*ngFor="False"-->
-                  <ion-text class="ion-padding">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Pellentesque sapien dolor, auctor at augue tincidunt,
-                      efficitur malesuada nibh. Donec ut neque lacinia, pretium
-                      nisl id, rutrum nulla. Maecenas orci nulla, vulputate a
-                      fermentum pretium, vestibulum eget nunc. Proin id ligula
-                      vel leo commodo posuere. Integer blandit viverra mauris a
-                      rhoncus.
-                    </p>
-                  </ion-text>
+                  <ion-textarea class="ion-padding" autoGrow="true" readonly type = 'string' value = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque sapien dolor, auctor at augue tincidunt, efficitur malesuada nibh. Donec ut neque lacinia, nisl id, rutrum nulla. Maecenas orci nulla, vulputate fermentum pretium, vestibulum eget nunc. Proin id vel leo commodo posuere. Integer blandit viverra mauris rhoncus.'>
+                  </ion-textarea>
+
+                  <ion-button slot="end" size="small">edit</ion-button>
                 </ion-item>
+
               </ion-item-group>
 
               <ion-item-group>
@@ -129,32 +124,26 @@
                 </ion-item-divider>
 
                 <ion-item>
-                  <ion-label slot="start">
+                  <ion-label position="floating">
                     Display name
                   </ion-label>
-                  <ion-text>
-                    John Doe
-                  </ion-text>
+                  <ion-input value="John Doe" readonly></ion-input>
                   <ion-button slot="end" size="small">change</ion-button>
                 </ion-item>
 
                 <ion-item>
-                  <ion-label slot="start">
+                  <ion-label position="floating">
                     E-mail address
                   </ion-label>
-                  <ion-text>
-                    johndoe@gridt.org
-                  </ion-text>
+                  <ion-input value="johndoe@gridt.org" readonly></ion-input>
                   <ion-button slot="end" size="small">change</ion-button>
                 </ion-item>
 
                 <ion-item>
-                  <ion-label slot="start">
+                  <ion-label position="floating">
                     Password
                   </ion-label>
-                  <ion-text>
-                    *****************
-                  </ion-text>
+                  <ion-input value="*****************" readonly></ion-input>
                   <ion-button slot="end" size="small">change</ion-button>
                 </ion-item>
               </ion-item-group>
