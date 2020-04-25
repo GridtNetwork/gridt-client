@@ -13,6 +13,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { IonicStorageModule } from '@ionic/storage';
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import { environment } from '../environments/environment';
     HttpClientModule,
     CoreModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    IonicStorageModule.forRoot(),
   ],
   providers: [
     StatusBar,
