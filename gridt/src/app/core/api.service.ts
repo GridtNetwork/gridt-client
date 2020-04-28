@@ -172,7 +172,7 @@ export class ApiService {
 
     return this.auth.readyAuthentication$.pipe(
       flatMap((options) => this.http.delete<ServerMessage>(
-        `${this.URL}/user/${movement_id}/subscriber`,
+        `${this.URL}/movements/${movement_id}/subscriber`,
         options
       )),
       pluck("message"),
