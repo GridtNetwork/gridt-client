@@ -1,3 +1,4 @@
+import { LastSiganl } from './lastSignal.model';
 export interface User {
     /**
      * The user's id
@@ -8,8 +9,6 @@ export interface User {
      */
     username: string;
 
-    last_signal: {
-        time_stamp: string;
-        message?: string
-    } | null;
+    last_signal: LastSiganl| null;
+    bio: string;
 }

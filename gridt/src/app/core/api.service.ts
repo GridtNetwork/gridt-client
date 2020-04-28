@@ -172,7 +172,7 @@ export class ApiService {
 
     return this.auth.readyAuthentication$.pipe(
       flatMap((options) => this.http.delete<ServerMessage>(
-        `${this.URL}/movements/${movement_id}/subscriber`,
+        `${this.URL}/user/${movement_id}/subscriber`,
         options
       )),
       pluck("message"),
@@ -180,6 +180,35 @@ export class ApiService {
     );
   }
 
+
+  public getBio$(user.id: string): Observable<string>{
+    console.debug(`Getting user bio "${user.id}" from server.`);
+
+    return this.auth.readyAuthentication$.pipe(
+      flatMap((options) => this.http.get<string>(
+        `${this.URL}/user/${user.id}`,
+        options
+      ) as Observable<string>),
+      catchError( this.handleBadAuth() )
+    );
+
+
+      
+    
+ 
+  }
+
+  public putBio$(user.bio: string): Observable<string> {
+    console.debug(`Creating bio "${user.bio}"`);
+
+    return this.auth.readyAuthentication$.pipe(
+      flatMap((options) => this.http.post<User |ServerMessage>(
+        `${this.URL}/user`, user.bio, options
+      )),      
+      catchError( this.handleBadAuth() ),
+      pluck("message")
+    );
+  }
   /**
    * Swap one of the leaders identified with either username or user id in a
    * movement identified with a number or string.
