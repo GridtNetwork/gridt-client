@@ -1,5 +1,6 @@
-import { LastSiganl } from './lastSignal.model';
+
 import { User } from './user.model';
+import { Signal } from './Signal.model';
 
 export interface Movement {
   /**
@@ -31,7 +32,7 @@ export interface Movement {
   /**
    * Last signal that the user sent in this movement.
    */
-  last_signal_sent?: LastSiganl;
+  last_signal_sent?: Signal;
 
   /**
    * A much longer description that is used to 'sell' a movement to it's users.

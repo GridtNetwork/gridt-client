@@ -1,4 +1,5 @@
-import { LastSiganl } from './lastSignal.model';
+import { Signal } from './Signal.model';
+
 export interface User {
     /**
      * The user's id
@@ -9,6 +10,6 @@ export interface User {
      */
     username: string;
 
-    last_signal: LastSiganl| null;
+    last_signal: Signal| null;
     bio: string;
 }

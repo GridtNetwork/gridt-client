@@ -202,7 +202,7 @@ export class ApiService {
     console.debug(`Creating bio "${user.bio}"`);
 
     return this.auth.readyAuthentication$.pipe(
-      flatMap((options) => this.http.post<User |ServerMessage>(
+      flatMap((options) => this.http.put<User |ServerMessage>(
         `${this.URL}/user`, user.bio, options
       )),      
       catchError( this.handleBadAuth() ),
