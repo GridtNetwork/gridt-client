@@ -1,8 +1,5 @@
 export interface Signal {
-
-//Last signal
-    
+//Signal
     time_stamp: string;
      message?: string;
-    
 }
