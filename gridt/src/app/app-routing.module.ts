@@ -1,14 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { LoginGuard } from './login/login.guard';
-import { TutorialGuard } from './about/tutorial.guard';
 
 const routes: Routes = [
   {
     path: '',
     redirectTo: 'home',
-    pathMatch: 'full',
-    canActivate: [TutorialGuard]
+    pathMatch: 'full'
   },
   {
     path: 'movements',
@@ -62,6 +60,7 @@ const routes: Routes = [
   {
     path: 'about',
     loadChildren: () => import('./about/about.module').then( m => m.AboutPageModule),
+    canLoad: [LoginGuard]
   },
 
 ];
