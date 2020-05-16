@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { ModalController } from '@ionic/angular';
+import { PrivacyPage } from './privacy/privacy.page';
 
 @Component({
   selector: 'app-about',
@@ -7,4 +9,15 @@ import { Component } from '@angular/core';
 })
 export class AboutPage {
 
+  constructor(public modalController: ModalController) { 
+
+  }
+
+  async presentPrivacy() {
+    const modal = await this.modalController.create({
+      component: PrivacyPage
+    });
+    console.log("present privacy policy");
+    return await modal.present();
+  }
 }
