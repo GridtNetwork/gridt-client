@@ -6,12 +6,17 @@ import { IonicModule } from '@ionic/angular';
 import { AboutPageRoutingModule } from './about-routing.module';
 import { AboutPage } from './about.page';
 
+import { CreditsPageModule } from './credits/credits.module';
+import { TutorialPageModule } from './tutorial/tutorial.module';
+
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
     AboutPageRoutingModule,
+    CreditsPageModule,
+    TutorialPageModule
   ],
   declarations: [AboutPage]
 })
