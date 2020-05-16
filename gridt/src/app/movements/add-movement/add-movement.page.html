@@ -24,9 +24,7 @@
         </ion-col>
       </ion-row>
       <ion-row *ngIf="
-        !form.get('name').valid && 
-        form.get('name').touched && 
-        form.get('name').value != ''
+        !form.get('name').valid && form.get('name').touched
       ">
         <ion-col size-sm="6" offset-sm="3">
           <p>Name must be between 4 and 50 characters.</p>
@@ -41,9 +39,7 @@
         </ion-col>
       </ion-row>
       <ion-row *ngIf="
-        !form.get('short_description').valid && 
-        form.get('short_description').touched && 
-        form.get('short_description').value != ''
+        !form.get('short_description').valid && form.get('short_description').touched
       ">
         <ion-col size-sm="6" offset-sm="3">
           <p>Short description must be between 10 and 100 characters.</p>
