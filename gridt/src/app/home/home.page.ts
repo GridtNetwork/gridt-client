@@ -184,13 +184,11 @@ export class HomePage implements OnInit, OnDestroy {
       ],
       buttons: [
         {
-          text: "No",
-          handler: () => {
-            this.signal(movement);
-          }
+          text: "Cancel",
+          role: 'cancel',
         },
         {
-          text: "Yes",
+          text: "Send!",
           handler: (data) => {
             if ( data.message !== null && data.message.length < 140){
               this.signal(movement, data.message);
