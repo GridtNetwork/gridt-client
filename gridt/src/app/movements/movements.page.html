@@ -50,16 +50,19 @@
             detail button
           >
             <!-- Right now, this just shows every single movement -->
-            <!-- Display the title on the left -->
+            <!-- Display the title on the left with icon if user is subscribed-->
             <ion-label text-wrap>
-              <h3>{{ movement.name }} <ion-icon *ngIf="movement.subscribed" name="people-sharp"></ion-icon> </h3>
+              <h3>
+                {{ movement.name }} 
+                <ion-icon *ngIf="movement.subscribed" name="people-sharp"></ion-icon> 
+              </h3>
               <p class="shortdescription">{{ movement.short_description }}</p> 
             </ion-label>
 
              <!-- Display the interval (like, weekly, monthly etc.) on the right -->
             <ion-label slot="end"> 
               {{ movement.interval }}
-            </ion-label>                
+            </ion-label>
           </ion-item>
          </ion-col>
       </ion-row>
