@@ -71,7 +71,7 @@
             <ion-item>
               <ion-grid>
                 <ion-row>
-                  <input type="checkbox" [checked]="ch1" (change)="ch1= !ch1" style="padding: 2em">
+                  <input type="checkbox" [checked]="accept" (change)="accept= !accept" style="padding: 2em">
                   <ion-col>
                     <p style="padding-left: 1em">I have read and accept the <a role="button" (click)="presentPrivacy()">
                       privacy policy and terms of use.</a></p>
@@ -90,7 +90,7 @@
             type="submit"
             color="primary"
             expand="block"
-            [disabled]="!f.valid || !ch1"
+            [disabled]="!f.valid || !accept"
           >
             Register
           </ion-button>

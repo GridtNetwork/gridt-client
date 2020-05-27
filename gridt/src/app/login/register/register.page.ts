@@ -72,7 +72,7 @@ export class RegisterPage implements OnInit {
     const modal = await this.modalController.create({
       component: PrivacyPage
     });
-    console.log("present privacy policy");
+    console.debug("present privacy policy");
     return await modal.present();
   }
 

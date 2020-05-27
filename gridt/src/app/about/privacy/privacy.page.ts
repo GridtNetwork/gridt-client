@@ -8,12 +8,9 @@ import { ModalController } from '@ionic/angular';
 })
 export class PrivacyPage implements OnInit {
 
-  constructor(public modalController: ModalController) { 
+  constructor(public modalController: ModalController) { }
 
-  }
-
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
   dismiss() {
     this.modalController.dismiss()
