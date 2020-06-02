@@ -18,7 +18,7 @@ export class AboutPage {
     const modal = await this.modalController.create({
       component: CreditsPage
     });
-    console.log("present credits");
+    console.debug("present credits");
     return await modal.present();
   }
 
@@ -26,7 +26,7 @@ export class AboutPage {
     const modal = await this.modalController.create({
       component: TutorialPage
     });
-    console.log("present tutorial");
+    console.debug("present tutorial");
     return await modal.present();
   }
 
