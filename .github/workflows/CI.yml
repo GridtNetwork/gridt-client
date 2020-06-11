@@ -3,7 +3,8 @@
 name: CI
 
 # Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
+# events but only for the CI branch now (should be changed to
+# api-development/master later)
 on:
   push:
     branches: [ CI ]
@@ -22,20 +23,25 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    # Runs a single command using the runners shell
     - name: Install the repository
       run: |
-        echo "cd gridt"
-        cd gridt
         echo Installing Angular client - npm install @angular/cli
         npm install @angular/cli
+
         echo Installing the Gridt repo - npm install
+        cd gridt
         npm install
-    # Runs a set of commands using the runners shell
+
+    # We require a headless browser
+    - name: Install PhantomJS
+      run: |
+        echo Installing PhantomJS
+        npm install --save-dev phantomjs phantomjs-prebuilt karma-phantomjs-launcher
+
+    # All test scripts are called with ng test
     - name: Run the test scripts
       run: |
-        echo cd gridt
-        cd gridt
         echo Testing the project
         echo ng test headless
-        npm run-script ng test --watch=false --browsers=ChromeHeadless
+        cd gridt
+        npm run-script ng test --watch=false --browsers PhantomJS
