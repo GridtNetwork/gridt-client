@@ -34,5 +34,7 @@ jobs:
     # Runs a set of commands using the runners shell
     - name: Run the test scripts
       run: |
+        echo cd gridt
+        cd gridt
         echo Testing the project - ng test
         npm run-script ng test
