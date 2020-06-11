@@ -44,4 +44,4 @@ jobs:
         echo Testing the project
         echo ng test headless
         cd gridt
-        npm run-script ng test --watch=false --browsers=PhantomJS
+        npm run test
