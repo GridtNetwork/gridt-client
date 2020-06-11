@@ -27,8 +27,6 @@ jobs:
       run: |
         echo "cd to gridt"
         cd gridt
-        echo "Installing angular Client"
-        npm install -g @angular/cli
         echo Installing the Gridt repo
         npm install
     # Runs a set of commands using the runners shell
