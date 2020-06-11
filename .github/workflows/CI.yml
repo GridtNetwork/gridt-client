@@ -25,14 +25,14 @@ jobs:
     # Runs a single command using the runners shell
     - name: Install the repository
       run: |
-        echo "cd to gridt"
+        echo "cd gridt"
         cd gridt
-        echo Installing Angular client
+        echo Installing Angular client - npm install @angular/cli
         npm install @angular/cli
-        echo Installing the Gridt repo
+        echo Installing the Gridt repo - npm install
         npm install
     # Runs a set of commands using the runners shell
     - name: Run the test scripts
       run: |
-        echo Testing the project.
-        ng test
+        echo Testing the project - ng test
+        npm run-script ng test
