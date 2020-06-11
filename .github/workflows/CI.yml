@@ -37,5 +37,5 @@ jobs:
         echo cd gridt
         cd gridt
         echo Testing the project
-        echo ng test (headless)
+        echo ng test headless
         npm run-script ng test --watch=false --browsers=ChromeHeadless
