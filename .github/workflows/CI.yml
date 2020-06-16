@@ -32,13 +32,8 @@ jobs:
         cd gridt
         npm install
 
+    # All test scripts are called with npm run test
     # We require a headless browser
-    - name: Install PhantomJS
-      run: |
-        echo Installing PhantomJS
-        npm install --save-dev phantomjs phantomjs-prebuilt karma-phantomjs-launcher
-
-    # All test scripts are called with ng test
     - name: Run the test scripts
       run: |
         echo Testing the project
