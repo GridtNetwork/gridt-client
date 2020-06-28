@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 
-import { IdentityService} from '../core/identity.service'
+import { SettingsService} from '../core/identity.service'
 import { Identity } from '../core/identity.model';
 
 @Component({
@@ -13,12 +13,6 @@ import { Identity } from '../core/identity.model';
 export class SettingsPage implements OnInit {
   identity$: Observable<Identity>;
 
-  // username = identity$.pipe(pluck('username'));
-  gravatar: String = "https://www.gravatar.com/avatar/hash";
-  username: String = "John Doe (sv)";
-  email: String = "JohnDoe@gridt.org (sv)"
-  bio: String = "A very short demo bio for John Doe. (sv)"
-
   constructor(
     private idService: IdentityService,
     private alertCtrl: AlertController
@@ -26,9 +20,7 @@ export class SettingsPage implements OnInit {
 
   ngOnInit() {
     this.identity$ = this.idService.theID$;
-    // this.username = this.identity$.pipe(pluck('username'))
-    // this.email = this.identity$.pip(pluck('email'))
-    this.idService.getIdentity();
+    this.idService.getSettings();
   }
 
   async showError(error:string) {

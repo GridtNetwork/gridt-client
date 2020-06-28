@@ -8,7 +8,7 @@ import { AuthService } from './auth.service';
 @Injectable({
   providedIn: "root"
 })
-export class IdentityService {
+export class SettingsService {
   /*
    * Subscribe to this observable to ready the API.
    */
@@ -50,7 +50,7 @@ export class IdentityService {
    /**
     * Obtain full identity of the user from server
     */
-   public getIdentity(): void {
+   public getSettings(): void {
      console.debug("Getting identity from the server");
 
      this.auth.readyAuthentication$.pipe(
