@@ -1,9 +1,11 @@
 import { Injectable } from "@angular/core";
-import { Observable, BehaviorSubject, throwError } from "rxjs";
+import { Observable, ReplaySubject, throwError, forkJoin } from "rxjs";
 import { HttpClient } from "@angular/common/http";
-import { map, tap, catchError, flatMap } from "rxjs/operators";
+import { map, tap, catchError } from "rxjs/operators";
 import { Identity } from './identity.model';
+import { Settings } from './settings.model';
 import { AuthService } from './auth.service';
+import { SecureStorageService } from './secure-storage.service';
 
 @Injectable({
   providedIn: "root"
@@ -14,55 +16,91 @@ export class SettingsService {
    */
   public URL = "https://api.gridt.org";
 
-   constructor (private http: HttpClient, private auth: AuthService) {}
+  constructor (
+    private http: HttpClient,
+    private auth: AuthService,
+    private secStore: SecureStorageService
+  ) {}
 
+  public error_codes = {}
 
-   public _id$ = new BehaviorSubject<Identity>({id: 0, username: "John Doe", bio: "a very short bio", email: "john_doe@gridt.org", gravatar: "https://www.gravatar.com/avatar/e950226ca4490c8fa967f9c282fb51f2"});
-   get theID$ (): Observable<Identity> {
-     return this._id$.asObservable();
-   }
+  /**
+   * Create ReplaySubject which yields the latest user settings.
+   */
+  private _user_settings$ = new ReplaySubject<Settings>(1);
+  /*
+   * The depth of the ReplaySubject is set to 1, which makes sure only the latest
+   * available settings are retured to the user.
+   */
 
-   private handleBadAuth () {
-     // This function factory is necessary because the value in "this" gets
-     // reset to a the "handleBadAuth" function instead of the service.
-     return function (error) {
-       // JWT Error
-       if (error.status === 401) {
-         return throwError(error.error.description);
-       }
+  /**
+   * Transforms the user settings Subject to an Observable
+   */
+  get the_user_settings$ (): Observable<Settings> {
+    return this._user_settings$.asObservable();
+  }
 
-       // Server error
-       if (error.error) {
-         return throwError(error.error.message);
-       }
+  /**
+   * Observable to obtain settings from secure storage
+   */
+  private getLocalSettings = new Observable<Settings>( (observer) => {
+    observer.next({username: "John1"});
 
-       return throwError(error);
-     };
-   }
+    const settings = forkJoin({
+      username: this.secStore.get$('username')
+    }).pipe(
+      map( (set) => {
+        console.log(set);
+        return set as Settings
+      })
+    ).subscribe( (set) => observer.next(set));
+    observer.complete();
+  });
 
-   private replace_id_in_bsubject(bsubject: BehaviorSubject<Identity>, identity: Identity) {
-     let this_identity = bsubject.getValue();
-     this_identity = identity;
+  /**
+   * Store settings in the secure storage.
+   * @param settings Settings to be stored.
+   */
+  private storeLocalSettings(settings: Settings): void {
+    this.secStore.set$("username", settings).subscribe();
+  }
 
-     bsubject.next(this_identity);
-   }
+  /**
+   * Update local storage whenever the settings change.
+   */
+  // _user_settings$.subscribe(
+  //   (new_settings) => {
+  //     this.storeLocalSettings(new_settings);
+  //     console.log("New settings stored in secure local storage.")
+  //   }
+  // )
 
-   /**
-    * Obtain full identity of the user from server
-    */
-   public getSettings(): void {
-     console.debug("Getting identity from the server");
+  public populateStorage(): void {
+    console.log("Populating secure storage.")
+    this.secStore.set$("username", "John2").subscribe();
+  }
 
-     this.auth.readyAuthentication$.pipe(
-       flatMap((options) => this.http.get<Identity>(
-         `${this.URL}/identity`,
-         options
-       ) as Observable<Identity>),
-       catchError (this.handleBadAuth() ),
-       tap( (identity) => this.replace_id_in_bsubject(this._id$, identity)),
-       map( () => true)
-     ).subscribe();
-   }
+  /**
+   * Observable to obtain settings from server
+   */
+  private getServerSettings = new Observable<Settings>( (observer) => {
+    observer.next();
+    observer.complete();
+  })
 
+  /**
+   * Combine Local and server settings
+   */
+  public getUserSettings(): void {
 
+    forkJoin({
+      local: this.getLocalSettings,
+      server: this.getServerSettings
+    }).pipe(
+      map( (settings) => {
+        return {...settings.local, ...settings.server}
+        // Server settings have priority over local settings
+      })
+    ).subscribe( (set) => this._user_settings$.next(set) );
+  }
 }

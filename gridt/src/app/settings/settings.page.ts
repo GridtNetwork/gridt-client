@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 
-import { SettingsService} from '../core/identity.service'
-import { Identity } from '../core/identity.model';
+import { SettingsService} from '../core/settings.service'
+import { Settings } from '../core/settings.model';
 
 @Component({
   selector: 'app-settings',
@@ -11,16 +11,17 @@ import { Identity } from '../core/identity.model';
   styleUrls: ['./settings.page.scss'],
 })
 export class SettingsPage implements OnInit {
-  identity$: Observable<Identity>;
+  settings$: Observable<Settings>;
 
   constructor(
-    private idService: IdentityService,
+    private SetService: SettingsService,
     private alertCtrl: AlertController
   ) { }
 
   ngOnInit() {
-    this.identity$ = this.idService.theID$;
-    this.idService.getSettings();
+    this.SetService.populateStorage();
+    this.settings$ = this.SetService.the_user_settings$;
+    this.SetService.getUserSettings();
   }
 
   async showError(error:string) {
