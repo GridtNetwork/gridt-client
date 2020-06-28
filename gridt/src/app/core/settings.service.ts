@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Observable, ReplaySubject, throwError, forkJoin } from "rxjs";
 import { HttpClient } from "@angular/common/http";
-import { map, tap, catchError } from "rxjs/operators";
+import { map, tap, delay, catchError } from "rxjs/operators";
 import { Identity } from './identity.model';
 import { Settings } from './settings.model';
 import { AuthService } from './auth.service';
@@ -46,16 +46,17 @@ export class SettingsService {
   private getLocalSettings = new Observable<Settings>( (observer) => {
     observer.next({username: "John1"});
 
-    const settings = forkJoin({
-      username: this.secStore.get$('username')
-    }).pipe(
-      map( (set) => {
-        console.log(set);
-        return set as Settings
-      })
-    ).subscribe( (set) => observer.next(set));
+    let set = this.setter.subscribe(set => {
+      console.log(set.username);
+      observer.next({username: set.username});
+    });
+
     observer.complete();
   });
+
+  private setter: Observable<Settings> = forkJoin({
+    username: this.secStore.get$("username")
+  })
 
   /**
    * Store settings in the secure storage.
