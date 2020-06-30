@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable, ReplaySubject, throwError, forkJoin } from "rxjs";
+import { Observable, ReplaySubject, throwError, forkJoin, of } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { map, tap, delay, catchError } from "rxjs/operators";
 import { Identity } from './identity.model';
@@ -43,27 +43,19 @@ export class SettingsService {
   /**
    * Observable to obtain settings from secure storage
    */
-  private getLocalSettings = new Observable<Settings>( (observer) => {
-    observer.next({username: "John1"});
+  private getLocalSettings = this.secStore.get$("settings") ;
 
-    let set = this.setter.subscribe(set => {
-      console.log(set.username);
-      observer.next({username: set.username});
-    });
-
-    observer.complete();
-  });
-
-  private setter: Observable<Settings> = forkJoin({
-    username: this.secStore.get$("username")
-  })
+  // private setter: Observable<Settings> = forkJoin({
+  //   username: this.secStore.get$("username")
+  // })
 
   /**
    * Store settings in the secure storage.
    * @param settings Settings to be stored.
    */
   private storeLocalSettings(settings: Settings): void {
-    this.secStore.set$("username", settings).subscribe();
+    console.log(`Storing ${settings} into the local storage.`);
+    this.secStore.set$("settings", settings).subscribe();
   }
 
   /**
@@ -77,28 +69,31 @@ export class SettingsService {
   // )
 
   public populateStorage(): void {
-    console.log("Populating secure storage.")
-    this.secStore.set$("username", "John2").subscribe();
+    console.log("Populating secure storage.");
+    console.log(JSON.stringify({username: "InitJohn"}));
+    this.secStore.set$("settings", {username: "InitJohn"}).subscribe();
   }
 
   /**
    * Observable to obtain settings from server
    */
-  private getServerSettings = new Observable<Settings>( (observer) => {
-    observer.next();
-    observer.complete();
-  })
+  private getServerSettings = of({});
+  // {new Observable<Settings>( (observer) => {
+  //   observer.next();
+  //   observer.complete();
+  // })}
 
   /**
    * Combine Local and server settings
    */
   public getUserSettings(): void {
-
+    console.log(`Getting user settings from local storage and server.`);
     forkJoin({
       local: this.getLocalSettings,
       server: this.getServerSettings
     }).pipe(
       map( (settings) => {
+        console.log(`received local settings ${JSON.stringify(settings.local)}`);
         return {...settings.local, ...settings.server}
         // Server settings have priority over local settings
       })
