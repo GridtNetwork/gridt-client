@@ -46,7 +46,7 @@
                   <ion-textarea class="ion-padding" autoGrow="true" readonly type = 'string' [value]="(setttings$ | async)?.identity.bio">
                   </ion-textarea>
 
-                  <ion-button slot="end" size="small">edit</ion-button>
+                  <ion-button slot="end" size="small" [disabled]="( isDisabled$ | async )">edit</ion-button>
                 </ion-item>
 
               </ion-item-group>
@@ -92,7 +92,7 @@
                     Display name
                   </ion-label>
                   <ion-input [value]="(settings$ | async)?.identity.username" readonly></ion-input>
-                  <ion-button slot="end" size="small" disabled="true">change</ion-button>
+                  <ion-button slot="end" size="small" [disabled]="( isDisabled$ | async )">change</ion-button>
                 </ion-item>
 
                 <ion-item>
@@ -100,7 +100,7 @@
                     E-mail address
                   </ion-label>
                   <ion-input [value]="(settings$ | async)?.identity.email" readonly></ion-input>
-                  <ion-button slot="end" size="small" disabled="true">change</ion-button>
+                  <ion-button slot="end" size="small" [disabled]="( isDisabled$ | async )">change</ion-button>
                 </ion-item>
 
                 <ion-item>
@@ -108,7 +108,7 @@
                     Password
                   </ion-label>
                   <ion-input value="*************" readonly></ion-input>
-                  <ion-button slot="end" size="small" disabled="true">change</ion-button>
+                  <ion-button slot="end" size="small" [disabled]="( isDisabled$ | async )">change</ion-button>
                 </ion-item>
               </ion-item-group>
 <!--

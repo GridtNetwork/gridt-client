@@ -55,11 +55,11 @@ export class SettingsService {
   /**
    * Determines if settings are editable or not (depends on availability server)
    */
-  // private disabler$ = new BehaviorSubject<boolean>(false);
-  //
-  // get isDisabled$ (): Observable<boolean> {
-  //   return this.disabler$.asObservable();
-  // }
+  private disabler$ = new BehaviorSubject<boolean>(false);
+
+  get isDisabled$ (): Observable<boolean> {
+    return this.disabler$.asObservable();
+  }
 
   /**
    * Observable to obtain settings from secure storage
@@ -71,7 +71,7 @@ export class SettingsService {
    * @param settings Settings to be stored.
    */
   private storeLocalSettings(settings: Settings): void {
-    console.log(`Storing ${settings} into the local storage.`);
+    console.log(`Storing ${JSON.stringify(settings)} into the local storage.`);
     this.secStore.set$("settings", settings).subscribe();
   }
 
@@ -82,9 +82,9 @@ export class SettingsService {
     console.log("Populating secure storage.");
     let ID = {
       id: 1,
-      username: "InitJohn",
-      bio: "My awesome biography",
-      email: "init-john@gridt.org"};
+      username: "username",
+      bio: "Bio",
+      email: "email"};
     this.secStore.set$("settings", {identity: ID}).subscribe();
   }
 
@@ -96,7 +96,7 @@ export class SettingsService {
         `${this.URL}/identity`,
         options
       )),
-      // catchError( this.handleBadAuth() ),
+      catchError( this.handleBadAuth(this.disabler$) ),
       map( id => {
         return {identity: id}
       })
@@ -105,14 +105,14 @@ export class SettingsService {
   /*
    * Catch any error that is generated from the user not having a valid token.
    */
-  // private handleBadAuth () {
-  //   // This function factory is necessary because the value in "this" gets
-  //   // reset to a the "handleBadAuth" function instead of the service.
-  //   return function (error) {
-  //     // this.disabler$ = true
-  //     return of({});
-  //   };
-  // }
+  private handleBadAuth (disabler) {
+    // This function factory is necessary because the value in "this" gets
+    // reset to a the "handleBadAuth" function instead of the service.
+    return function (error) {
+      disabler.next(true)
+      return of({});
+    };
+  }
 
 
   /**

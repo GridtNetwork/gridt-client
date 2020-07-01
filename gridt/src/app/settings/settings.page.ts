@@ -12,6 +12,7 @@ import { Settings } from '../core/settings.model';
 })
 export class SettingsPage implements OnInit {
   settings$: Observable<Settings>;
+  isDisabled$: Observable<boolean>;
 
   constructor(
     private SetService: SettingsService,
@@ -22,6 +23,8 @@ export class SettingsPage implements OnInit {
     this.SetService.populateStorage();
     this.settings$ = this.SetService.the_user_settings$;
     this.SetService.getUserSettings();
+
+    this.isDisabled$ = this.SetService.isDisabled$;
   }
 
   async showError(error:string) {
