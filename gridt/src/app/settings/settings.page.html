@@ -26,7 +26,7 @@
         <ion-card>
           <ion-card-header>
             <!-- <img [src]="(identity$ | async)?.gravatar"> -->
-            <ion-card-title>{{ (settings$ | async)?.username }}</ion-card-title>
+            <ion-card-title>{{ (settings$ | async)?.identity.username }}</ion-card-title>
           </ion-card-header>
 
           <ion-card-content>
@@ -43,8 +43,8 @@
                 </ion-item> -->
 
                 <ion-item lines="none">
-                  <!-- <ion-textarea class="ion-padding" autoGrow="true" readonly type = 'string' [value]="(identity$ | async)?.bio">
-                  </ion-textarea> -->
+                  <ion-textarea class="ion-padding" autoGrow="true" readonly type = 'string' [value]="(setttings$ | async)?.identity.bio">
+                  </ion-textarea>
 
                   <ion-button slot="end" size="small">edit</ion-button>
                 </ion-item>
@@ -79,7 +79,7 @@
 
                 </ion-item>
               </ion-item-group> -->
-<!-- 
+
               <ion-item-group>
                 <ion-item-divider>
                   <ion-label>
@@ -91,7 +91,7 @@
                   <ion-label position="floating">
                     Display name
                   </ion-label>
-                  <ion-input [value]="(identity$ | async)?.username" readonly></ion-input>
+                  <ion-input [value]="(settings$ | async)?.identity.username" readonly></ion-input>
                   <ion-button slot="end" size="small" disabled="true">change</ion-button>
                 </ion-item>
 
@@ -99,7 +99,7 @@
                   <ion-label position="floating">
                     E-mail address
                   </ion-label>
-                  <ion-input [value]="(identity$ | async)?.email" readonly></ion-input>
+                  <ion-input [value]="(settings$ | async)?.identity.email" readonly></ion-input>
                   <ion-button slot="end" size="small" disabled="true">change</ion-button>
                 </ion-item>
 
@@ -111,7 +111,7 @@
                   <ion-button slot="end" size="small" disabled="true">change</ion-button>
                 </ion-item>
               </ion-item-group>
-
+<!--
               <ion-item-group>
                 <ion-item-divider>
                   <ion-label>

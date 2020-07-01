@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
-import { Observable, ReplaySubject, throwError, forkJoin, of } from "rxjs";
+import { Observable, ReplaySubject, BehaviorSubject, throwError, forkJoin, of } from "rxjs";
 import { HttpClient } from "@angular/common/http";
-import { map, tap, delay, catchError } from "rxjs/operators";
+import { map, tap, flatMap, pluck, delay, catchError } from "rxjs/operators";
 import { Identity } from './identity.model';
 import { Settings } from './settings.model';
 import { AuthService } from './auth.service';
@@ -33,21 +33,38 @@ export class SettingsService {
    * available settings are retured to the user.
    */
 
+  // private special_pipe = pipe(
+  //   skip(1),                // Skip the local storage update
+  //   distinctUntilChanged(), // Register the server response
+  //   skip(1),                // Skip server response
+  //   filter(val => !!val ),  // Skip no changes in the server setting
+  // );
+
   /**
    * Transforms the user settings Subject to an Observable
    */
   get the_user_settings$ (): Observable<Settings> {
+    // If the user_settings change, make sure they new settings are stored
+    // in the localstorage.
+    this._user_settings$.subscribe(
+      new_settings => this.storeLocalSettings(new_settings)
+    );
     return this._user_settings$.asObservable();
   }
+
+  /**
+   * Determines if settings are editable or not (depends on availability server)
+   */
+  // private disabler$ = new BehaviorSubject<boolean>(false);
+  //
+  // get isDisabled$ (): Observable<boolean> {
+  //   return this.disabler$.asObservable();
+  // }
 
   /**
    * Observable to obtain settings from secure storage
    */
   private getLocalSettings = this.secStore.get$("settings") ;
-
-  // private setter: Observable<Settings> = forkJoin({
-  //   username: this.secStore.get$("username")
-  // })
 
   /**
    * Store settings in the secure storage.
@@ -59,32 +76,47 @@ export class SettingsService {
   }
 
   /**
-   * Update local storage whenever the settings change.
+   * Function to simulate some non-empty local storage, Only for testing purposes.
    */
-  // _user_settings$.subscribe(
-  //   (new_settings) => {
-  //     this.storeLocalSettings(new_settings);
-  //     console.log("New settings stored in secure local storage.")
-  //   }
-  // )
-
   public populateStorage(): void {
     console.log("Populating secure storage.");
-    console.log(JSON.stringify({username: "InitJohn"}));
-    this.secStore.set$("settings", {username: "InitJohn"}).subscribe();
+    let ID = {
+      id: 1,
+      username: "InitJohn",
+      bio: "My awesome biography",
+      email: "init-john@gridt.org"};
+    this.secStore.set$("settings", {identity: ID}).subscribe();
   }
 
   /**
    * Observable to obtain settings from server
    */
-  private getServerSettings = of({});
-  // {new Observable<Settings>( (observer) => {
-  //   observer.next();
-  //   observer.complete();
-  // })}
+  private getServerSettings = this.auth.readyAuthentication$.pipe(
+      flatMap((options) => this.http.get<Identity>(
+        `${this.URL}/identity`,
+        options
+      )),
+      // catchError( this.handleBadAuth() ),
+      map( id => {
+        return {identity: id}
+      })
+    )
+
+  /*
+   * Catch any error that is generated from the user not having a valid token.
+   */
+  // private handleBadAuth () {
+  //   // This function factory is necessary because the value in "this" gets
+  //   // reset to a the "handleBadAuth" function instead of the service.
+  //   return function (error) {
+  //     // this.disabler$ = true
+  //     return of({});
+  //   };
+  // }
+
 
   /**
-   * Combine Local and server settings
+   * Update the _user_settings$ by combining Local and Server responses.
    */
   public getUserSettings(): void {
     console.log(`Getting user settings from local storage and server.`);
@@ -92,8 +124,10 @@ export class SettingsService {
       local: this.getLocalSettings,
       server: this.getServerSettings
     }).pipe(
+      tap( console.log ),
       map( (settings) => {
         console.log(`received local settings ${JSON.stringify(settings.local)}`);
+        console.log(`received server settings ${JSON.stringify(settings.server)}`);
         return {...settings.local, ...settings.server}
         // Server settings have priority over local settings
       })
