@@ -27,7 +27,7 @@ export class SettingsService {
   /**
    * Create ReplaySubject which yields the latest user settings.
    */
-  private _user_settings$ = new ReplaySubject<Settings>(1);
+  public _user_settings$ = new ReplaySubject<Settings>(1);
   /*
    * The depth of the ReplaySubject is set to 1, which makes sure only the latest
    * available settings are retured to the user.
@@ -47,6 +47,7 @@ export class SettingsService {
     // If the user_settings change, make sure they new settings are stored
     // in the localstorage.
     this._user_settings$.subscribe(
+      // TODO add special pipe to prevent writing too many changes or failed server responses.
       new_settings => this.storeLocalSettings(new_settings)
     );
     return this._user_settings$.asObservable();
@@ -113,7 +114,6 @@ export class SettingsService {
       return of({});
     };
   }
-
 
   /**
    * Update the _user_settings$ by combining Local and Server responses.

@@ -6,7 +6,7 @@ export interface Settings {
   */
   // identity: Identity;
 
-  username: string;
+  identity: Identity;
 
   /**
   * Currently empty, but below here would be other user settings.
