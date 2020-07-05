@@ -30,4 +30,9 @@ export class SettingsPage implements OnInit {
     console.log(`gravatar is ${this.gravatar}`)
   }
 
+  public refreshPage(event) {
+    this.SetService.getUserSettings();
+    event.target.complete();
+  }
+
 }

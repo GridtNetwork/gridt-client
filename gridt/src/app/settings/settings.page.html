@@ -12,7 +12,7 @@
 
 <ion-content padding>
   <!-- Refreshes page if pulled down -->
-  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+  <ion-refresher slot="fixed" (ionRefresh)="refreshPage($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
@@ -96,7 +96,7 @@
                   <ion-label position="floating">
                     Display name
                   </ion-label>
-                  <ion-input [value]="(settings$ | async)?.identity.username" readonly></ion-input>
+                  <ion-input [value]="(settings$ | async)?.identity.username" [readonly]="true"></ion-input>
                   <ion-button slot="end" size="small" [disabled]="( isDisabled$ | async )">change</ion-button>
                 </ion-item>
 
