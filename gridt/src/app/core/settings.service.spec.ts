@@ -2,8 +2,8 @@ import {Type } from "@angular/core";
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 
-import { of } from "rxjs";
-import { pluck } from 'rxjs/operators';
+import { of, throwError, from } from "rxjs";
+import { pluck, delay, concatMap } from 'rxjs/operators';
 
 import { SettingsService } from './settings.service';
 import { AuthService } from './auth.service';
@@ -16,7 +16,7 @@ import { hot, cold } from 'jasmine-marbles';
 
 import { HttpClient, HttpHeaders, HttpResponse, HttpHeaderResponse, HttpErrorResponse } from '@angular/common/http';
 
-let mock_settings: Settings;
+let mock_settings: Settings[];
 
 describe("IdentityService", () => {
   let service: SettingsService;
@@ -65,15 +65,51 @@ describe("IdentityService", () => {
 
 
     // Create mock settings
-    mock_settings = {
-      identity: {
-        id: 1,
-        username: "John Flosser",
-        email: "Johnny@gridt.org",
-        bio: "Flosses every single day and brushes twice a day too!",
-        gravatar: "abc"
+    mock_settings = [
+      {
+        identity: {
+          id: 1,
+          username: "John Flosser",
+          email: "Johnny@gridt.org",
+          bio: "Flosses every single day and brushes twice a day too!",
+          gravatar: "abc"
+        }
+      },
+      {
+        identity: {
+          id: 2,
+          username: "Cycling Joe",
+          email: "peddel@gridt.org",
+          bio: "Have the best days on the bike.",
+          gravatar: "abc"
+        }
+      },
+      {
+        identity: {
+          id: 3,
+          username: "Moopy Zoo Lion",
+          email: "lion@gridt.org",
+          bio: "Growls verociously",
+          gravatar: "abc"
+        }
+      },
+      {
+        identity: {
+          id: 4,
+          username: "Yo mamma",
+          email: "yomamma@gridt.org",
+          bio: "Don't make me mad",
+          gravatar: "abc"
+        }
       }
-    }
+    ]
+  });
+
+  // !!!!!!!!!!!!
+  // Not completely clear why this is needed??? (It's also in api.service.spec)
+  // !!!!!!!!!!!!
+  afterEach(() => {
+    httpMock.verify();
   });
 
   // Basic functionality
@@ -81,12 +117,42 @@ describe("IdentityService", () => {
     expect(service).toBeTruthy();
   });
 
-  it('should provide the last available settings', () => {});
+  it('should provide the last available settings', () => {
+      // Create a new settings service with the correct spied on services.
+      service = new SettingsService(httpClientStub, authServiceStub, secStoreStub)
+
+      // Populate the user settings with some mock settings
+      service._user_settings$.next(mock_settings[0]);
+
+      // Subscribes the local storage to the user settings
+      const set = service.the_user_settings$;
+
+      // Set some new settings
+
+      from(mock_settings).pipe(
+        concatMap(
+          item => of(item).pipe(
+            delay(10)
+          )
+        )
+      ).subscribe(item => service._user_settings$.next(item))
+
+      // User setting should update
+      expect(service.the_user_settings$).toBeObservable(cold('abcd',{a:mock_settings[0], b:mock_settings[1], c: mock_settings[2], d:mock_settings[3]}));
+
+  });
 
   it('should combine settings from localStorage and from the server.', () => {});
 
   // Authentication
-  it('should fail to read settings when not logged in', () => {});
+  it('should fail to read settings when not logged in', () => {
+    authServiceStub.readyAuthentication$ = cold('#', null , "Can't authenticate: no credentials");
+
+    // Create a new settings service with the correct spied on services.
+    service = new SettingsService(httpClientStub, authServiceStub, secStoreStub)
+
+    
+  });
 
   it('should fail to update settings when not logged in', () => {});
 
@@ -101,9 +167,16 @@ describe("IdentityService", () => {
 
     // Create a new settings service with the correct spied on services.
     service = new SettingsService(httpClientStub, authServiceStub, secStoreStub)
-    service._user_settings$.next(mock_settings); // Populate the user settings
-    const set = service.the_user_settings$; // Subscribes the local storage to the user settings
-    expect(secStoreStub.set$).toHaveBeenCalledWith('settings', mock_settings);
+
+    // Populate the user settings with some mock settings
+    service._user_settings$.next(mock_settings[0]);
+
+    // Subscribes the local storage to the user settings
+    const set = service.the_user_settings$;
+
+    // Test if the storage has been set
+    expect(secStoreStub.set$).toHaveBeenCalledWith('settings', mock_settings[0]);
+
   });
 
   it('should not store empty server responses', () => {});
@@ -111,7 +184,36 @@ describe("IdentityService", () => {
   it('should inform the user when an update has been stored succesfully', () => {});
 
   // Server calls
-  it('should disable edits when the server is not available', () => {});
+  it('should disable edits when the server is not available', () => {
+    // Simulate the server not being reachable.
+    httpClientStub.post.and.returnValue(throwError(
+      new HttpErrorResponse(
+        {
+          status: 400, statusText: "Bad Request",
+          error: { message: "Could not retreive settings from server." }
+        }
+    )));
+
+    // Create a new settings service with the correct spied on services.
+    service = new SettingsService(httpClientStub, authServiceStub, secStoreStub)
+
+    // Populate settings
+    service._user_settings$.next(mock_settings[0]);
+
+    // Obtain the settings
+    service.getUserSettings();
+
+    // Subscribes the local storage to the user settings
+    const set = service.the_user_settings$;
+
+    // See if disabler it set to true
+    expect(service.isDisabled$).toBeObservable(
+      cold('(a)', {a: true})
+    )
+
+    // Try to make an edit
+
+  });
 
   it('should send updated identity to the server only when the user sets new account identity', () => {
     // const resub_events =    "-l-s-u";
