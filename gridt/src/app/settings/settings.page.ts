@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, AfterViewInit  } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { AlertController, LoadingController } from '@ionic/angular';
 import { Observable } from 'rxjs';
+import { timeout } from 'rxjs/operators';
 
 import { NgForm } from '@angular/forms';
 
@@ -24,7 +25,8 @@ export class SettingsPage implements OnInit  {
 
   constructor(
     private SetService: SettingsService,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private loadingCtrl: LoadingController
   ) { }
 
   ngOnInit() {
@@ -46,11 +48,24 @@ export class SettingsPage implements OnInit  {
     event.target.complete();
   }
 
-  Submit_bio_change(form: NgForm) {
+  async write_bio_change(form: NgForm) {
     this.edit_bio$ = true;
-    console.log(`Setting bio to ${form.value.bio}`)
 
-    this.SetService.saveBio(form.value.bio);
+    const el = await this.loadingCtrl.create({
+      message: 'Updating bio...'
+    });
+
+    el.present();
+
+    this.SetService.putBio$(form.value.bio).pipe(timeout(5000)).subscribe(
+      () => el.dismiss(),
+      (error) => {
+        el.dismiss();
+        this.showError(error);
+      }
+    );
+
+    this.SetService.getUserSettings();
   }
 
   Submit_name_change(form: NgForm) {

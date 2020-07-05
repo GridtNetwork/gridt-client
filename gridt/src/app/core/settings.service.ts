@@ -66,7 +66,9 @@ export class SettingsService {
   private disabler$ = new BehaviorSubject<boolean>(false);
 
   get isDisabled$ (): Observable<boolean> {
-    return this.disabler$.asObservable();
+    //debug
+    return of(false)
+    // return this.disabler$.asObservable();
   }
 
   /**
@@ -168,16 +170,11 @@ export class SettingsService {
     //   Display error
   }
 
-  public saveBio( bio ): void {
-    console.log(`Saving bio ${bio}`);
-    this.putBio$( bio );
-  }
-
   /**
    * This will be placed in API.service later on.
    */
 
-  public putBio$( bio: string ): Observable<string> {
+  public putBio$( bio: string ) {
     console.debug(`Saving new biography ${bio} to the server. (at leat it should now create a http.put)`);
 
     return this.auth.readyAuthentication$.pipe(

@@ -28,9 +28,11 @@
   <ion-grid>
     <ion-row justify-content-center>
       <ion-col size="12" size-sm="8" offset-sm="2" size-md="6" offset-md="3" text-center>
-        <ion-card>
+        <ion-card  class="ion-text-center">
           <ion-card-header>
-            <img [src]="gravatar">
+            <ion-avatar class="ion-text-center">
+              <img [src]="gravatar">
+            </ion-avatar>
             <ion-card-title>{{ (settings$ | async)?.identity.username }}</ion-card-title>
           </ion-card-header>
 
@@ -46,7 +48,7 @@
                 <!-- <ion-item>
                   "No bio? I'm sure there's something to tell about yourself!"
                 </ion-item> -->
-                <form #bform="ngForm" (ngSubmit)="Submit_bio_change(bform)">
+                <form #bform="ngForm" (ngSubmit)="write_bio_change(bform)">
                   <ion-item lines="none">
                     <ion-textarea
                       #bio
