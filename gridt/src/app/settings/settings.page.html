@@ -46,14 +46,35 @@
                 <!-- <ion-item>
                   "No bio? I'm sure there's something to tell about yourself!"
                 </ion-item> -->
+                <form #bform="ngForm" (ngSubmit)="Submit_bio_change(bform)">
+                  <ion-item lines="none">
+                    <ion-textarea
+                      #bio
+                      ngModel
+                      class="ion-padding"
+                      autoGrow="true"
+                      [readonly]="edit_bio$"
+                      type = "text"
+                      name = "bio"
+                      [value]="(setings$ | async)?.identity.bio">
+                    </ion-textarea>
 
-                <ion-item lines="none">
-                  <ion-textarea class="ion-padding" autoGrow="true" readonly type = 'string' [value]="(setings$ | async)?.identity.bio">
-                  </ion-textarea>
-
-                  <ion-button slot="end" size="small" [disabled]="( isDisabled$ | async )">edit</ion-button>
-                </ion-item>
-
+                    <ion-button
+                      *ngIf = "edit_bio$"
+                      slot="end"
+                      size="small"
+                      [disabled]="( isDisabled$ | async )"
+                      (click) = "change_bio()"
+                    >edit</ion-button>
+                    <ion-button
+                      *ngIf="!edit_bio$"
+                      type = "submit"
+                      slot = "end"
+                      size = "small"
+                      [disabled] = "( isDisabled$ | async )"
+                    >save</ion-button>
+                  </ion-item>
+                </form>
               </ion-item-group>
 
               <!-- <ion-item-group>
@@ -92,21 +113,65 @@
                   </ion-label>
                 </ion-item-divider>
 
-                <ion-item type="reset">
-                  <ion-label position="floating">
-                    Display name
-                  </ion-label>
-                  <ion-input [value]="(settings$ | async)?.identity.username" [readonly]="true"></ion-input>
-                  <ion-button slot="end" size="small" [disabled]="( isDisabled$ | async )">change</ion-button>
-                </ion-item>
+                <form #nform="ngForm" (ngSubmit)="Submit_name_change(nform)">
+                  <ion-item type="reset">
+                    <ion-label position="floating">
+                      Display name
+                    </ion-label>
+                    <ion-input
+                      #name
+                      ngModel
+                      type="text"
+                      name="name"
+                      [value]="(settings$ | async)?.identity.username"
+                      [readonly]="edit_name$"
+                    ></ion-input>
+                    <ion-button
+                      *ngIf="edit_name$"
+                      slot = "end"
+                      size = "small"
+                      [disabled] = "( isDisabled$ | async )"
+                      (click) = "change_name()"
+                    >change</ion-button>
+                    <ion-button
+                      *ngIf="!edit_name$"
+                      type = "submit"
+                      slot = "end"
+                      size = "small"
+                      [disabled] = "( isDisabled$ | async )"
+                    >save</ion-button>
+                  </ion-item>
+                </form>
 
-                <ion-item>
-                  <ion-label position="floating">
-                    E-mail address
-                  </ion-label>
-                  <ion-input [value]="(settings$ | async)?.identity.email" readonly></ion-input>
-                  <ion-button slot="end" size="small" [disabled]="( isDisabled$ | async )">change</ion-button>
-                </ion-item>
+                <form #eform="ngForm" (ngSubmit)="Submit_email_change(eform)">
+                  <ion-item type="reset">
+                    <ion-label position="floating">
+                      E-mail address
+                    </ion-label>
+                    <ion-input
+                      #email
+                      ngModel
+                      type="email"
+                      name="email"
+                      [value]="(settings$ | async)?.identity.email"
+                      [readonly]="edit_email$"
+                    ></ion-input>
+                    <ion-button
+                      *ngIf="edit_email$"
+                      slot = "end"
+                      size = "small"
+                      [disabled] = "( isDisabled$ | async )"
+                      (click) = "change_email()"
+                    >change</ion-button>
+                    <ion-button
+                      *ngIf="!edit_email$"
+                      type = "submit"
+                      slot = "end"
+                      size = "small"
+                      [disabled] = "( isDisabled$ | async )"
+                    >save</ion-button>
+                  </ion-item>
+                </form>
 
                 <ion-item>
                   <ion-label position="floating">
