@@ -18,5 +18,5 @@ export interface Identity {
     /**
      * The user's MD5 hash for the Gravatar
      */
-    gravatar?: string;
+    avatar?: string;
 }
