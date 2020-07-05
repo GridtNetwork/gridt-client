@@ -46,20 +46,25 @@ export class SettingsPage implements OnInit  {
     event.target.complete();
   }
 
-
   Submit_bio_change(form: NgForm) {
     this.edit_bio$ = true;
     console.log(`Setting bio to ${form.value.bio}`)
+
+    this.SetService.saveBio(form.value.bio);
   }
 
   Submit_name_change(form: NgForm) {
     this.edit_name$ = true;
     console.log(`Setting name to ${form.value.name}`)
+
+    this.SetService.saveUsername(form.value.name);
   }
 
   Submit_email_change(form: NgForm) {
     this.edit_email$ = true;
     console.log(`Setting email to ${form.value.email}`)
+
+    this.SetService.saveEmail(form.value.email);
   }
 
   Submit_password_change(form: NgForm) {
@@ -82,5 +87,14 @@ export class SettingsPage implements OnInit  {
     this.emailInput.setFocus();
   }
 
+  async showError(error:string) {
+    const el = await this.alertCtrl.create({
+      header: "Something went wrong while saving your settings.",
+      message: error,
+      buttons: ["Continue"]
+    });
+
+    el.present();
+  }
 
 }

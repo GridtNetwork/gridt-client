@@ -7,6 +7,12 @@ import { Settings } from './settings.model';
 import { AuthService } from './auth.service';
 import { SecureStorageService } from './secure-storage.service';
 
+import { ApiService } from './api.service';
+
+export interface ServerMessage {
+  message: string;
+}
+
 @Injectable({
   providedIn: "root"
 })
@@ -19,7 +25,8 @@ export class SettingsService {
   constructor (
     private http: HttpClient,
     private auth: AuthService,
-    private secStore: SecureStorageService
+    private secStore: SecureStorageService,
+    private api: ApiService
   ) {}
 
   public error_codes = {}
@@ -111,7 +118,18 @@ export class SettingsService {
     // reset to a the "handleBadAuth" function instead of the service.
     return function (error) {
       disabler.next(true)
-      return of({});
+
+      // JWT Error
+      if (error.status === 401) {
+        return throwError(error.error.description);
+      }
+
+      // Server error
+      if (error.error) {
+        return throwError(error.error.message);
+      }
+
+      return throwError(error);
     };
   }
 
@@ -133,4 +151,67 @@ export class SettingsService {
       })
     ).subscribe( (set) => this._user_settings$.next(set) );
   }
+
+  /**
+   * Save a specific settings
+   */
+  public saveUsername( username ): void {
+    console.log(`Saving username ${username}`)
+  }
+
+  public saveEmail( email ): void {
+    console.log(`Saving email ${email}`);
+    this.putEmail( {email: email } );
+    // If succesfull:
+    //   this.getUserSettings()
+    // else:
+    //   Display error
+  }
+
+  public saveBio( bio ): void {
+    console.log(`Saving bio ${bio}`);
+    this.putBio$( bio );
+  }
+
+  /**
+   * This will be placed in API.service later on.
+   */
+
+  public putBio$( bio: string ): Observable<string> {
+    console.debug(`Saving new biography ${bio} to the server. (at leat it should now create a http.put)`);
+
+    return this.auth.readyAuthentication$.pipe(
+     flatMap((options) => this.http.put(
+       `${this.URL}/bio`, {bio: bio}, options
+     )),
+     catchError( this.handleBadAuth(this.disabler$) ),
+     pluck("message")
+    );
+  }
+
+  public putUsername( username ): Observable<string> {
+    console.debug(`Saving new username ${username} to the server. (at least it should now create a http.put)`);
+
+    return this.auth.readyAuthentication$.pipe(
+      flatMap((options) => this.http.put<ServerMessage>(
+        `${this.URL}/username`, username, options
+      )),
+      catchError( this.handleBadAuth(this.disabler$) ),
+      pluck("message")
+    );
+  }
+
+  public putEmail( email ): Observable<string> {
+    console.debug(`Saving new email ${email} to the server.`);
+
+    return this.auth.readyAuthentication$.pipe(
+      flatMap((options) => this.http.put(
+        `${this.URL}/email`, {email}, options
+      )),
+      catchError( this.handleBadAuth(this.disabler$) ),
+      pluck("message")
+    );
+  }
+
+
 }
