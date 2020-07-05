@@ -13,6 +13,7 @@ import { Settings } from '../core/settings.model';
 export class SettingsPage implements OnInit {
   settings$: Observable<Settings>;
   isDisabled$: Observable<boolean>;
+  gravatar: string;
 
   constructor(
     private SetService: SettingsService,
@@ -25,15 +26,8 @@ export class SettingsPage implements OnInit {
     this.SetService.getUserSettings();
 
     this.isDisabled$ = this.SetService.isDisabled$;
+    this.settings$.subscribe(set => this.gravatar = "https://www.gravatar.com/avatar/" + set.identity.avatar);
+    console.log(`gravatar is ${this.gravatar}`)
   }
 
-  async showError(error:string) {
-    const el = await this.alertCtrl.create({
-      header: "Something went wrong while obtaining your profile from the server.",
-      message: error,
-      buttons: ["Okay"]
-    });
-
-    el.present();
-  }
 }
