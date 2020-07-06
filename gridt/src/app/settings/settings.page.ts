@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, AfterViewInit  } from '@angular/core';
 import { AlertController, LoadingController } from '@ionic/angular';
-import { Observable } from 'rxjs';
+import { Observable, timer } from 'rxjs';
 import { timeout } from 'rxjs/operators';
 
 import { NgForm } from '@angular/forms';
@@ -39,16 +39,19 @@ export class SettingsPage implements OnInit  {
     console.log(`gravatar is ${this.gravatar}`)
   }
 
+  // Create objects for the input field so we can set focus later.
   @ViewChild('bio', {static: true}) bioInput;
   @ViewChild('name', {static: true}) nameInput;
   @ViewChild('email', {static: true}) emailInput;
 
+  // When pulling down on page this function is called.
   public refreshPage(event) {
     this.SetService.getUserSettings();
     event.target.complete();
   }
 
-  async write_bio_change(form: NgForm) {
+  // Change the bio
+  async write_bio(form: NgForm) {
     this.edit_bio$ = true;
 
     const el = await this.loadingCtrl.create({
@@ -57,7 +60,7 @@ export class SettingsPage implements OnInit  {
 
     el.present();
 
-    this.SetService.putBio$(form.value.bio).pipe(timeout(5000)).subscribe(
+    this.SetService.putBio$(form.value.bio).pipe(timeout(500)).subscribe(
       () => el.dismiss(),
       (error) => {
         el.dismiss();
@@ -89,6 +92,15 @@ export class SettingsPage implements OnInit  {
   public change_bio() {
     this.edit_bio$ = false;
     this.bioInput.setFocus();
+  }
+
+  public reset_bio() {
+    timer(500).subscribe( () => {
+      this.edit_bio$ = true;
+      this.settings$.subscribe(
+        set => this.bioInput.value = set.identity.bio
+      )
+    })
   }
 
   public change_name() {

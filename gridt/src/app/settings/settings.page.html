@@ -48,7 +48,7 @@
                 <!-- <ion-item>
                   "No bio? I'm sure there's something to tell about yourself!"
                 </ion-item> -->
-                <form #bform="ngForm" (ngSubmit)="write_bio_change(bform)">
+                <form #bform="ngForm" (ngSubmit)="write_bio(bform)">
                   <ion-item lines="none">
                     <ion-textarea
                       #bio
@@ -58,6 +58,7 @@
                       [readonly]="edit_bio$"
                       type = "text"
                       name = "bio"
+                      (ionBlur) = "reset_bio()"
                       [value]="(settings$ | async)?.identity.bio">
                     </ion-textarea>
                   </ion-item>
