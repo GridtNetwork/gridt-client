@@ -30,13 +30,13 @@ export class SettingsPage implements OnInit  {
   ) { }
 
   ngOnInit() {
-    this.SetService.populateStorage();
+    this.SetService.getSettingsFromServer();
     this.settings$ = this.SetService.the_user_settings$;
     this.SetService.getUserSettings();
 
     this.isDisabled$ = this.SetService.isDisabled$;
     this.settings$.subscribe(set => this.gravatar = "https://www.gravatar.com/avatar/" + set.identity.avatar);
-    console.log(`gravatar is ${this.gravatar}`)
+    console.log(`gravatar is ${JSON.stringify(this.gravatar)}`)
   }
 
   // Create objects for the input field so we can set focus later.

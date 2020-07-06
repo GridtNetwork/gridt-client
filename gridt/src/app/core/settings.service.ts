@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
-import { Observable, ReplaySubject, BehaviorSubject, throwError, forkJoin, of } from "rxjs";
+import { Observable, ReplaySubject, BehaviorSubject, throwError, forkJoin, of, pipe } from "rxjs";
 import { HttpClient } from "@angular/common/http";
-import { map, tap, flatMap, pluck, delay, catchError } from "rxjs/operators";
+import { map, tap, flatMap, pluck, delay, catchError, skip, distinctUntilChanged, filter } from "rxjs/operators";
 import { Identity } from './identity.model';
 import { Settings } from './settings.model';
 import { AuthService } from './auth.service';
@@ -29,31 +29,34 @@ export class SettingsService {
     private api: ApiService
   ) {}
 
-  public error_codes = {}
-
   /**
    * Create ReplaySubject which yields the latest user settings.
    */
   public _user_settings$ = new ReplaySubject<Settings>(1);
   /*
-   * The depth of the ReplaySubject is set to 1, which makes sure only the latest
-   * available settings are retured to the user.
+   * The depth of the ReplaySubject is set to 1, which makes sure only the
+   * latest available settings are retured to the user.
    */
 
-  // private special_pipe = pipe(
-  //   skip(1),                // Skip the local storage update
-  //   distinctUntilChanged(), // Register the server response
-  //   skip(1),                // Skip server response
-  //   filter(val => !!val ),  // Skip no changes in the server setting
-  // );
+  public special_pipe$ = pipe(
+    skip(1),                // Skip the local storage update
+    distinctUntilChanged(), // Register the server response
+    skip(1),                // Skip server response
+    filter(val => !!val ),  // Skip no changes in the server setting
+  );
 
   /**
    * Transforms the user settings Subject to an Observable
    */
   get the_user_settings$ (): Observable<Settings> {
-    // If the user_settings change, make sure they new settings are stored
+    // If the user_settings change, make sure the new settings are stored
     // in the localstorage.
-    this._user_settings$.subscribe(
+    this._user_settings$.pipe(
+      // this.special_pipe$ // somehow this doesn't work
+      skip(1),
+      distinctUntilChanged(),
+      skip(1),
+    ).subscribe(
       // TODO add special pipe to prevent writing too many changes or failed server responses.
       new_settings => this.storeLocalSettings(new_settings)
     );
@@ -88,29 +91,45 @@ export class SettingsService {
   /**
    * Function to simulate some non-empty local storage, Only for testing purposes.
    */
-  public populateStorage(): void {
+  public getSettingsFromServer(): void {
     console.log("Populating secure storage.");
-    let ID = {
-      id: 1,
-      username: "username",
-      bio: "Bio",
-      email: "email"};
-    this.secStore.set$("settings", {identity: ID}).subscribe();
+    forkJoin({
+      server: this.getServerIdentity
+    }).pipe(
+      tap( console.log ),
+      map( (settings) => {
+        console.log(`received server settings ${JSON.stringify(settings.server)}`);
+        return {...settings.server}
+        // Server settings have priority over local settings
+      })
+    ).subscribe( (set) => this.secStore.set$("settings", {set}).subscribe() );
+
+    // let ID = {
+    //   id: 1,
+    //   username: "username",
+    //   bio: "Bio",
+    //   email: "email"};
+    // this.secStore.set$("settings", {identity: ID}).subscribe();
   }
 
   /**
-   * Observable to obtain settings from server
+   * Update the _user_settings$ by combining Local and Server responses.
    */
-  private getServerSettings = this.auth.readyAuthentication$.pipe(
-      flatMap((options) => this.http.get<Identity>(
-        `${this.URL}/identity`,
-        options
-      )),
-      catchError( this.handleBadAuth(this.disabler$) ),
-      map( id => {
-        return {identity: id}
+  public getUserSettings(): void {
+    console.log(`Getting user settings from local storage and server.`);
+    forkJoin({
+      local: this.getLocalSettings,
+      server: this.getServerIdentity
+    }).pipe(
+      tap( console.log ),
+      map( (settings) => {
+        console.log(`received local settings ${JSON.stringify(settings.local)}`);
+        console.log(`received server settings ${JSON.stringify(settings.server)}`);
+        return {...settings.local, ...settings.server}
+        // Server settings have priority over local settings
       })
-    )
+    ).subscribe( (set) => this._user_settings$.next(set) );
+  }
 
   /*
    * Catch any error that is generated from the user not having a valid token.
@@ -136,27 +155,22 @@ export class SettingsService {
   }
 
   /**
-   * Update the _user_settings$ by combining Local and Server responses.
-   */
-  public getUserSettings(): void {
-    console.log(`Getting user settings from local storage and server.`);
-    forkJoin({
-      local: this.getLocalSettings,
-      server: this.getServerSettings
-    }).pipe(
-      tap( console.log ),
-      map( (settings) => {
-        console.log(`received local settings ${JSON.stringify(settings.local)}`);
-        console.log(`received server settings ${JSON.stringify(settings.server)}`);
-        return {...settings.local, ...settings.server}
-        // Server settings have priority over local settings
-      })
-    ).subscribe( (set) => this._user_settings$.next(set) );
-  }
-
-  /**
    * This will be placed in API.service later on.
    */
+
+  /**
+   * Observable to obtain identity from server
+   */
+  public getServerIdentity = this.auth.readyAuthentication$.pipe(
+   flatMap((options) => this.http.get<Identity>(
+     `${this.URL}/identity`,
+     options
+   )),
+   catchError( this.handleBadAuth(this.disabler$) ),
+   map( id => {
+     return {identity: id} // Return a <Settings> compatible object
+   })
+  )
 
   public putBio$( bio: string ) {
     console.debug(`Saving new biography ${bio} to the server. (at leat it should now create a http.put)`);
