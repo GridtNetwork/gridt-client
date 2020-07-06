@@ -68,7 +68,7 @@
                       size="small"
                       slot="start"
                       [disabled]="( isDisabled$ | async )"
-                      (click) = "change_bio()"
+                      (click) = "edit_bio()"
                     >edit</ion-button>
                     <ion-button
                       *ngIf="!edit_bio$"
@@ -131,7 +131,7 @@
                       [value]="(settings$ | async)?.identity.username"
                       [readonly]="edit_name$"
                     ></ion-input>
-                    <ion-button
+                    <!-- <ion-button
                       *ngIf="edit_name$"
                       slot = "end"
                       size = "small"
@@ -144,11 +144,11 @@
                       slot = "end"
                       size = "small"
                       [disabled] = "( isDisabled$ | async )"
-                    >save</ion-button>
+                    >save</ion-button> -->
                   </ion-item>
                 </form>
 
-                <form #eform="ngForm" (ngSubmit)="Submit_email_change(eform)">
+                <form #eform="ngForm" (ngSubmit)="write_email(eform)">
                   <ion-item type="reset">
                     <ion-label position="floating">
                       E-mail address
@@ -166,7 +166,7 @@
                       slot = "end"
                       size = "small"
                       [disabled] = "( isDisabled$ | async )"
-                      (click) = "change_email()"
+                      (click) = "edit_email()"
                     >change</ion-button>
                     <ion-button
                       *ngIf="!edit_email$"
@@ -178,13 +178,35 @@
                   </ion-item>
                 </form>
 
-                <ion-item>
-                  <ion-label position="floating">
-                    Password
-                  </ion-label>
-                  <ion-input value="*************" readonly></ion-input>
-                  <ion-button slot="end" size="small" [disabled]="( isDisabled$ | async )">change</ion-button>
-                </ion-item>
+                <form #pform="ngForm" (ngSubmit)="write_password(pform)">
+                  <ion-item type="reset">
+                    <ion-label position="floating">
+                      Password
+                    </ion-label>
+                    <ion-input
+                      #password
+                      ngModel
+                      type="password"
+                      name="password"
+                      value="*********"
+                      [readonly]="edit_password$"
+                    ></ion-input>
+                    <ion-button
+                      *ngIf="edit_password$"
+                      slot = "end"
+                      size = "small"
+                      [disabled] = "( isDisabled$ | async )"
+                      (click) = "edit_password()"
+                    >change</ion-button>
+                    <ion-button
+                      *ngIf="!edit_password$"
+                      type = "submit"
+                      slot = "end"
+                      size = "small"
+                      [disabled] = "( isDisabled$ | async )"
+                    >save</ion-button>
+                  </ion-item>
+                </form>
               </ion-item-group>
 <!--
               <ion-item-group>

@@ -43,6 +43,7 @@ export class SettingsPage implements OnInit  {
   @ViewChild('bio', {static: true}) bioInput;
   @ViewChild('name', {static: true}) nameInput;
   @ViewChild('email', {static: true}) emailInput;
+  @ViewChild('password', {static: true}) passwordInput;
 
   // When pulling down on page this function is called.
   public refreshPage(event) {
@@ -50,7 +51,9 @@ export class SettingsPage implements OnInit  {
     event.target.complete();
   }
 
-  // Change the bio
+  /*
+   * Change the bio
+   */
   async write_bio(form: NgForm) {
     this.edit_bio$ = true;
 
@@ -68,32 +71,20 @@ export class SettingsPage implements OnInit  {
       }
     );
 
-    this.SetService.getUserSettings();
+    timer(500).subscribe( () => this.SetService.getUserSettings());
   }
 
-  Submit_name_change(form: NgForm) {
-    this.edit_name$ = true;
-    console.log(`Setting name to ${form.value.name}`)
-
-    this.SetService.saveUsername(form.value.name);
-  }
-
-  Submit_email_change(form: NgForm) {
-    this.edit_email$ = true;
-    console.log(`Setting email to ${form.value.email}`)
-
-    this.SetService.saveEmail(form.value.email);
-  }
-
-  Submit_password_change(form: NgForm) {
-    console.log(form.value.name)
-  }
-
-  public change_bio() {
+  /*
+   * Enable editting of the bio
+   */
+  public edit_bio() {
     this.edit_bio$ = false;
     this.bioInput.setFocus();
   }
 
+  /*
+   * Reset the bio value
+   */
   public reset_bio() {
     timer(500).subscribe( () => {
       this.edit_bio$ = true;
@@ -103,15 +94,90 @@ export class SettingsPage implements OnInit  {
     })
   }
 
-  public change_name() {
-    this.edit_name$ = false;
-    this.nameInput.setFocus();
+  /*
+   * Change the email address
+   */
+  async write_email(form: NgForm) {
+    this.edit_email$ = true;
+
+    const el = await this.loadingCtrl.create({
+      message: 'Updating email address...'
+    });
+
+    el.present();
+
+    this.SetService.postEmail$(form.value.email).pipe(timeout(500)).subscribe(
+      () => el.dismiss(),
+      (error) => {
+        el.dismiss();
+        this.showError(error);
+      }
+    );
+
+    timer(500).subscribe( () => this.SetService.getUserSettings());
   }
 
-  public change_email() {
-    console.log('setting change_name to false')
+  /*
+   * Enable editting of the email field
+   */
+  public edit_email() {
     this.edit_email$ = false;
     this.emailInput.setFocus();
+  }
+
+  /*
+   * Reset the email value
+   */
+  public reset_email() {
+    timer(500).subscribe( () => {
+      this.edit_email$ = true;
+      this.settings$.subscribe(
+        set => this.emailInput.value = set.identity.email
+      )
+    })
+  }
+
+  /*
+   * Change the password
+   */
+  async write_password(form: NgForm) {
+    this.edit_password$ = true;
+
+    const el = await this.loadingCtrl.create({
+      message: 'Updating email address...'
+    });
+
+    el.present();
+
+    this.SetService.postPassword$(form.value.email).pipe(timeout(500)).subscribe(
+      () => el.dismiss(),
+      (error) => {
+        el.dismiss();
+        this.showError(error);
+      }
+    );
+
+    timer(500).subscribe( () => this.SetService.getUserSettings());
+  }
+
+  /*
+   * Enable editting of the password field
+   */
+  public edit_password() {
+    this.edit_password$ = false;
+    this.passwordInput.setFocus();
+  }
+
+  /*
+   * Reset the password
+   */
+  public reset_password() {
+    timer(500).subscribe( () => {
+      this.edit_password$ = true;
+      this.settings$.subscribe(
+        set => this.passwordInput.value = set.identity.email
+      )
+    })
   }
 
   async showError(error:string) {

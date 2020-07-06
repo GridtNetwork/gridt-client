@@ -155,22 +155,6 @@ export class SettingsService {
   }
 
   /**
-   * Save a specific settings
-   */
-  public saveUsername( username ): void {
-    console.log(`Saving username ${username}`)
-  }
-
-  public saveEmail( email ): void {
-    console.log(`Saving email ${email}`);
-    this.putEmail( {email: email } );
-    // If succesfull:
-    //   this.getUserSettings()
-    // else:
-    //   Display error
-  }
-
-  /**
    * This will be placed in API.service later on.
    */
 
@@ -186,29 +170,28 @@ export class SettingsService {
     );
   }
 
-  public putUsername( username ): Observable<string> {
-    console.debug(`Saving new username ${username} to the server. (at least it should now create a http.put)`);
+  public postEmail$( email: string ) {
+    console.debug(`Saving new email address ${email} to the server. (at leat it should now create a http.post)`);
 
     return this.auth.readyAuthentication$.pipe(
-      flatMap((options) => this.http.put<ServerMessage>(
-        `${this.URL}/username`, username, options
-      )),
-      catchError( this.handleBadAuth(this.disabler$) ),
-      pluck("message")
+     flatMap((options) => this.http.post<ServerMessage>(
+       `${this.URL}/change_email`, {email: email}, options
+     )),
+     catchError( this.handleBadAuth(this.disabler$) ),
+     pluck("message")
     );
   }
 
-  public putEmail( email ): Observable<string> {
-    console.debug(`Saving new email ${email} to the server.`);
+  public postPassword$( password: string ) {
+    console.debug(`Saving new password to the server. (at leat it should now create a http.post)`);
 
     return this.auth.readyAuthentication$.pipe(
-      flatMap((options) => this.http.put(
-        `${this.URL}/email`, {email}, options
-      )),
-      catchError( this.handleBadAuth(this.disabler$) ),
-      pluck("message")
+     flatMap((options) => this.http.post<ServerMessage>(
+       `${this.URL}/change_password`, {password: password}, options
+     )),
+     catchError( this.handleBadAuth(this.disabler$) ),
+     pluck("message")
     );
   }
-
 
 }
