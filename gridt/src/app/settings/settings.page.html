@@ -58,24 +58,26 @@
                       [readonly]="edit_bio$"
                       type = "text"
                       name = "bio"
-                      [value]="(setings$ | async)?.identity.bio">
+                      [value]="(settings$ | async)?.identity.bio">
                     </ion-textarea>
-
+                  </ion-item>
+                  <ion-item lines="none">
                     <ion-button
                       *ngIf = "edit_bio$"
-                      slot="end"
                       size="small"
+                      slot="start"
                       [disabled]="( isDisabled$ | async )"
                       (click) = "change_bio()"
                     >edit</ion-button>
                     <ion-button
                       *ngIf="!edit_bio$"
                       type = "submit"
-                      slot = "end"
+                      slot="start"
                       size = "small"
                       [disabled] = "( isDisabled$ | async )"
                     >save</ion-button>
                   </ion-item>
+
                 </form>
               </ion-item-group>
 
