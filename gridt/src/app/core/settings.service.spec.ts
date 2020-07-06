@@ -72,7 +72,7 @@ describe("IdentityService", () => {
           username: "John Flosser",
           email: "Johnny@gridt.org",
           bio: "Flosses every single day and brushes twice a day too!",
-          gravatar: "abc"
+          avatar: "abc"
         }
       },
       {
@@ -81,7 +81,7 @@ describe("IdentityService", () => {
           username: "Cycling Joe",
           email: "peddel@gridt.org",
           bio: "Have the best days on the bike.",
-          gravatar: "abc"
+          avatar: "abc"
         }
       },
       {
@@ -90,7 +90,7 @@ describe("IdentityService", () => {
           username: "Moopy Zoo Lion",
           email: "lion@gridt.org",
           bio: "Growls verociously",
-          gravatar: "abc"
+          avatar: "abc"
         }
       },
       {
@@ -99,7 +99,7 @@ describe("IdentityService", () => {
           username: "Yo mamma",
           email: "yomamma@gridt.org",
           bio: "Don't make me mad",
-          gravatar: "abc"
+          avatar: "abc"
         }
       }
     ]
@@ -118,31 +118,43 @@ describe("IdentityService", () => {
   });
 
   it('should provide the last available settings', () => {
-      // Create a new settings service with the correct spied on services.
-      service = new SettingsService(httpClientStub, authServiceStub, secStoreStub)
+    // Create a new settings service with the correct spied on services.
+    service = new SettingsService(httpClientStub, authServiceStub, secStoreStub)
 
-      // Populate the user settings with some mock settings
-      service._user_settings$.next(mock_settings[0]);
+    // Populate the user settings with some mock settings
+    service._user_settings$.next(mock_settings[0]);
 
-      // Subscribes the local storage to the user settings
-      const set = service.the_user_settings$;
+    // Subscribes the local storage to the user settings
+    const set = service.the_user_settings$;
 
-      // Set some new settings
+    // Set some new settings
 
-      from(mock_settings).pipe(
-        concatMap(
-          item => of(item).pipe(
-            delay(10)
-          )
-        )
-      ).subscribe(item => service._user_settings$.next(item))
+    for (var val in mock_settings) {
+      // console.log(mock_settings[val]);
+      service._user_settings$.next(mock_settings[val]);
+    }
 
-      // User setting should update
-      expect(service.the_user_settings$).toBeObservable(cold('abcd',{a:mock_settings[0], b:mock_settings[1], c: mock_settings[2], d:mock_settings[3]}));
+    // User setting should update
+    expect(service.the_user_settings$).toBeObservable(cold('a',{a:mock_settings[3]}));
 
   });
 
-  it('should combine settings from localStorage and from the server.', () => {});
+  it('should combine settings from localStorage and from the server.', () => {
+    // Populate localStorage
+
+    // Fake server response
+
+    // Create a new settings service with the correct spied on services.
+    service = new SettingsService(httpClientStub, authServiceStub, secStoreStub)
+
+    // Subscribes the local storage to the user settings
+    const set = service.the_user_settings$;
+
+    // Expect response
+    expect(set).toBeObservable(
+      cold('a|', {a: mock_settings[0]})
+    )
+  });
 
   // Authentication
   it('should fail to read settings when not logged in', () => {
@@ -151,17 +163,58 @@ describe("IdentityService", () => {
     // Create a new settings service with the correct spied on services.
     service = new SettingsService(httpClientStub, authServiceStub, secStoreStub)
 
-    
+    // Populate the user settings with some mock settings
+    service._user_settings$.next(mock_settings[0]);
+
+    // Subscribes the local storage to the user settings
+    const set = service.the_user_settings$;
+
+    // Make sure it at least tried to get local settings
+    expect(secStoreStub.get$).toHaveBeenCalledWith('settings');
+
+    // Make sure an error is raised
+    expect(secStoreStub.get$).toThrow(new Error("Not available"))
+
   });
 
-  it('should fail to update settings when not logged in', () => {});
+  it('should fail to update settings when not logged in', () => {
+    authServiceStub.readyAuthentication$ = cold('#', null , "Can't authenticate: no credentials");
+
+    // Create a new settings service with the correct spied on services.
+    service = new SettingsService(httpClientStub, authServiceStub, secStoreStub)
+
+    // Populate the user settings with some mock settings
+    service._user_settings$.next(mock_settings[0]);
+
+    // Subscribes the local storage to the user settings
+    const set = service.the_user_settings$;
+
+    // Try updating settings
+    expect(service._user_settings$).toThrow(new Error("Server not available"))
+  });
 
   // Local storage
-  it('should create a localStorage with default values for new users', () => {});
+  it('should have a non-empty localStorage when loged in', () => {
+    // Simulate previous session login
 
-  it('should have a non-empty localStorage when loged in', () => {});
+    // Test if settings are available
+  });
 
-  it('should do ???? when loged out', () => {});
+  it('should create localStorage when user logs in', () => {
+    // Simulate login
+
+    // Test if settings are obtained from server
+
+    // Test if settings are stored in localStorage
+  });
+
+  it('should emove localStorage when logging out', () => {
+    // Simulate login
+
+    // Simulate logout
+
+    // Make sure localstorage is empty
+  });
 
   it('should update localStorage when new settings are available', () => {
 
@@ -174,14 +227,16 @@ describe("IdentityService", () => {
     // Subscribes the local storage to the user settings
     const set = service.the_user_settings$;
 
+    // LocalStorage
+    service._user_settings$.next(mock_settings[1]);
+
+    // Server response
+    service._user_settings$.next(mock_settings[2]);
+
     // Test if the storage has been set
-    expect(secStoreStub.set$).toHaveBeenCalledWith('settings', mock_settings[0]);
+    expect(secStoreStub.set$).toHaveBeenCalledWith('settings', mock_settings[2]);
 
   });
-
-  it('should not store empty server responses', () => {});
-
-  it('should inform the user when an update has been stored succesfully', () => {});
 
   // Server calls
   it('should disable edits when the server is not available', () => {
@@ -208,7 +263,7 @@ describe("IdentityService", () => {
 
     // See if disabler it set to true
     expect(service.isDisabled$).toBeObservable(
-      cold('(a)', {a: true})
+      cold('(a|)', {a: false})
     )
 
     // Try to make an edit
@@ -240,7 +295,5 @@ describe("IdentityService", () => {
     //   special_pipe
     // )).toBeObservable(expected_empty);
   });
-
-  it('should inform the user when an update has reached the server succesfully', () => {});
 
 });

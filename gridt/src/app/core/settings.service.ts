@@ -26,7 +26,7 @@ export class SettingsService {
     private http: HttpClient,
     private auth: AuthService,
     private secStore: SecureStorageService,
-    private api: ApiService
+    // private api: ApiService
   ) {}
 
   /**
