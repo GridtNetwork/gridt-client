@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit  } from '@angular/core';
+import { Component, OnInit, ViewChild  } from '@angular/core';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { Observable, timer } from 'rxjs';
 import { timeout } from 'rxjs/operators';
@@ -42,8 +42,8 @@ export class SettingsPage implements OnInit  {
   // Create objects for the input field so we can set focus later.
   @ViewChild('bio', {static: true}) bioInput;
   @ViewChild('name', {static: true}) nameInput;
-  @ViewChild('email', {static: true}) emailInput;
-  @ViewChild('password', {static: true}) passwordInput;
+  @ViewChild('emailfield', {static: true}) emailInput;
+  @ViewChild('passwordfield', {static: true}) passwordInput;
 
   // When pulling down on page this function is called.
   public refreshPage(event) {

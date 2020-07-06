@@ -154,13 +154,17 @@
                       E-mail address
                     </ion-label>
                     <ion-input
-                      #email
+                      #emailfield
                       ngModel
                       type="email"
                       name="email"
-                      [value]="(settings$ | async)?.identity.email"
+                      required
+                      email
+                      #emailCtrl="ngModel"
                       [readonly]="edit_email$"
+                      (ionBlur) = "reset_email()"
                     ></ion-input>
+                    <!-- [value]="(settings$ | async)?.identity.email" -->
                     <ion-button
                       *ngIf="edit_email$"
                       slot = "end"
@@ -176,6 +180,14 @@
                       [disabled] = "( isDisabled$ | async )"
                     >save</ion-button>
                   </ion-item>
+                  <ion-item
+                    *ngIf="!emailCtrl.valid && emailCtrl.touched"
+                    lines="none"
+                  >
+                    <ion-label>
+                      Should be a valid email.
+                    </ion-label>
+                  </ion-item>
                 </form>
 
                 <form #pform="ngForm" (ngSubmit)="write_password(pform)">
@@ -184,12 +196,14 @@
                       Password
                     </ion-label>
                     <ion-input
-                      #password
+                      #passwordfield
                       ngModel
                       type="password"
                       name="password"
-                      value="*********"
+                      minlength="6"
+                      #passwordCtrl="ngModel"
                       [readonly]="edit_password$"
+                      (ionBlur) = "reset_password()"
                     ></ion-input>
                     <ion-button
                       *ngIf="edit_password$"
@@ -205,6 +219,14 @@
                       size = "small"
                       [disabled] = "( isDisabled$ | async )"
                     >save</ion-button>
+                  </ion-item>
+                  <ion-item
+                    *ngIf="!passwordCtrl.valid && passwordCtrl.touched"
+                    lines="none"
+                  >
+                    <ion-label>
+                      Should at least be 6 characters long.
+                    </ion-label>
                   </ion-item>
                 </form>
               </ion-item-group>
