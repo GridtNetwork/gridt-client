@@ -1,13 +1,18 @@
+import { of } from 'rxjs';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
-import { HomePage } from './home.page';
-
-import { ApiService } from '../core/api.service';
-import { of } from 'rxjs';
-import { Movement } from '../core/movement.model';
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { User } from '../core/user.model';
 import { AlertController } from '@ionic/angular';
+
+import { User } from '../core/user.model';
+import { HomePage } from './home.page';
+import { AuthService } from '../core/auth.service';
+import { ApiService } from '../core/api.service';
+import { Movement } from '../core/movement.model';
+
+class AuthServiceStub {
+  isLoggedIn$ = of(true);
+}
 
 describe('HomePage', () => {
   let component: HomePage;
@@ -29,36 +34,31 @@ describe('HomePage', () => {
         } as User) 
       }
     );
-
+    
     alertSpy = jasmine.createSpyObj('alertSpy', {
       create: new Promise( resolve => resolve({present: () => {}}) )
     });
 
-    jasmine.clock().install;
- 
     TestBed.configureTestingModule({
       declarations: [ HomePage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [HttpClientModule],
       providers: [
-        { provide: ApiService, useValue: apiSpy},
-        { provide: AlertController, useValue: alertSpy}
+        { provide: ApiService, useValue: apiSpy },
+        { provide: AlertController, useValue: alertSpy },
+        { provide: AuthService, useClass: AuthServiceStub }
       ]
     }).compileComponents();
-
+    
     fixture = TestBed.createComponent(HomePage);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));
 
-  afterEach( () => {
-    jasmine.clock().uninstall()
-  });
-
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
+  
   it('should find proper last signals', () => {
     // Daily -> Midnight
     let fake_now = new Date();
