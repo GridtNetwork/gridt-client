@@ -184,24 +184,24 @@ export class SettingsService {
     );
   }
 
-  public postEmail$( email: string ) {
+  public postEmail$( password: string, new_email: string ) {
     console.debug(`Saving new email address ${email} to the server. (at leat it should now create a http.post)`);
 
     return this.auth.readyAuthentication$.pipe(
      flatMap((options) => this.http.post<ServerMessage>(
-       `${this.URL}/change_email`, {email: email}, options
+       `${this.URL}/change_email`, {password: password, new_email: new_email}, options
      )),
      catchError( this.handleBadAuth(this.disabler$) ),
      pluck("message")
     );
   }
 
-  public postPassword$( password: string ) {
+  public postPassword$( old_password: string, new_password: string ) {
     console.debug(`Saving new password to the server. (at leat it should now create a http.post)`);
 
     return this.auth.readyAuthentication$.pipe(
      flatMap((options) => this.http.post<ServerMessage>(
-       `${this.URL}/change_password`, {password: password}, options
+       `${this.URL}/change_password`, {old_password: old_password, new_password: new_password}, options
      )),
      catchError( this.handleBadAuth(this.disabler$) ),
      pluck("message")
