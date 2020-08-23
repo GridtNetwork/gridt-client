@@ -118,117 +118,31 @@
                   </ion-label>
                 </ion-item-divider>
 
-                <form #nform="ngForm" (ngSubmit)="Submit_name_change(nform)">
-                  <ion-item type="reset">
-                    <ion-label position="floating">
-                      Display name
-                    </ion-label>
-                    <ion-input
-                      #name
-                      ngModel
-                      type="text"
-                      name="name"
-                      [value]="(settings$ | async)?.identity.username"
-                      [readonly]="edit_name$"
-                    ></ion-input>
-                    <!-- <ion-button
-                      *ngIf="edit_name$"
-                      slot = "end"
-                      size = "small"
-                      [disabled] = "( isDisabled$ | async )"
-                      (click) = "change_name()"
-                    >change</ion-button>
-                    <ion-button
-                      *ngIf="!edit_name$"
-                      type = "submit"
-                      slot = "end"
-                      size = "small"
-                      [disabled] = "( isDisabled$ | async )"
-                    >save</ion-button> -->
-                  </ion-item>
-                </form>
+                <ion-item type="reset">
+                  <ion-label>
+                    E-mail
+                  </ion-label>
 
-                <form #eform="ngForm" (ngSubmit)="write_email(eform)">
-                  <ion-item type="reset">
-                    <ion-label position="floating">
-                      E-mail address
-                    </ion-label>
-                    <ion-input
-                      #emailfield
-                      ngModel
-                      type="email"
-                      name="email"
-                      required
-                      email
-                      #emailCtrl="ngModel"
-                      [readonly]="edit_email$"
-                      (ionBlur) = "reset_email()"
-                    ></ion-input>
-                    <!-- [value]="(settings$ | async)?.identity.email" -->
-                    <ion-button
-                      *ngIf="edit_email$"
-                      slot = "end"
-                      size = "small"
-                      [disabled] = "( isDisabled$ | async )"
-                      (click) = "edit_email()"
-                    >change</ion-button>
-                    <ion-button
-                      *ngIf="!edit_email$"
-                      type = "submit"
-                      slot = "end"
-                      size = "small"
-                      [disabled] = "( isDisabled$ | async )"
-                    >save</ion-button>
-                  </ion-item>
-                  <ion-item
-                    *ngIf="!emailCtrl.valid && emailCtrl.touched"
-                    lines="none"
-                  >
-                    <ion-label>
-                      Should be a valid email.
-                    </ion-label>
-                  </ion-item>
-                </form>
+                  {{ (settings$ | async)?.identity.email }}
+                  <ion-button
+                    slot = "end"
+                    size = "small"
+                    [disabled] = "( isDisabled$ | async )"
+                    (click) = "changeEmail()"
+                  >change</ion-button>
+                </ion-item>
 
-                <form #pform="ngForm" (ngSubmit)="write_password(pform)">
-                  <ion-item type="reset">
-                    <ion-label position="floating">
-                      Password
-                    </ion-label>
-                    <ion-input
-                      #passwordfield
-                      ngModel
-                      type="password"
-                      name="password"
-                      minlength="6"
-                      #passwordCtrl="ngModel"
-                      [readonly]="edit_password$"
-                      (ionBlur) = "reset_password()"
-                    ></ion-input>
-                    <ion-button
-                      *ngIf="edit_password$"
-                      slot = "end"
-                      size = "small"
-                      [disabled] = "( isDisabled$ | async )"
-                      (click) = "edit_password()"
-                    >change</ion-button>
-                    <ion-button
-                      *ngIf="!edit_password$"
-                      type = "submit"
-                      slot = "end"
-                      size = "small"
-                      [disabled] = "( isDisabled$ | async )"
-                    >save</ion-button>
-                  </ion-item>
-                  <ion-item
-                    *ngIf="!passwordCtrl.valid && passwordCtrl.touched"
-                    lines="none"
-                  >
-                    <ion-label>
-                      Should at least be 6 characters long.
-                    </ion-label>
-                  </ion-item>
-                </form>
+                <ion-item type="reset">
+                  <ion-label>
+                    Password
+                  </ion-label>
+                  <ion-button
+                    slot = "end"
+                    size = "small"
+                    [disabled] = "( isDisabled$ | async )"
+                    (click) = "changePassword()"
+                  >change</ion-button>
+                </ion-item>
               </ion-item-group>
 <!--
               <ion-item-group>

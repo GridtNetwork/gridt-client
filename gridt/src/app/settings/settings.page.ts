@@ -1,5 +1,7 @@
 import { Component, OnInit, ViewChild  } from '@angular/core';
-import { AlertController, LoadingController } from '@ionic/angular';
+import { AlertController, LoadingController, ModalController, PopoverController } from '@ionic/angular';
+import { ChangeEmailPage } from './change-email/change-email.page';
+import { ChangePasswordPage} from './change-password/change-password.page';
 import { Observable, timer } from 'rxjs';
 import { timeout } from 'rxjs/operators';
 
@@ -19,14 +21,13 @@ export class SettingsPage implements OnInit  {
   gravatar: string;
 
   edit_bio$: boolean = true;
-  edit_name$: boolean = true;
-  edit_email$: boolean = true;
-  edit_password$: boolean = true;
 
   constructor(
     private SetService: SettingsService,
     private alertCtrl: AlertController,
-    private loadingCtrl: LoadingController
+    private loadingCtrl: LoadingController,
+    public modalCtrl: ModalController,
+    public popoverCntrl: PopoverController,
   ) { }
 
   ngOnInit() {
@@ -45,7 +46,7 @@ export class SettingsPage implements OnInit  {
   @ViewChild('emailfield', {static: true}) emailInput;
   @ViewChild('passwordfield', {static: true}) passwordInput;
 
-  // When pulling down on page this function is called.
+  // When pulling down on page the page is refreshed
   public refreshPage(event) {
     this.SetService.getUserSettings();
     event.target.complete();
@@ -95,89 +96,21 @@ export class SettingsPage implements OnInit  {
   }
 
   /*
-   * Change the email address
+   * Show the change Email modal
    */
-  async write_email(form: NgForm) {
-    this.edit_email$ = true;
-
-    const el = await this.loadingCtrl.create({
-      message: 'Updating email address...'
+  async changeEmail() {
+    const emailPopover = await this.popoverCntrl.create({
+      cssClass: 'pop-class',
+      component: ChangeEmailPage
     });
-
-    el.present();
-
-    this.SetService.postEmail$(form.value.email).pipe(timeout(500)).subscribe(
-      () => el.dismiss(),
-      (error) => {
-        el.dismiss();
-        this.showError(error);
-      }
-    );
-
-    timer(500).subscribe( () => this.SetService.getUserSettings());
+    return await emailPopover.present();
   }
 
-  /*
-   * Enable editting of the email field
-   */
-  public edit_email() {
-    this.edit_email$ = false;
-    this.emailInput.setFocus();
-  }
-
-  /*
-   * Reset the email value
-   */
-  public reset_email() {
-    timer(500).subscribe( () => {
-      this.edit_email$ = true;
-      this.settings$.subscribe(
-        set => this.emailInput.value = set.identity.email
-      )
-    })
-  }
-
-  /*
-   * Change the password
-   */
-  async write_password(form: NgForm) {
-    this.edit_password$ = true;
-
-    const el = await this.loadingCtrl.create({
-      message: 'Updating email address...'
+  async changePassword() {
+    const passwordPopover = await this.popoverCntrl.create({
+      component: ChangePasswordPage
     });
-
-    el.present();
-
-    this.SetService.postPassword$(form.value.email).pipe(timeout(500)).subscribe(
-      () => el.dismiss(),
-      (error) => {
-        el.dismiss();
-        this.showError(error);
-      }
-    );
-
-    timer(500).subscribe( () => this.SetService.getUserSettings());
-  }
-
-  /*
-   * Enable editting of the password field
-   */
-  public edit_password() {
-    this.edit_password$ = false;
-    this.passwordInput.setFocus();
-  }
-
-  /*
-   * Reset the password
-   */
-  public reset_password() {
-    timer(500).subscribe( () => {
-      this.edit_password$ = true;
-      this.settings$.subscribe(
-        set => this.passwordInput.value = set.identity.email
-      )
-    })
+    return await passwordPopover.present();
   }
 
   async showError(error:string) {

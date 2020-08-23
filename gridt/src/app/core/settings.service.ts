@@ -185,7 +185,7 @@ export class SettingsService {
   }
 
   public postEmail$( password: string, new_email: string ) {
-    console.debug(`Saving new email address ${email} to the server. (at leat it should now create a http.post)`);
+    console.debug(`Saving new email address ${new_email} to the server. (at leat it should now create a http.post)`);
 
     return this.auth.readyAuthentication$.pipe(
      flatMap((options) => this.http.post<ServerMessage>(

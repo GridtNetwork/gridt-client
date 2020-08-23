@@ -1,0 +1,65 @@
+<!-- <ion-header>
+  <ion-toolbar>
+    <ion-title>change-email</ion-title>
+  </ion-toolbar>
+</ion-header> -->
+
+<ion-content>
+  <ion-item-divider>
+    <ion-label>
+      Change Email
+    </ion-label>
+  </ion-item-divider>
+
+  <form #eform="ngForm" (ngSubmit)="write_email(eform)">
+    <ion-item type="reset">
+      <ion-label position="floating">
+        New Email adress
+      </ion-label>
+      <ion-input
+        #emailfield
+        ngModel
+        type="email"
+        name="email"
+        required
+        email
+        #emailCtrl="ngModel"
+      ></ion-input>
+    </ion-item>
+    <ion-item
+      *ngIf="!emailCtrl.valid && emailCtrl.touched"
+      lines="none"
+    >
+      <ion-label>
+        Should be a valid email.
+      </ion-label>
+    </ion-item>
+
+    <ion-item type="reset">
+      <ion-label position="floating">
+        Password
+      </ion-label>
+      <ion-input
+        #passwordfield
+        ngModel
+        type="password"
+        name="password"
+        minlength="6"
+        #passwordCtrl="ngModel"
+      ></ion-input>
+    </ion-item>
+    <ion-item
+      *ngIf="!passwordCtrl.valid && passwordCtrl.touched"
+      lines="none"
+    >
+      <ion-label>
+        Should at least be 6 characters long.
+      </ion-label>
+    </ion-item>
+    <ion-button ion-button slot="start" (click)="closePopover()">Cancel</ion-button>
+    <ion-button ion-button type="submit" slot="end">Submit</ion-button>
+  </form>
+
+
+
+</ion-content>
