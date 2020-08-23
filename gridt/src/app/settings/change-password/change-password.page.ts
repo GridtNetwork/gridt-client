@@ -15,57 +15,57 @@ import { Settings } from '../../core/settings.model';
   styleUrls: ['./change-password.page.scss'],
 })
 export class ChangePasswordPage {
-    edit_password$: boolean = true;
+  edit_password$: boolean = true;
 
-    constructor(
-      private SetService: SettingsService,
-      private alertCtrl: AlertController,
-      private loadingCtrl: LoadingController,
-      public popoverCntrl: PopoverController
-    ) { }
+  constructor(
+    private SetService: SettingsService,
+    private alertCtrl: AlertController,
+    private loadingCtrl: LoadingController,
+    public popoverCntrl: PopoverController
+  ) { }
 
-    ngOnInit() {
-    }
+  ngOnInit() {
+  }
 
-    public closePopover() {
-      this.popoverCntrl.dismiss({
-        'dismissed': true
-      });
-    }
+  public closePopover() {
+    this.popoverCntrl.dismiss({
+      'dismissed': true
+    });
+  }
 
-    /*
-     * Change the password
-     */
-    async write_password(form: NgForm) {
-      this.edit_password$ = true;
+  /*
+   * Change the password
+   */
+  async write_password(form: NgForm) {
+    this.edit_password$ = true;
 
-      const el = await this.loadingCtrl.create({
-        message: 'Updating email address...'
-      });
+    const el = await this.loadingCtrl.create({
+      message: 'Updating email address...'
+    });
 
-      el.present();
+    el.present();
 
-      this.SetService.postPassword$(form.value.old_password, form.value.new_password).pipe(timeout(500)).subscribe(
-        () => {
-          el.dismiss();
-          this.closePopover();
-        },
-        (error) => {
-          el.dismiss();
-          this.showError(error);
-        }
-      );
+    this.SetService.postPassword$(form.value.old_password, form.value.new_password).pipe(timeout(500)).subscribe(
+      () => {
+        el.dismiss();
+        this.closePopover();
+      },
+      (error) => {
+        el.dismiss();
+        this.showError(error);
+      }
+    );
 
-      timer(500).subscribe( () => this.SetService.getUserSettings());
-    }
+    timer(500).subscribe( () => this.SetService.getUserSettings());
+  }
 
-    async showError(error:string) {
-      const el = await this.alertCtrl.create({
-        header: "Something went wrong while saving your settings.",
-        message: error,
-        buttons: ["Continue"]
-      });
+  async showError(error:string) {
+    const el = await this.alertCtrl.create({
+      header: "Something went wrong while saving your settings.",
+      message: error,
+      buttons: ["Continue"]
+    });
 
-      el.present();
-    }
+    el.present();
+  }
 }

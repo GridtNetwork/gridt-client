@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild  } from '@angular/core';
-import { AlertController, LoadingController, ModalController, PopoverController } from '@ionic/angular';
+import { AlertController, LoadingController, ModalController, PopoverController, ToastController } from '@ionic/angular';
 import { ChangeEmailPage } from './change-email/change-email.page';
 import { ChangePasswordPage} from './change-password/change-password.page';
 import { Observable, timer } from 'rxjs';
@@ -28,6 +28,7 @@ export class SettingsPage implements OnInit  {
     private loadingCtrl: LoadingController,
     public modalCtrl: ModalController,
     public popoverCntrl: PopoverController,
+    public toastCntrl: ToastController,
   ) { }
 
   ngOnInit() {
@@ -38,6 +39,9 @@ export class SettingsPage implements OnInit  {
     this.isDisabled$ = this.SetService.isDisabled$;
     this.settings$.subscribe(set => this.gravatar = "https://www.gravatar.com/avatar/" + set.identity.avatar);
     console.log(`gravatar is ${JSON.stringify(this.gravatar)}`)
+    if (this.isDisabled$) {
+      this.serverWarning()
+    }
   }
 
   // Create objects for the input field so we can set focus later.
@@ -49,7 +53,31 @@ export class SettingsPage implements OnInit  {
   // When pulling down on page the page is refreshed
   public refreshPage(event) {
     this.SetService.getUserSettings();
+    if (this.isDisabled$) {
+      this.serverWarning()
+    }
     event.target.complete();
+  }
+
+  // When server is not available inform user with toast
+  async serverWarning() {
+    const toast = await this.toastCntrl.create({
+      message: 'Server could not be reached, refresh the page to try again.',
+      position: 'bottom',
+      buttons: [
+        {
+          side: 'start',
+          text: 'Refresh',
+          handler: () => {
+            this.SetService.getUserSettings();
+          }
+        }, {
+          role: 'cancel',
+          icon: 'close-outline'
+        }
+      ]
+    });
+    toast.present();
   }
 
   /*

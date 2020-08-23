@@ -11,33 +11,27 @@
 
 
 <ion-content padding>
-  <!-- Refreshes page if pulled down -->
-  <ion-refresher slot="fixed" (ionRefresh)="refreshPage($event)">
+  <!-- Refreshes page if pulled down (mobile only)-->
+  <ion-refresher slot="fixed" (ionRefresh)="refreshPage($event)" class="ion-hide-md-up">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-
-  <!-- Error if no user data is received -->
-  <ion-grid *ngIf="!(settings$ | async)">
-    <ion-row justify-content-center>
-      <ion-col size="12" size-sm="6" offset-sm="3" text-center>
-        <p>Could not reach server. Pull down to try again.</p>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
 
   <ion-grid>
     <ion-row justify-content-center>
       <ion-col size="12" size-sm="8" offset-sm="2" size-md="6" offset-md="3" text-center>
-        <ion-card  class="ion-text-center">
+        <ion-card>
           <ion-card-header>
-            <ion-avatar class="ion-text-center">
-              <img [src]="gravatar">
-            </ion-avatar>
-            <ion-card-title>{{ (settings$ | async)?.identity.username }}</ion-card-title>
+            <ion-card-title>Profile</ion-card-title>
           </ion-card-header>
 
           <ion-card-content>
             <ion-list>
+              <ion-item class="ion-text-center">
+                <ion-avatar class="ion-text-center">
+                  <img [src]="gravatar">
+                </ion-avatar>
+                <ion-label>{{ (settings$ | async)?.identity.username }}</ion-label>
+              </ion-item>
               <ion-item-group>
                 <ion-item-divider>
                   <ion-label>
@@ -81,36 +75,15 @@
 
                 </form>
               </ion-item-group>
-
-              <!-- <ion-item-group>
-                <ion-item-divider>
-                  <ion-label>
-                    Recent messages
-                  </ion-label>
-                </ion-item-divider>
-
-                <ion-item *ngIf="false">
-                  "You have not sent any messages yet.."
-                </ion-item>
-
-                <ion-item lines="none">
-                  <ion-note slot="start">
-                    <ion-text color="secondary">
-                      19-4-2020 <br>
-                      20:00h
-                    </ion-text>
-                  </ion-note>
-
-                  <ion-label class="ion-text-wrap">
-                    <ion-text color="primary">
-                      <h3>Movement Name</h3>
-                    </ion-text>
-                    <p>My awesome message.</p>
-                  </ion-label>
-
-                </ion-item>
-              </ion-item-group> -->
-
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Settings</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-list>
               <ion-item-group>
                 <ion-item-divider>
                   <ion-label>
@@ -144,7 +117,7 @@
                   >change</ion-button>
                 </ion-item>
               </ion-item-group>
-<!--
+
               <ion-item-group>
                 <ion-item-divider>
                   <ion-label>
@@ -180,13 +153,13 @@
                   <ion-toggle disabled="true"></ion-toggle>
                 </ion-item>
 
-              </ion-item-group> -->
+              </ion-item-group>
 
             </ion-list>
           </ion-card-content>
         </ion-card>
 
-        <!-- <ion-card>
+        <ion-card>
           <ion-card-header>
             <ion-card-title>Server</ion-card-title>
             <ion-card-subtitle>Change which server you're on</ion-card-subtitle>
@@ -195,7 +168,7 @@
           <ion-card-content>
             This option will become available in the future.
           </ion-card-content>
-        </ion-card> -->
+        </ion-card>
       </ion-col>
     </ion-row>
   </ion-grid>
