@@ -51,12 +51,16 @@ export class SettingsPage implements OnInit  {
   @ViewChild('passwordfield', {static: true}) passwordInput;
 
   // When pulling down on page the page is refreshed
-  public refreshPage(event) {
+  public mobileRefresh(event) {
+    this.refreshPage();
+    event.target.complete();
+  }
+
+  public refreshPage() {
     this.SetService.getUserSettings();
     if (this.isDisabled$) {
       this.serverWarning()
     }
-    event.target.complete();
   }
 
   // When server is not available inform user with toast
@@ -69,7 +73,7 @@ export class SettingsPage implements OnInit  {
           side: 'start',
           text: 'Refresh',
           handler: () => {
-            this.SetService.getUserSettings();
+            this.refreshPage();
           }
         }, {
           role: 'cancel',
