@@ -9,7 +9,7 @@
     <img src="https://img.shields.io/website?url=https%3A%2F%2Fapp.gridt.org" alt="website">
   </a>
   <a href="https://github.com/GridtNetwork/gridt-client/actions?query=workflow%3ACI">
-    <img src="https://github.com/GridtNetwork/gridt-client/workflows/CI/badge.svg?branch=main" alt="Build Status">
+    <img src="https://github.com/GridtNetwork/gridt-client/workflows/CI/badge.svg" alt="Build Status">
   </a>
   <a href="https://github.com/GridtNetwork/gridt-client/actions?query=workflow%3ACI">
     <img src="https://img.shields.io/github/last-commit/GridtNetwork/gridt-client" alt="Build Status">
