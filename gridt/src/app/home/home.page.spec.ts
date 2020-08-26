@@ -103,7 +103,7 @@ describe('HomePage', () => {
     expect(component.getLastOccurence("weekly", 0)).toEqual(expected_date);
 
     // Weekly on Monday
-    fake_now = new Date(2020, 2, 23);
+    fake_now = new Date(2020, 2, 19);
     fake_now.setUTCHours(15, 0, 0, 0);
     jasmine.clock().mockDate(fake_now);
 
