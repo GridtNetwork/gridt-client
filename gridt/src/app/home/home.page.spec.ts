@@ -20,21 +20,23 @@ describe('HomePage', () => {
   let apiSpy: ApiService;
   let alertSpy: AlertController;
 
-  beforeEach(async(() => {
-    apiSpy = jasmine.createSpyObj('ApiService', 
+  beforeEach(() => {
+    jasmine.clock().install();
+
+    apiSpy = jasmine.createSpyObj('ApiService',
       {
         getSubscriptions: () => {},
         sendSignal$: of("Success"),
         swapLeader$: of({
           id: 1,
-          username: "Yori", 
+          username: "Yori",
           last_signal: {
-            time_stamp: (new Date(2020, 3, 7, 9)).toISOString() 
+            time_stamp: (new Date(2020, 3, 7, 9)).toISOString()
           }
-        } as User) 
+        } as User)
       }
     );
-    
+
     alertSpy = jasmine.createSpyObj('alertSpy', {
       create: new Promise( resolve => resolve({present: () => {}}) )
     });
@@ -49,42 +51,46 @@ describe('HomePage', () => {
         { provide: AuthService, useClass: AuthServiceStub }
       ]
     }).compileComponents();
-    
+
     fixture = TestBed.createComponent(HomePage);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  }));
+  });
+
+  afterEach(() => {
+    jasmine.clock().uninstall();
+  });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-  
+
   it('should find proper last signals', () => {
     // Daily -> Midnight
     let fake_now = new Date();
-    fake_now.setUTCHours(1, 0, 0, 0); 
+    fake_now.setUTCHours(1, 0, 0, 0);
     jasmine.clock().mockDate(fake_now);
 
-    let expected_date = new Date();  
-    expected_date.setUTCHours(0, 0, 0, 0); 
+    let expected_date = new Date();
+    expected_date.setUTCHours(0, 0, 0, 0);
     expect(component.getLastOccurence("daily", 0)).toEqual(expected_date);
 
     // Twice daily in the morning
     fake_now = new Date();
-    fake_now.setUTCHours(9, 0, 0, 0); 
+    fake_now.setUTCHours(9, 0, 0, 0);
     jasmine.clock().mockDate(fake_now);
 
-    expected_date = new Date();  
-    expected_date.setUTCHours(0, 0, 0, 0); 
+    expected_date = new Date();
+    expected_date.setUTCHours(0, 0, 0, 0);
     expect(component.getLastOccurence("twice daily", 0)).toEqual(expected_date);
 
     // Twice daily in the after noon
     fake_now = new Date();
-    fake_now.setUTCHours(15, 0, 0, 0); 
+    fake_now.setUTCHours(15, 0, 0, 0);
     jasmine.clock().mockDate(fake_now);
 
-    expected_date = new Date();  
-    expected_date.setUTCHours(12, 0, 0, 0); 
+    expected_date = new Date();
+    expected_date.setUTCHours(12, 0, 0, 0);
     expect(component.getLastOccurence("twice daily", 0)).toEqual(expected_date);
 
     // Weekly on Tuesday
@@ -92,8 +98,8 @@ describe('HomePage', () => {
     fake_now.setUTCHours(15, 0, 0, 0);
     jasmine.clock().mockDate(fake_now);
 
-    expected_date = new Date(2020, 2, 23);  
-    expected_date.setUTCHours(0, 0, 0, 0); 
+    expected_date = new Date(2020, 2, 23);
+    expected_date.setUTCHours(0, 0, 0, 0);
     expect(component.getLastOccurence("weekly", 0)).toEqual(expected_date);
 
     // Weekly on Monday
@@ -101,8 +107,8 @@ describe('HomePage', () => {
     fake_now.setUTCHours(15, 0, 0, 0);
     jasmine.clock().mockDate(fake_now);
 
-    expected_date = new Date(2020, 2, 16);  
-    expected_date.setUTCHours(0, 0, 0, 0); 
+    expected_date = new Date(2020, 2, 16);
+    expected_date.setUTCHours(0, 0, 0, 0);
     expect(component.getLastOccurence("weekly", 0)).toEqual(expected_date);
   });
 
@@ -127,7 +133,7 @@ describe('HomePage', () => {
     // If the signal is 'now', it should definitely be done!
     jasmine.clock().mockDate(now);
     expect(component.isLeaderDone(movement.leaders[0], movement)).toBeTruthy();
-    
+
     // If the interval is daily and the time stamp was 24 hours ago it should not be done.
     now.setUTCHours(now.getUTCHours() + 24);
     jasmine.clock().mockDate(now);
@@ -166,7 +172,7 @@ describe('HomePage', () => {
 
   it('should allow swapping at correct times', () => {
     jasmine.clock().mockDate(new Date(2020, 3, 8, 15));
-        
+
     let movement = {
       name: "Flossing",
       short_description: "Good for your teeth.",
@@ -183,7 +189,7 @@ describe('HomePage', () => {
     } as Movement;
 
     component.swapLeader(movement, movement.leaders[0]);
-  
+
     jasmine.clock().mockDate(new Date(2020, 3, 8, 16));
     expect(component.canSwap(movement)).toBeFalsy();
 
