@@ -13,9 +13,9 @@
       <ion-row>
         <ion-col size-md="6" offset-md="3">
           <h2>{{ (movement$ | async)?.name }}</h2>
-          <p><strong>{{ (movement$ | async)?.short_description }}</strong></p>
-          <p *ngIf="(movement$ | async )?.description">{{ (movement$ | async)?.description }}</p>
-
+          <p class="shortdescription">{{ (movement$ | async)?.short_description }}</p>
+          <p class="longdescription" *ngIf="(movement$ | async )?.description">{{ (movement$ | async)?.description }}</p>
+          
           <ion-button 
             ion-button margin 
             *ngIf="( movement$ | async )?.subscribed == false"
