@@ -11,9 +11,7 @@ import { Movement } from '../../core/movement.model';
   styleUrls: ['./add-movement.page.scss'],
 })
 export class AddMovementPage implements OnInit {
-
-  form: FormGroup;
-  
+  form: FormGroup; 
   intervalTypes: string[] = [
     'daily',
     'twice daily', 
