@@ -156,9 +156,29 @@ describe("IdentityService", () => {
     )
   });
 
+  // THIS ERROR REQUIRES CHANGES TO THE SECSTORE
   // Authentication
   it('should fail to read settings when not logged in', () => {
-    authServiceStub.readyAuthentication$ = cold('#', null , "Can't authenticate: no credentials");
+    secStoreStub.get$.and.callFake((key: string) => {
+      switch (key) {
+        case "token":
+          return cold("#", {error: 'Key "token" does not exist in the secure storage.'});
+        case "email":
+          return cold("(e|)", {e: "mock_email"});
+        case "password":
+          return cold("(p|)", {p: "mock_password"});
+      }
+    });
+
+    httpClientStub.post.and.returnValue(
+      of(new HttpErrorResponse({
+        status: 401, statusText: "Bad Request",
+        error: {
+          "description": "Invalid credentials",
+          "error": "Bad Request",
+          "status_code": 401 }
+      }))
+    );
 
     // Create a new settings service with the correct spied on services.
     service = new SettingsService(httpClientStub, authServiceStub, secStoreStub)
@@ -178,7 +198,7 @@ describe("IdentityService", () => {
   });
 
   it('should fail to update settings when not logged in', () => {
-    authServiceStub.readyAuthentication$ = cold('#', null , "Can't authenticate: no credentials");
+    authServiceStub.readyAuthentication$ = cold('#', {error: "Can't authenticate: no credentials"});
 
     // Create a new settings service with the correct spied on services.
     service = new SettingsService(httpClientStub, authServiceStub, secStoreStub)
@@ -186,11 +206,11 @@ describe("IdentityService", () => {
     // Populate the user settings with some mock settings
     service._user_settings$.next(mock_settings[0]);
 
-    // Subscribes the local storage to the user settings
-    const set = service.the_user_settings$;
+    // // Subscribes the local storage to the user settings
+    // const set = service.the_user_settings$;
 
     // Try updating settings
-    expect(service._user_settings$).toThrow(new Error("Server not available"))
+    expect(service.the_user_settings$).toThrow(new Error("Server not available"))
   });
 
   // Local storage
