@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 
 import { of, throwError, from } from "rxjs";
-import { pluck, delay, concatMap } from 'rxjs/operators';
+import { pluck, delay, concatMap, tap } from 'rxjs/operators';
 
 import { SettingsService } from './settings.service';
 import { AuthService } from './auth.service';
@@ -16,27 +16,82 @@ import { hot, cold } from 'jasmine-marbles';
 
 import { HttpClient, HttpHeaders, HttpResponse, HttpHeaderResponse, HttpErrorResponse } from '@angular/common/http';
 
-let mock_settings: Settings[];
+let mock_settings: Settings[] = [
+  {
+    identity: {
+      id: 1,
+      username: "John Flosser",
+      email: "Johnny@gridt.org",
+      bio: "Flosses every single day and brushes twice a day too!",
+      avatar: "abc"
+    }
+  },
+  {
+    identity: {
+      id: 2,
+      username: "Cycling Joe",
+      email: "peddel@gridt.org",
+      bio: "Have the best days on the bike.",
+      avatar: "abc"
+    }
+  },
+  {
+    identity: {
+      id: 3,
+      username: "Moopy Zoo Lion",
+      email: "lion@gridt.org",
+      bio: "Growls verociously",
+      avatar: "abc"
+    }
+  },
+  {
+    identity: {
+      id: 4,
+      username: "Yo mamma",
+      email: "yomamma@gridt.org",
+      bio: "Don't make me mad",
+      avatar: "abc"
+    }
+  }
+];
 
-describe("IdentityService", () => {
-  let service: SettingsService;
-  let auth: AuthService;
-  let httpMock: HttpTestingController;
-  let secStore: SecureStorageService;
+let service: SettingsService;
+let auth: AuthService;
+let httpMock: HttpTestingController;
+let secStore: SecureStorageService;
+let httpClientStub: jasmine.SpyObj<HttpClient>;
+let secStoreStub: jasmine.SpyObj<SecureStorageService>
 
-  let authServiceStub: jasmine.SpyObj<AuthService>;
-  let httpClientStub: jasmine.SpyObj<HttpClient>;
-  let secStoreStub: jasmine.SpyObj<SecureStorageService>
+const default_headers = {
+  headers: new HttpHeaders({
+    Authorization: "JWT aksdajskd.asdjknaskdn.asdjknakdnasjd"
+  })
+};
 
-  const default_headers = {
-    headers: new HttpHeaders({
-      Authorization: "JWT aksdajskd.asdjknaskdn.asdjknakdnasjd"
-    })
-  };
+describe("IdentityService_AuthSuccesfull", () => {
+
+  class authServiceStub_succes {
+    isLoggedIn$ = of(true);
+    readyAuthentication$ = of(default_headers);
+  }
 
   beforeEach( () => {
+
+    secStoreStub = jasmine.createSpyObj(
+      'secStore', ['get$', 'set$', 'clear$', 'remove$']
+    );
+
+    httpClientStub = jasmine.createSpyObj(
+      'http', ['get', 'post']
+    );
+
     TestBed.configureTestingModule({
-      providers: [SettingsService, AuthService, SecureStorageService],
+      providers: [
+        SettingsService,
+        {provide: AuthService, useClass: authServiceStub_succes},
+        {provide: SecureStorageService, useValue: secStoreStub},
+        {provide: HttpClient, useValue: httpClientStub}
+      ],
       imports: [HttpClientTestingModule]
     });
 
@@ -45,64 +100,6 @@ describe("IdentityService", () => {
     httpMock = TestBed.get(HttpTestingController as Type<HttpTestingController>);
     secStore = TestBed.get(SecureStorageService as Type<SecureStorageService>);
 
-    secStoreStub = jasmine.createSpyObj(
-      'secStore', ['get$', 'set$', 'clear$', 'remove$']
-    );
-
-    httpClientStub = jasmine.createSpyObj(
-      'httpClient', ['get', 'post']
-    );
-
-    authServiceStub = jasmine.createSpyObj(
-      'auth', ['readyAuthentication$']
-    );
-
-    // All but a few tests presume a logged in state. readyAuthentication$ is
-    // defined to always be able to login and easy to compare with the correct
-    // headers. (This feature is important, as it makes or breaks communication
-    // with the server.)
-    authServiceStub.readyAuthentication$ = of(default_headers);
-
-
-    // Create mock settings
-    mock_settings = [
-      {
-        identity: {
-          id: 1,
-          username: "John Flosser",
-          email: "Johnny@gridt.org",
-          bio: "Flosses every single day and brushes twice a day too!",
-          avatar: "abc"
-        }
-      },
-      {
-        identity: {
-          id: 2,
-          username: "Cycling Joe",
-          email: "peddel@gridt.org",
-          bio: "Have the best days on the bike.",
-          avatar: "abc"
-        }
-      },
-      {
-        identity: {
-          id: 3,
-          username: "Moopy Zoo Lion",
-          email: "lion@gridt.org",
-          bio: "Growls verociously",
-          avatar: "abc"
-        }
-      },
-      {
-        identity: {
-          id: 4,
-          username: "Yo mamma",
-          email: "yomamma@gridt.org",
-          bio: "Don't make me mad",
-          avatar: "abc"
-        }
-      }
-    ]
   });
 
   // !!!!!!!!!!!!
@@ -118,99 +115,25 @@ describe("IdentityService", () => {
   });
 
   it('should provide the last available settings', () => {
-    // Create a new settings service with the correct spied on services.
-    service = new SettingsService(httpClientStub, authServiceStub, secStoreStub)
-
-    // Populate the user settings with some mock settings
-    service._user_settings$.next(mock_settings[0]);
-
-    // Subscribes the local storage to the user settings
-    const set = service.the_user_settings$;
-
-    // Set some new settings
-
     for (var val in mock_settings) {
-      // console.log(mock_settings[val]);
       service._user_settings$.next(mock_settings[val]);
     }
-
-    // User setting should update
     expect(service.the_user_settings$).toBeObservable(cold('a',{a:mock_settings[3]}));
-
   });
 
   it('should combine settings from localStorage and from the server.', () => {
     // Populate localStorage
+    secStoreStub.get$.and.returnValue(of(mock_settings[0]))
 
     // Fake server response
+    httpClientStub.get.and.returnValue(of(mock_settings[1].identity))
 
-    // Create a new settings service with the correct spied on services.
-    service = new SettingsService(httpClientStub, authServiceStub, secStoreStub)
-
-    // Subscribes the local storage to the user settings
-    const set = service.the_user_settings$;
+    service.getUserSettings()
 
     // Expect response
-    expect(set).toBeObservable(
-      cold('a|', {a: mock_settings[0]})
+    expect(service.the_user_settings$).toBeObservable(
+      cold('a', {a: mock_settings[1]})
     )
-  });
-
-  // THIS ERROR REQUIRES CHANGES TO THE SECSTORE
-  // Authentication
-  it('should fail to read settings when not logged in', () => {
-    secStoreStub.get$.and.callFake((key: string) => {
-      switch (key) {
-        case "token":
-          return cold("#", {error: 'Key "token" does not exist in the secure storage.'});
-        case "email":
-          return cold("(e|)", {e: "mock_email"});
-        case "password":
-          return cold("(p|)", {p: "mock_password"});
-      }
-    });
-
-    httpClientStub.post.and.returnValue(
-      of(new HttpErrorResponse({
-        status: 401, statusText: "Bad Request",
-        error: {
-          "description": "Invalid credentials",
-          "error": "Bad Request",
-          "status_code": 401 }
-      }))
-    );
-
-    // Create a new settings service with the correct spied on services.
-    service = new SettingsService(httpClientStub, authServiceStub, secStoreStub)
-
-    // Populate the user settings with some mock settings
-    service._user_settings$.next(mock_settings[0]);
-
-    // Subscribes the local storage to the user settings
-    const set = service.the_user_settings$;
-
-    // Make sure it at least tried to get local settings
-    expect(secStoreStub.get$).toHaveBeenCalledWith('settings');
-
-    // Make sure an error is raised
-    expect(secStoreStub.get$).toThrow(new Error("Not available"))
-
-  });
-
-  it('should fail to update settings when not logged in', () => {
-    authServiceStub.readyAuthentication$ = cold('#', {error: "Can't authenticate: no credentials"});
-
-    // Create a new settings service with the correct spied on services.
-    service = new SettingsService(httpClientStub, authServiceStub, secStoreStub)
-
-    // Populate the user settings with some mock settings
-    service._user_settings$.next(mock_settings[0]);
-
-    // // Subscribes the local storage to the user settings
-    // const set = service.the_user_settings$;
-
-    // Try updating settings
-    expect(service.the_user_settings$).toThrow(new Error("Server not available"))
   });
 
   // Local storage
@@ -238,14 +161,11 @@ describe("IdentityService", () => {
 
   it('should update localStorage when new settings are available', () => {
 
-    // Create a new settings service with the correct spied on services.
-    service = new SettingsService(httpClientStub, authServiceStub, secStoreStub)
+    // Subscribes the local storage to the user settings
+    service.the_user_settings$.subscribe();
 
     // Populate the user settings with some mock settings
     service._user_settings$.next(mock_settings[0]);
-
-    // Subscribes the local storage to the user settings
-    const set = service.the_user_settings$;
 
     // LocalStorage
     service._user_settings$.next(mock_settings[1]);
@@ -269,17 +189,11 @@ describe("IdentityService", () => {
         }
     )));
 
-    // Create a new settings service with the correct spied on services.
-    service = new SettingsService(httpClientStub, authServiceStub, secStoreStub)
-
     // Populate settings
     service._user_settings$.next(mock_settings[0]);
 
     // Obtain the settings
     service.getUserSettings();
-
-    // Subscribes the local storage to the user settings
-    const set = service.the_user_settings$;
 
     // See if disabler it set to true
     expect(service.isDisabled$).toBeObservable(
@@ -314,6 +228,60 @@ describe("IdentityService", () => {
     //   pluck("z"),
     //   special_pipe
     // )).toBeObservable(expected_empty);
+  });
+
+});
+
+describe("IdentityService_AuthFailed", () => {
+
+  class authServiceStub_failed {
+    isLoggedIn$ = of(false);
+    readyAuthentication$ = throwError("Failed Authentication");
+  }
+
+  beforeEach( () => {
+
+    secStoreStub = jasmine.createSpyObj(
+      'secStore', ['get$', 'set$', 'clear$', 'remove$']
+    );
+
+    TestBed.configureTestingModule({
+      providers: [
+        SettingsService,
+        {provide: AuthService, useClass: authServiceStub_failed},
+        {provide: SecureStorageService, useValue: secStoreStub}
+      ],
+      imports: [HttpClientTestingModule]
+    });
+
+    service = TestBed.get(SettingsService as Type<SettingsService>);
+    auth = TestBed.get(AuthService as Type<AuthService>);
+    httpMock = TestBed.get(HttpTestingController as Type<HttpTestingController>);
+    secStore = TestBed.get(SecureStorageService as Type<SecureStorageService>);
+  });
+
+  // !!!!!!!!!!!!
+  // Not completely clear why this is needed??? (It's also in api.service.spec)
+  // !!!!!!!!!!!!
+  afterEach(() => {
+    httpMock.verify();
+  });
+
+  // Authentication
+  it('should fail to read settings from server when not logged in', () => {
+
+    // Make sure it returns an error when getting server settings
+    expect(
+      service.getServerIdentity$
+    ).toBeObservable(cold("#", {}, "Failed Authentication"))
+
+  });
+
+  it('should not read local settings when not logged in', () => {
+      expect(secStoreStub.get$).not.toHaveBeenCalledWith('settings');
+  })
+
+  it('should fail to update local settings when not logged in', () => {
   });
 
 });
