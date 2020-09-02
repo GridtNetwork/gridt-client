@@ -7,7 +7,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "test": "ng test",
+    "test": "ng test --browsers=ChromeHeadless --watch=false",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
@@ -30,6 +30,8 @@
     "@ionic/pwa-elements": "^1.5.1",
     "capacitor-secure-storage-plugin": "^0.3.2",
     "core-js": "^2.5.4",
+    "phantomjs": "^2.1.7",
+    "phantomjs-prebuilt": "^2.1.16",
     "rxjs": "~6.5.1",
     "tslib": "^1.9.0",
     "zone.js": "^0.10.3"

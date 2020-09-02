@@ -4,6 +4,12 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientModule } from '@angular/common/http';
 
 import { MovementsDetailPage } from './movements-detail.page';
+import { AuthService } from 'src/app/core/auth.service';
+import { of } from 'rxjs';
+
+class AuthServiceStub {
+  isLoggedIn$ = of(true);
+}
 
 describe('MovementsDetailPage', () => {
   let component: MovementsDetailPage;
@@ -17,6 +23,9 @@ describe('MovementsDetailPage', () => {
         RouterTestingModule.withRoutes([]), 
         HttpClientModule 
       ],
+      providers: [
+        { provide: AuthService, useClass: AuthServiceStub }
+      ]
     })
     .compileComponents();
   }));

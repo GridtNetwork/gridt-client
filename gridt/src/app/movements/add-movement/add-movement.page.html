@@ -19,12 +19,14 @@
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
             <ion-label position="floating">Title</ion-label>
-            <ion-input type="text" autocomplete autocorrect formControlName="name"></ion-input>
+            <ion-input type="text" autocomplete autocorrect ngDefaultControl formControlName="name"></ion-input>
           </ion-item>
         </ion-col>
       </ion-row>
       <ion-row *ngIf="
-        !form.get('name').valid && form.get('name').touched
+        !form.get('name').valid && 
+        form.get('name').touched &&
+        form.get('name').value != ''
       ">
         <ion-col size-sm="6" offset-sm="3">
           <p>Name must be between 4 and 50 characters.</p>
@@ -34,12 +36,14 @@
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
             <ion-label position="floating">Short Description</ion-label>
-            <ion-textarea rows="2" formControlName="short_description"></ion-textarea>
+            <ion-textarea rows="2" ngDefaultControl formControlName="short_description"></ion-textarea>
           </ion-item>
         </ion-col>
       </ion-row>
       <ion-row *ngIf="
-        !form.get('short_description').valid && form.get('short_description').touched
+        !form.get('short_description').valid && 
+        form.get('short_description').touched &&
+        form.get('short_description').value != ''
       ">
         <ion-col size-sm="6" offset-sm="3">
           <p>Short description must be between 10 and 100 characters.</p>
@@ -49,7 +53,7 @@
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
             <ion-label position="floating">Description</ion-label>
-            <ion-textarea rows="3" formControlName="description"></ion-textarea>
+            <ion-textarea rows="3" ngDefaultControl formControlName="description"></ion-textarea>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -59,7 +63,7 @@
             <ion-label position="floating">
               Interval
             </ion-label>
-            <ion-select formControlName="interval">
+            <ion-select ngDefaultControl formControlName="interval">
               <ion-select-option [value]="interval" *ngFor="let interval of intervalTypes">{{ interval }}</ion-select-option>
             </ion-select>
           </ion-item>
