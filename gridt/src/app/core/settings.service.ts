@@ -41,10 +41,9 @@ export class SettingsService {
    */
   public special_pipe$: UnaryFunction<Observable<Settings>, Observable<Settings>> =
     pipe(
-      skip(1),                // Skip the local storage update
+      skip(1),                // Skip default
       distinctUntilChanged(), // Register the server response
-      skip(1),                // Skip server response
-      filter(val => !!val ),  // Skip no changes in the server setting
+      // filter(val => !!val ),  // Skip no changes in the server setting
     );
 
   /**
@@ -88,7 +87,7 @@ export class SettingsService {
    */
   private storeLocalSettings(settings: Settings): void {
     console.log(`Storing ${JSON.stringify(settings)} into the local storage.`);
-    this.secStore.set$("settings", settings).subscribe();
+    this.secStore.set$("settings", settings);
   }
 
   /**

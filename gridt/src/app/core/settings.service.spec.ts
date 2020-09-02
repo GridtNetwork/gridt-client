@@ -123,58 +123,48 @@ describe("IdentityService_AuthSuccesfull", () => {
 
   it('should combine settings from localStorage and from the server.', () => {
     // Populate localStorage
-    secStoreStub.get$.and.returnValue(of(mock_settings[0]))
+    secStoreStub.get$.and.returnValue(of(mock_settings[0]));
 
     // Fake server response
-    httpClientStub.get.and.returnValue(of(mock_settings[1].identity))
+    httpClientStub.get.and.returnValue(of(mock_settings[1].identity));
 
-    service.getUserSettings()
+    service.getUserSettings();
 
-    // Expect response
+    // Expect server response to overwrite localstorage
     expect(service.the_user_settings$).toBeObservable(
       cold('a', {a: mock_settings[1]})
-    )
+    );
   });
 
   // Local storage
-  it('should have a non-empty localStorage when loged in', () => {
-    // Simulate previous session login
+  it('should create localStorage upon first retreival of settings', () => {
+    // Subscribe local storage
+    service.the_user_settings$.subscribe();
 
-    // Test if settings are available
-  });
+    // Update settings
+    service._user_settings$.next(mock_settings[1]);
+    service._user_settings$.next(mock_settings[2]);
 
-  it('should create localStorage when user logs in', () => {
-    // Simulate login
-
-    // Test if settings are obtained from server
 
     // Test if settings are stored in localStorage
-  });
-
-  it('should emove localStorage when logging out', () => {
-    // Simulate login
-
-    // Simulate logout
-
-    // Make sure localstorage is empty
+    expect(secStoreStub.set$).toHaveBeenCalledWith('settings', mock_settings[2]);
   });
 
   it('should update localStorage when new settings are available', () => {
 
-    // Subscribes the local storage to the user settings
-    service.the_user_settings$.subscribe();
 
     // Populate the user settings with some mock settings
     service._user_settings$.next(mock_settings[0]);
 
+    // Subscribes the local storage to the user settings
+    service.the_user_settings$.subscribe();
+
     // LocalStorage
     service._user_settings$.next(mock_settings[1]);
 
-    // Server response
-    service._user_settings$.next(mock_settings[2]);
 
     // Test if the storage has been set
-    expect(secStoreStub.set$).toHaveBeenCalledWith('settings', mock_settings[2]);
+    expect(secStoreStub.set$).toHaveBeenCalledWith('settings', mock_settings[1]);
 
   });
 
@@ -189,9 +179,6 @@ describe("IdentityService_AuthSuccesfull", () => {
         }
     )));
 
-    // Populate settings
-    service._user_settings$.next(mock_settings[0]);
-
     // Obtain the settings
     service.getUserSettings();
 
@@ -199,35 +186,6 @@ describe("IdentityService_AuthSuccesfull", () => {
     expect(service.isDisabled$).toBeObservable(
       cold('(a|)', {a: false})
     )
-
-    // Try to make an edit
-
-  });
-
-  it('should send updated identity to the server only when the user sets new account identity', () => {
-    // const resub_events =    "-l-s-u";
-    // const expected_events = "-----u";
-    // const empty_events =    "------";
-    // const events = {
-    //   l: {},          // Local storage sets settings
-    //   s: {a: "A"},    // Server updates settings
-    //   u: {a: "B"}     // User changes settings
-    // };
-    //
-    // // TODO: make test values better
-    // const fake_resub = hot(resub_events, events);
-    // const expected = cold(expected_events, events);
-    // const expected_empty = cold(empty_events, events);
-    //
-    // expect(fake_resub.pipe(
-    //   pluck("a"),
-    //   special_pipe
-    // )).toBeObservable(expected);
-    //
-    // expect(fake_resub.pipe(
-    //   pluck("z"),
-    //   special_pipe
-    // )).toBeObservable(expected_empty);
   });
 
 });
@@ -245,11 +203,16 @@ describe("IdentityService_AuthFailed", () => {
       'secStore', ['get$', 'set$', 'clear$', 'remove$']
     );
 
+    httpClientStub = jasmine.createSpyObj(
+      'http', ['get', 'post']
+    );
+
     TestBed.configureTestingModule({
       providers: [
         SettingsService,
         {provide: AuthService, useClass: authServiceStub_failed},
-        {provide: SecureStorageService, useValue: secStoreStub}
+        {provide: SecureStorageService, useValue: secStoreStub},
+        {provide: HttpClient, useValue: httpClientStub}
       ],
       imports: [HttpClientTestingModule]
     });
@@ -267,21 +230,31 @@ describe("IdentityService_AuthFailed", () => {
     httpMock.verify();
   });
 
-  // Authentication
   it('should fail to read settings from server when not logged in', () => {
-
-    // Make sure it returns an error when getting server settings
     expect(
       service.getServerIdentity$
     ).toBeObservable(cold("#", {}, "Failed Authentication"))
 
   });
 
-  it('should not read local settings when not logged in', () => {
-      expect(secStoreStub.get$).not.toHaveBeenCalledWith('settings');
+  it('should fail to read local settings when not logged in', () => {
+    expect(secStoreStub.get$).not.toHaveBeenCalledWith('settings');
   })
 
   it('should fail to update local settings when not logged in', () => {
+    // Make sure there are some settings available
+    service._user_settings$.next(mock_settings[0])
+
+    // Create subscription to localstorage
+    service.the_user_settings$;
+    expect(secStoreStub.set$).not.toHaveBeenCalledWith('settings')
   });
 
+  it('should remove localStorage upon bad auth.', () => {
+    // Simulate login
+
+    // Simulate logout
+
+    // Make sure localstorage is empty
+  });
 });
