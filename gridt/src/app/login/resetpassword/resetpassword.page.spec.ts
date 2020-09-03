@@ -35,5 +35,10 @@ describe('ResetPasswordPage', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should have a form with two new password fields', () => {});
+
+  it('should check if the two passwords are equal', () => {});
+
+  it('should update password upon form submit', () => {});
 
 });
