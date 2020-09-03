@@ -5,7 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
-import { ResetPasswordPage } from './resetpassword.page';
+import { ResetPasswordPage } from './reset_password.page';
 
 describe('ResetPasswordPage', () => {
   let component: ResetPasswordPage;

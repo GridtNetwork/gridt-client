@@ -5,9 +5,9 @@ import { NgForm } from '@angular/forms';
 import { AuthService } from '../../core/auth.service';
 
 @Component({
-  selector: 'app-resetpassword',
-  templateUrl: './resetpassword.page.html',
-  styleUrls: ['./resetpassword.page.scss'],
+  selector: 'app-reset_password',
+  templateUrl: './reset_password.page.html',
+  styleUrls: ['./reset_password.page.scss'],
 })
 export class ResetPasswordPage implements OnInit {
 

@@ -5,7 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { ResetPasswordPage } from './resetpassword.page';
+import { ResetPasswordPage } from './reset_password.page';
 
 const routes: Routes = [
   {
