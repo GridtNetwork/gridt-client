@@ -34,4 +34,12 @@ describe('RecoverPage', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should have a form with an email field', () => {});
+
+  it('should request a password reset upon form submit', () => {});
+
+  it('should display a success message after submit', () => {});
+
+  it('should disable form upon submit', () => {});
 });
