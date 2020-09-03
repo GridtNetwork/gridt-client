@@ -22,19 +22,4 @@ describe("SecureStorageService", () => {
       fail
     )        
   });
-
-  it('should be able to store an object', (done: DoneFn) => {
-    service.set$("test_key", {"object_key": "object_value"}).subscribe(
-      () => {
-        service.get$("test_key").subscribe(
-          (val) => {
-            expect(val).toEqual({"object_key": "object_value"});
-            done();
-          },
-          fail
-        )
-      },
-      () => fail
-    )
-  });
 });

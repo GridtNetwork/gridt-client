@@ -26,7 +26,7 @@ export class ApiService {
    */
   private _allMovements$ = new BehaviorSubject<Movement[]>([]);
   get allMovements$ (): Observable<Movement[]> {
-    return this._allMovements$.asObservable();
+    return this._allMovements$.asObservable(); 
   }
 
   /**
@@ -50,7 +50,7 @@ export class ApiService {
       if (error.status === 401) {
         return throwError(error.error.description);
       }
-
+      
       // Server error
       if (error.error) {
         return throwError(error.error.message);
@@ -69,14 +69,14 @@ export class ApiService {
     return this.auth.readyAuthentication$.pipe(
       flatMap((options) => this.http.post<ServerMessage>(
         `${this.URL}/movements`, movement, options
-      )),
+      )),      
       catchError( this.handleBadAuth() ),
       pluck("message")
     );
   }
 
   /**
-   * This simple helper functions grants the ability to update a movement in
+   * This simple helper functions grants the ability to update a movement in 
    * the behavior subject containing a list of all movements.
    * @param bsubject BehaviorSubject that you want to update.
    * @param movement The new version of the movement.
@@ -180,40 +180,11 @@ export class ApiService {
     );
   }
 
-  //
-  // public getBio$(user.id: string): Observable<string>{
-  //   console.debug(`Getting user bio "${user.id}" from server.`);
-  //
-  //   return this.auth.readyAuthentication$.pipe(
-  //     flatMap((options) => this.http.get<string>(
-  //       `${this.URL}/user/${user.id}`,
-  //       options
-  //     ) as Observable<string>),
-  //     catchError( this.handleBadAuth() )
-  //   );
-  //
-  //
-  //
-  //
-  //
-  // }
-  //
-  // public putBio$(user.bio: string): Observable<string> {
-  //   console.debug(`Creating bio "${user.bio}"`);
-  //
-  //   return this.auth.readyAuthentication$.pipe(
-  //     flatMap((options) => this.http.put<User |ServerMessage>(
-  //       `${this.URL}/user`, user.bio, options
-  //     )),
-  //     catchError( this.handleBadAuth() ),
-  //     pluck("message")
-  //   );
-  // }
   /**
    * Swap one of the leaders identified with either username or user id in a
    * movement identified with a number or string.
    */
-  public swapLeader$(movement: Movement, user: User): Observable<User> {
+  public swapLeader$(movement: Movement, user: User): Observable<User> { 
     console.debug(`Swapping leader "@${user.username}#${user.id}" in movement "%${movement.name}#${movement.id}".`)
 
     return this.auth.readyAuthentication$.pipe(
@@ -226,7 +197,7 @@ export class ApiService {
         if ("message" in response) {
           throw response.message;
         }
-
+        
         return response as User;
       }),
       tap( new_user => {
