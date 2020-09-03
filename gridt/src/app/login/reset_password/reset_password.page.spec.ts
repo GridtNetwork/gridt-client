@@ -41,4 +41,6 @@ describe('ResetPasswordPage', () => {
 
   it('should update password upon form submit', () => {});
 
+  it('should redirect to login page when no token is provided', () => {});
+
 });

@@ -34,4 +34,9 @@ describe('LoginPage', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should have the option to recover account', () => {});
+
+  it('should create a recover page modal upon clicking recover account link', () {});
+
 });
