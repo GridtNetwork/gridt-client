@@ -8,6 +8,7 @@ import { NgForm } from '@angular/forms';
 
 import { SettingsService} from '../../core/settings.service'
 import { Settings } from '../../core/settings.model';
+import { ApiService } from '../../core/api.service'
 
 @Component({
   selector: 'app-change-email',
@@ -21,7 +22,8 @@ export class ChangeEmailPage{
     private SetService: SettingsService,
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController,
-    public popoverCntrl: PopoverController
+    public popoverCntrl: PopoverController,
+    private api: ApiService
   ) { }
 
   ngOnInit() {
@@ -46,7 +48,7 @@ export class ChangeEmailPage{
 
     el.present();
 
-    this.SetService.postEmail$(form.value.password, form.value.email).pipe(timeout(500)).subscribe(
+    this.api.postEmail$(form.value.password, form.value.email).pipe(timeout(500)).subscribe(
       () => {
         el.dismiss();
         this.closePopover();

@@ -7,6 +7,7 @@ import { timeout } from 'rxjs/operators';
 import { NgForm } from '@angular/forms';
 
 import { SettingsService} from '../../core/settings.service'
+import { ApiService } from '../../core/api.service'
 import { Settings } from '../../core/settings.model';
 
 @Component({
@@ -21,7 +22,8 @@ export class ChangePasswordPage {
     private SetService: SettingsService,
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController,
-    public popoverCntrl: PopoverController
+    public popoverCntrl: PopoverController,
+    private api: ApiService
   ) { }
 
   ngOnInit() {
@@ -45,7 +47,7 @@ export class ChangePasswordPage {
 
     el.present();
 
-    this.SetService.postPassword$(form.value.old_password, form.value.new_password).pipe(timeout(500)).subscribe(
+    this.api.postPassword$(form.value.old_password, form.value.new_password).pipe(timeout(500)).subscribe(
       () => {
         el.dismiss();
         this.closePopover();

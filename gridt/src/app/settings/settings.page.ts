@@ -7,6 +7,7 @@ import { timeout, tap, filter } from 'rxjs/operators';
 
 import { NgForm } from '@angular/forms';
 
+import { ApiService } from '../core/api.service'
 import { SettingsService} from '../core/settings.service'
 import { Settings } from '../core/settings.model';
 
@@ -30,6 +31,7 @@ export class SettingsPage implements OnInit  {
     public modalCtrl: ModalController,
     public popoverCntrl: PopoverController,
     public toastCntrl: ToastController,
+    private api: ApiService
   ) { }
 
   ngOnInit() {
@@ -93,7 +95,7 @@ export class SettingsPage implements OnInit  {
 
     el.present();
 
-    this.SetService.putBio$(form.value.bio).pipe(timeout(500)).subscribe(
+    this.api.putBio$(form.value.bio).pipe(timeout(500)).subscribe(
       () => el.dismiss(),
       (error) => {
         el.dismiss();

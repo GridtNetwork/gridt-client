@@ -2,8 +2,12 @@ import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable, BehaviorSubject, throwError, merge, partition } from "rxjs";
 import { map, tap, pluck, catchError, flatMap, distinctUntilChanged, take } from "rxjs/operators";
+
 import { Movement } from "./movement.model";
 import { User } from './user.model';
+import { Identity } from './identity.model';
+import { Settings } from './settings.model';
+
 import { AuthService } from './auth.service';
 
 export interface ServerMessage {
@@ -180,35 +184,6 @@ export class ApiService {
     );
   }
 
-  //
-  // public getBio$(user.id: string): Observable<string>{
-  //   console.debug(`Getting user bio "${user.id}" from server.`);
-  //
-  //   return this.auth.readyAuthentication$.pipe(
-  //     flatMap((options) => this.http.get<string>(
-  //       `${this.URL}/user/${user.id}`,
-  //       options
-  //     ) as Observable<string>),
-  //     catchError( this.handleBadAuth() )
-  //   );
-  //
-  //
-  //
-  //
-  //
-  // }
-  //
-  // public putBio$(user.bio: string): Observable<string> {
-  //   console.debug(`Creating bio "${user.bio}"`);
-  //
-  //   return this.auth.readyAuthentication$.pipe(
-  //     flatMap((options) => this.http.put<User |ServerMessage>(
-  //       `${this.URL}/user`, user.bio, options
-  //     )),
-  //     catchError( this.handleBadAuth() ),
-  //     pluck("message")
-  //   );
-  // }
   /**
    * Swap one of the leaders identified with either username or user id in a
    * movement identified with a number or string.
@@ -257,4 +232,59 @@ export class ApiService {
       catchError( this.handleBadAuth() )
     );
   }
+
+  /**
+   * Settings related API functions
+   */
+
+
+   /**
+    * Observable to obtain identity from server
+    */
+   public getServerIdentity$ = this.auth.readyAuthentication$.pipe(
+    flatMap((options) => this.http.get<Identity>(
+      `${this.URL}/identity`,
+      options
+    )),
+    catchError( this.handleBadAuth() ),
+    map( id => {
+      return {identity: id} // Return a <Settings> compatible object
+    })
+  );
+
+   public putBio$( bio: string ) {
+      console.debug(`Saving new biography ${bio} to the server. (at leat it should now create a http.put)`);
+
+      return this.auth.readyAuthentication$.pipe(
+       flatMap((options) => this.http.put(
+         `${this.URL}/bio`, {bio: bio}, options
+       )),
+       catchError( this.handleBadAuth() ),
+       pluck("message")
+      );
+    }
+
+    public postEmail$( password: string, new_email: string ) {
+      console.debug(`Saving new email address ${new_email} to the server. (at leat it should now create a http.post)`);
+
+      return this.auth.readyAuthentication$.pipe(
+       flatMap((options) => this.http.post<ServerMessage>(
+         `${this.URL}/change_email`, {password: password, new_email: new_email}, options
+       )),
+       catchError( this.handleBadAuth() ),
+       pluck("message")
+      );
+    }
+
+    public postPassword$( old_password: string, new_password: string ) {
+      console.debug(`Saving new password to the server. (at leat it should now create a http.post)`);
+
+      return this.auth.readyAuthentication$.pipe(
+       flatMap((options) => this.http.post<ServerMessage>(
+         `${this.URL}/change_password`, {old_password: old_password, new_password: new_password}, options
+       )),
+       catchError( this.handleBadAuth() ),
+       pluck("message")
+      );
+    }
 }

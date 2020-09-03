@@ -26,7 +26,7 @@ export class SettingsService {
     private http: HttpClient,
     private auth: AuthService,
     private secStore: SecureStorageService,
-    // private api: ApiService
+    private api: ApiService
   ) {}
 
   /**
@@ -71,12 +71,19 @@ export class SettingsService {
     return this.disabler$.asObservable();
   }
 
+  private Dissable(disabler) {
+    return function(error) {
+      disabler.next(true)
+      return throwError(error);
+    };
+  }
+
   /**
    * Observable to obtain settings from secure storage
    */
   private getLocalSettings$ = this.auth.readyAuthentication$.pipe(
    flatMap(() => this.secStore.get$("settings")),
-   catchError( this.handleBadAuth(this.disabler$) )
+   catchError( this.Dissable(this.disabler$) )
  );
 
   /**
@@ -94,8 +101,9 @@ export class SettingsService {
   public getSettingsFromServer(): void {
     console.log("Populating secure storage.");
     forkJoin({
-      server: this.getServerIdentity$
+      server: this.api.getServerIdentity$
     }).pipe(
+      catchError( this.Dissable(this.disabler$) ),
       tap( console.log ),
       map( (settings) => {
         console.log(`received server settings ${JSON.stringify(settings.server)}`);
@@ -112,8 +120,9 @@ export class SettingsService {
     console.log(`Getting user settings from local storage and server.`);
     forkJoin({
       local: this.getLocalSettings$,
-      server: this.getServerIdentity$
+      server: this.api.getServerIdentity$
     }).pipe(
+      catchError( this.Dissable(this.disabler$) ),
       tap( console.log ),
       map( (settings) => {
         console.log(`received local settings ${JSON.stringify(settings.local)}`);
@@ -124,82 +133,5 @@ export class SettingsService {
     ).subscribe( (set) => this._user_settings$.next(set) );
   }
 
-  /*
-   * Catch any error that is generated from the user not having a valid token.
-   */
-  private handleBadAuth (disabler) {
-    // This function factory is necessary because the value in "this" gets
-    // reset to a the "handleBadAuth" function instead of the service.
-    return function (error) {
-      disabler.next(true);
-      console.log("Raise error and update disabler")
-
-      // JWT Error
-      if (error.status === 401) {
-        return throwError(error.error.description);
-      }
-
-      // Server error
-      if (error.error) {
-        return throwError(error.error.message);
-      }
-
-      return throwError(error);
-    };
-  }
-
-  /**
-   * This will be placed in API.service later on.
-   */
-
-  /**
-   * Observable to obtain identity from server
-   */
-  public getServerIdentity$ = this.auth.readyAuthentication$.pipe(
-   flatMap((options) => this.http.get<Identity>(
-     `${this.URL}/identity`,
-     options
-   )),
-   catchError( this.handleBadAuth(this.disabler$) ),
-   map( id => {
-     return {identity: id} // Return a <Settings> compatible object
-   })
- );
-
- public putBio$( bio: string ) {
-    console.debug(`Saving new biography ${bio} to the server. (at leat it should now create a http.put)`);
-
-    return this.auth.readyAuthentication$.pipe(
-     flatMap((options) => this.http.put(
-       `${this.URL}/bio`, {bio: bio}, options
-     )),
-     catchError( this.handleBadAuth(this.disabler$) ),
-     pluck("message")
-    );
-  }
-
-  public postEmail$( password: string, new_email: string ) {
-    console.debug(`Saving new email address ${new_email} to the server. (at leat it should now create a http.post)`);
-
-    return this.auth.readyAuthentication$.pipe(
-     flatMap((options) => this.http.post<ServerMessage>(
-       `${this.URL}/change_email`, {password: password, new_email: new_email}, options
-     )),
-     catchError( this.handleBadAuth(this.disabler$) ),
-     pluck("message")
-    );
-  }
-
-  public postPassword$( old_password: string, new_password: string ) {
-    console.debug(`Saving new password to the server. (at leat it should now create a http.post)`);
-
-    return this.auth.readyAuthentication$.pipe(
-     flatMap((options) => this.http.post<ServerMessage>(
-       `${this.URL}/change_password`, {old_password: old_password, new_password: new_password}, options
-     )),
-     catchError( this.handleBadAuth(this.disabler$) ),
-     pluck("message")
-    );
-  }
 
 }
