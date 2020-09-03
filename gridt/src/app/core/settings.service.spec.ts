@@ -184,7 +184,7 @@ describe("IdentityService_AuthSuccesfull", () => {
 
     // See if disabler it set to true
     expect(service.isDisabled$).toBeObservable(
-      cold('(a|)', {a: false})
+      cold('(a  )', {a: true})
     )
   });
 
@@ -228,13 +228,6 @@ describe("IdentityService_AuthFailed", () => {
   // !!!!!!!!!!!!
   afterEach(() => {
     httpMock.verify();
-  });
-
-  it('should fail to read settings from server when not logged in', () => {
-    expect(
-      service.getServerIdentity$
-    ).toBeObservable(cold("#", {}, "Failed Authentication"))
-
   });
 
   it('should fail to read local settings when not logged in', () => {
