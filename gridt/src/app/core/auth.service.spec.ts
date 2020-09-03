@@ -11,7 +11,7 @@ import { cold } from 'jasmine-marbles';
 
 function generate_mock_token(future: number): AccessToken {
   const expiration_date = new Date(Date.now() + future);
-
+  
   const header = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9";
   const payload_object = {
     "exp": expiration_date.getTime() / 1000
@@ -48,7 +48,7 @@ describe("AuthService", () => {
     httpClientStub = jasmine.createSpyObj(
       'http', ['get', 'post']
     );
-
+    
     secStoreStub = jasmine.createSpyObj(
       'secStore', ['get$', 'set$', 'clear$', 'remove$']
     );
@@ -60,9 +60,9 @@ describe("AuthService", () => {
 
   it('should be logged in after succesful authentication and store crecentials', () => {
     const token = generate_mock_token(3000);
-
+    
     secStoreStub.get$.and.returnValue(cold("#", null, `Key "token" not found in secure storage.`))
-    secStoreStub.clear$.and.returnValue(cold("(t|)", {t: true}));
+    secStoreStub.clear$.and.returnValue(cold("(t|)", {t: true})); 
     secStoreStub.set$.and.callFake( (key:string, value: any) => {
       if (key == "email") {
         expect(value).toEqual('mock_email');
@@ -86,9 +86,9 @@ describe("AuthService", () => {
       expect(body).toEqual({username: "mock_email", password: "mock_password"});
       return cold("(r|)", {r: token})
     });
-
+    
     service = new AuthService(httpClientStub, secStoreStub);
-
+    
     expect(service.login$("mock_email", "mock_password")).toBeObservable(cold("(t|)", {t: true}));
   });
 
@@ -96,7 +96,7 @@ describe("AuthService", () => {
     const httpClientStub: jasmine.SpyObj<HttpClient> = jasmine.createSpyObj(
       'http', ['post']
     );
-
+    
     const secStoreStub: jasmine.SpyObj<SecureStorageService> = jasmine.createSpyObj(
       'secStore', ['get$']
     );
@@ -110,11 +110,11 @@ describe("AuthService", () => {
   it('should be ready after succesful authentication', async () => {
     const mock_token = generate_mock_token(3000);
     secStoreStub.get$.and.returnValue(cold('(t|)', {t: mock_token.access_token}).pipe( tap( () => console.log('Token given'))))
-
+    
     service = new AuthService(httpClientStub, secStoreStub);
-
+    
     expect(service.readyAuthentication$.pipe(
-      pluck("headers"),
+      pluck("headers"), 
       map(headers => headers.get("Authorization"))
     )).toBeObservable(cold('(a|)', {
       a: `JWT ${mock_token.access_token}`
@@ -129,8 +129,8 @@ describe("AuthService", () => {
 
     expect(service.readyAuthentication$).toBeObservable(cold("#", null, "Can't authenticate: no credentials"));
   });
-
-  it('should be ready when not logged in, but previous credentials are available', () => {
+  
+  it('should be ready when not logged in, but previous credentials are available', () => {      
     const mock_token = generate_mock_token(3000);
     httpClientStub.post.and.returnValue(cold('(m|)', {m: mock_token}));
 
@@ -149,7 +149,7 @@ describe("AuthService", () => {
     service = new AuthService(httpClientStub, secStoreStub);
 
     expect(service.readyAuthentication$.pipe(
-      pluck("headers"),
+      pluck("headers"), 
       map(headers => headers.get("Authorization"))
     )).toBeObservable(
       cold('(h|)', {
@@ -159,7 +159,7 @@ describe("AuthService", () => {
   });
 
   it('should not be ready when not logged in, but previous credentials' +
- 'are available but invalid', () => {
+ 'are available but invalid', () => {      
     secStoreStub.get$.and.callFake((key: string) => {
       switch (key) {
         case "token":
@@ -174,24 +174,24 @@ describe("AuthService", () => {
     httpClientStub.post.and.returnValue(
       of(new HttpErrorResponse({
         status: 401, statusText: "Bad Request",
-        error: {
-          "description": "Invalid credentials",
-          "error": "Bad Request",
+        error: { 
+          "description": "Invalid credentials", 
+          "error": "Bad Request", 
           "status_code": 401 }
       }))
     );
-
+    
     service = new AuthService(httpClientStub, secStoreStub);
-
+    
     expect(service.readyAuthentication$).toBeObservable(
       cold("#", {error: "Authentication unsuccessful: invalid credentials"})
     );
   });
-
+  
   it('should try to refresh the token if it is expired before being ready', () => {
     const old_token = generate_mock_token(-3000).access_token;
     const new_token = generate_mock_token(3000).access_token;
-
+    
     const token_sub = new BehaviorSubject(old_token);
 
     httpClientStub.post.and.returnValue(of({access_token: new_token} as AccessToken));
@@ -215,23 +215,23 @@ describe("AuthService", () => {
     });
 
     service = new AuthService(httpClientStub, secStoreStub);
-
+    
     expect(service.readyAuthentication$.pipe(
       pluck("headers"),
       map( headers => headers.get("Authorization") )
-    )).toBeObservable(cold('(m|)', {m: `JWT ${new_token}`}));
+    )).toBeObservable(cold('(m|)', {m: `JWT ${new_token}`})); 
 
     expect(httpClientStub.post).toHaveBeenCalledWith(
       'https://api.gridt.org/auth',
       {username: "mock_email", password: "mock_password"}
     )
   });
-
+    
   it("should clear the secure storage when logging out", () => {
     secStoreStub.get$.and.returnValue(throwError("Should not be called"));
     secStoreStub.clear$.and.returnValue(of(true));
     service = new AuthService(httpClientStub, secStoreStub);
-
+    
     service.logout();
     expect(secStoreStub.clear$).toHaveBeenCalled();
   });
@@ -248,7 +248,7 @@ describe("AuthService", () => {
     );
 
     expect(httpClientStub.post).toHaveBeenCalledWith(
-      'https://api.gridt.org/register',
+      'https://api.gridt.org/register', 
       {
         username: "mockusername",
         email: "mockemail",
@@ -260,7 +260,7 @@ describe("AuthService", () => {
   it("should be observable that registering failed", () => {
     httpClientStub.post.and.returnValue(throwError(
       new HttpErrorResponse({
-        error: { message: "Username already in use." },
+        error: { message: "Username already in use." }, 
         status: 400, statusText: "Bad Request"
       })
     ));

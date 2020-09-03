@@ -26,9 +26,9 @@ export class AppComponent implements OnInit, OnDestroy{
       icon: 'fitness'
     },
     {
-      title: 'Settings',
-      url: '/settings',
-      icon: 'settings'
+      title: 'Profile',
+      url: '/profile',
+      icon: 'person'
     },
   ];
 

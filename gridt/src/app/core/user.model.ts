@@ -1,5 +1,3 @@
-import { Signal } from './Signal.model';
-
 export interface User {
     /**
      * The user's id
@@ -9,7 +7,7 @@ export interface User {
      * The user's username
      */
     username: string;
-  
+
     last_signal: {
         time_stamp: string;
         message?: string

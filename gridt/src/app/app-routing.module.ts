@@ -14,17 +14,17 @@ const routes: Routes = [
       {
         path: '',
         loadChildren: './movements/movements.module#MovementsPageModule',
-        canLoad: [LoginGuard]
+        canLoad: [LoginGuard] 
       },
       {
         path: ':movementId',
         loadChildren: './movements/movements-detail/movements-detail.module#MovementsDetailPageModule',
         canLoad: [LoginGuard]
       },
-
+   
     ]
-  },
-  {
+  },   
+  { 
     path: 'add',
     loadChildren: './movements/add-movement/add-movement.module#AddMovementPageModule',
     canLoad: [LoginGuard]
@@ -53,8 +53,8 @@ const routes: Routes = [
     canLoad: [LoginGuard]
   },
   {
-    path: 'settings',
-    loadChildren: () => import('./settings/settings.module').then( m => m.SettingsPageModule),
+    path: 'profile',
+    loadChildren: () => import('./profile/profile.module').then( m => m.ProfilePageModule),
     canLoad: [LoginGuard]
   },
 ];
