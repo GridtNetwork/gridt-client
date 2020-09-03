@@ -3,7 +3,7 @@ import { AlertController, LoadingController, ModalController, PopoverController,
 import { ChangeEmailPage } from './change-email/change-email.page';
 import { ChangePasswordPage} from './change-password/change-password.page';
 import { Observable, timer } from 'rxjs';
-import { timeout } from 'rxjs/operators';
+import { timeout, tap, filter } from 'rxjs/operators';
 
 import { NgForm } from '@angular/forms';
 
@@ -18,6 +18,7 @@ import { Settings } from '../core/settings.model';
 export class SettingsPage implements OnInit  {
   settings$: Observable<Settings>;
   isDisabled$: Observable<boolean>;
+  isDisabledval: boolean;
   gravatar: string;
 
   edit_bio$: boolean = true;
@@ -32,16 +33,19 @@ export class SettingsPage implements OnInit  {
   ) { }
 
   ngOnInit() {
-    this.SetService.getSettingsFromServer();
     this.settings$ = this.SetService.the_user_settings$;
     this.SetService.getUserSettings();
 
     this.isDisabled$ = this.SetService.isDisabled$;
+
     this.settings$.subscribe(set => this.gravatar = "https://www.gravatar.com/avatar/" + set.identity.avatar);
     console.log(`gravatar is ${JSON.stringify(this.gravatar)}`)
-    if (this.isDisabled$) {
-      this.serverWarning()
-    }
+
+    // Raise warning toast when isDisabled$ becomes true
+    this.isDisabled$.pipe(
+      filter (val => val == true),
+      tap( () =>  this.serverWarning() )
+    ).subscribe();
   }
 
   // Create objects for the input field so we can set focus later.
@@ -50,17 +54,9 @@ export class SettingsPage implements OnInit  {
   @ViewChild('emailfield', {static: true}) emailInput;
   @ViewChild('passwordfield', {static: true}) passwordInput;
 
-  // When pulling down on page the page is refreshed
-  public mobileRefresh(event) {
-    this.refreshPage();
-    event.target.complete();
-  }
-
-  public refreshPage() {
+  public refreshPage(event?) {
     this.SetService.getUserSettings();
-    if (this.isDisabled$) {
-      this.serverWarning()
-    }
+    if (event) { event.target.complete(); }
   }
 
   // When server is not available inform user with toast
@@ -73,6 +69,7 @@ export class SettingsPage implements OnInit  {
           side: 'start',
           text: 'Refresh',
           handler: () => {
+            toast.dismiss()
             this.refreshPage();
           }
         }, {

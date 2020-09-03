@@ -68,9 +68,7 @@ export class SettingsService {
   private disabler$ = new BehaviorSubject<boolean>(false);
 
   get isDisabled$ (): Observable<boolean> {
-    //debug
-    return of(false)
-    // return this.disabler$.asObservable();
+    return this.disabler$.asObservable();
   }
 
   /**
@@ -134,6 +132,7 @@ export class SettingsService {
     // reset to a the "handleBadAuth" function instead of the service.
     return function (error) {
       disabler.next(true);
+      console.log("Raise error and update disabler")
 
       // JWT Error
       if (error.status === 401) {
