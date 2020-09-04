@@ -9,6 +9,7 @@ import { of } from 'rxjs';
 
 class AuthServiceStub {
   isLoggedIn$ = of(true);
+  readyAuthentication$ = of(true);
 }
 
 describe('MovementsDetailPage', () => {

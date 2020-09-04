@@ -10,12 +10,12 @@ import { AuthService } from 'src/app/core/auth.service';
 
 class AuthServiceStub {
   isLoggedIn$ = of(true);
+  readyAuthentication$ = of(true);
 }
 
 describe('AddMovementPage', () => {
   let component: AddMovementPage;
   let fixture: ComponentFixture<AddMovementPage>;
-  let authSpy: AuthService;
 
   beforeEach(async(() => {    
     TestBed.configureTestingModule({
