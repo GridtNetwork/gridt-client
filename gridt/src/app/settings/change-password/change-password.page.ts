@@ -47,7 +47,7 @@ export class ChangePasswordPage {
 
     el.present();
 
-    this.api.changePassword$(form.value.old_password, form.value.new_password).pipe(timeout(500)).subscribe(
+    this.api.changePassword$(form.value.old_password, form.value.new_password).pipe(timeout(2500)).subscribe(
       () => {
         el.dismiss();
         this.closePopover();
@@ -58,7 +58,7 @@ export class ChangePasswordPage {
       }
     );
 
-    timer(500).subscribe( () => this.SetService.getUserSettings());
+    timer(500).subscribe( () => this.SetService.updateUserSettings());
   }
 
   async showError(error:string) {

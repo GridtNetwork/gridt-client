@@ -128,7 +128,7 @@ describe("IdentityService_AuthSuccesfull", () => {
     // Fake server response
     httpClientStub.get.and.returnValue(of(mock_settings[1].identity));
 
-    service.getUserSettings();
+    service.updateUserSettings();
 
     // Expect server response to overwrite localstorage
     expect(service.the_user_settings$).toBeObservable(
@@ -175,7 +175,7 @@ describe("IdentityService_AuthSuccesfull", () => {
     )));
 
     // Obtain the settings
-    service.getUserSettings();
+    service.updateUserSettings();
 
     // See if disabler it set to true
     expect(service.isDisabled$).toBeObservable(

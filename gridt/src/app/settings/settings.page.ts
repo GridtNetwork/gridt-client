@@ -35,9 +35,8 @@ export class SettingsPage implements OnInit  {
   ) { }
 
   ngOnInit() {
-    this.SetService.getSettingsFromServer();
     this.settings$ = this.SetService.the_user_settings$;
-    this.SetService.getUserSettings();
+    this.SetService.updateUserSettings();
 
     this.isDisabled$ = this.SetService.isDisabled$;
 
@@ -58,7 +57,7 @@ export class SettingsPage implements OnInit  {
   @ViewChild('passwordfield', {static: true}) passwordInput;
 
   public refreshPage(event?) {
-    this.SetService.getUserSettings();
+    this.SetService.updateUserSettings();
     if (event) { event.target.complete(); }
   }
 
@@ -96,7 +95,7 @@ export class SettingsPage implements OnInit  {
 
     el.present();
 
-    this.api.putBio$(form.value.bio).pipe(timeout(500)).subscribe(
+    this.api.putBio$(form.value.bio).pipe(timeout(2500)).subscribe(
       () => el.dismiss(),
       (error) => {
         el.dismiss();
@@ -104,7 +103,7 @@ export class SettingsPage implements OnInit  {
       }
     );
 
-    timer(500).subscribe( () => this.SetService.getUserSettings());
+    timer(500).subscribe( () => this.SetService.updateUserSettings());
   }
 
   /*

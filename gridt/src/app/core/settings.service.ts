@@ -25,6 +25,15 @@ export class SettingsService {
     private api: ApiService
   ) {}
 
+  private emptySettings: Settings = {
+    identity: {
+      id: 0,
+      username: "",
+      bio: "",
+      email: ""
+    }
+  }
+
   /**
    * Create ReplaySubject which yields the latest user settings.
    * The depth of the ReplaySubject is set to 1, which makes sure only the
@@ -38,7 +47,7 @@ export class SettingsService {
    */
   public special_pipe$: UnaryFunction<Observable<Settings>, Observable<Settings>> =
     pipe(
-      skip(1),                // Skip default
+      // skip(1),                // Skip default
       distinctUntilChanged(), // Register the server response
     );
 
@@ -76,10 +85,15 @@ export class SettingsService {
 
   /**
    * Observable to obtain settings from secure storage
+   * If secure storage is empty, return empty settings object
    */
   private getLocalSettings$ = this.auth.readyAuthentication$.pipe(
    flatMap(() => this.secStore.get$("settings")),
-   catchError( this.Dissable(this.disabler$) )
+   catchError( (error) => {
+     console.log(error)
+     console.log("Got empty settings from localstorage")
+     return of(this.emptySettings)
+   })
  );
 
   /**
@@ -88,32 +102,14 @@ export class SettingsService {
    */
   private storeLocalSettings(settings: Settings): void {
     console.log(`Storing ${JSON.stringify(settings)} into the local storage.`);
-    this.secStore.set$("settings", settings);
-  }
-
-  /**
-   * Function to process server response
-   */
-  public getSettingsFromServer(): void {
-    console.log("Populating secure storage.");
-    forkJoin({
-      server: this.api.getServerIdentity$
-    }).pipe(
-      catchError( this.Dissable(this.disabler$) ),
-      tap( console.log ),
-      map( (settings) => {
-        console.log(`received server settings ${JSON.stringify(settings.server)}`);
-        return {...settings.server}
-        // Server settings have priority over local settings
-      })
-    ).subscribe( (set) => this.secStore.set$("settings", {set}).subscribe() );
+    this.secStore.set$("settings", settings).subscribe();
   }
 
   /**
    * Update the _user_settings$ by combining Local and Server responses.
    */
    // Change to updateUserSettings
-  public getUserSettings(): void {
+  public updateUserSettings(): void {
     console.log(`Getting user settings from local storage and server.`);
     forkJoin({
       local: this.getLocalSettings$,

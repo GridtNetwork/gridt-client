@@ -58,7 +58,7 @@ export class ChangeEmailPage{
       }
     );
 
-    timer(500).subscribe( () => this.SetService.getUserSettings());
+    timer(500).subscribe( () => this.SetService.updateUserSettings());
   }
 
   async showError(error:string) {
