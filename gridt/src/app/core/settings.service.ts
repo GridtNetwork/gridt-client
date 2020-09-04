@@ -113,14 +113,21 @@ export class SettingsService {
     console.log(`Getting user settings from local storage and server.`);
     forkJoin({
       local: this.getLocalSettings$,
-      server: this.api.getServerIdentity$
+      server: this.api.getServerIdentity$.pipe(catchError( () => {
+        this.disabler$.next(true);
+        return of(this.emptySettings)
+      }))
     }).pipe(
       catchError( this.Dissable(this.disabler$) ),
       tap( console.log ),
       map( (settings) => {
         console.log(`received local settings ${JSON.stringify(settings.local)}`);
         console.log(`received server settings ${JSON.stringify(settings.server)}`);
-        return {...settings.local, ...settings.server}
+        if (JSON.stringify(settings.server) == JSON.stringify(this.emptySettings)) {
+          return {...settings.local}
+        } else {
+          return {...settings.local, ...settings.server}
+        }
         // Server settings have priority over local settings
       })
     ).subscribe( (set) => this._user_settings$.next(set) );
