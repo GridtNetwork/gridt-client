@@ -35,7 +35,6 @@ export class ChangeEmailPage{
     });
   }
 
-
   /*
    * Change the email address
    */
@@ -48,7 +47,7 @@ export class ChangeEmailPage{
 
     el.present();
 
-    this.api.postEmail$(form.value.password, form.value.email).pipe(timeout(500)).subscribe(
+    this.api.changeEmail$(form.value.password, form.value.email).subscribe(
       () => {
         el.dismiss();
         this.closePopover();

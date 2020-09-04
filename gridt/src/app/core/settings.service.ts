@@ -17,10 +17,6 @@ export interface ServerMessage {
   providedIn: "root"
 })
 export class SettingsService {
-  /*
-   * Subscribe to this observable to ready the API.
-   */
-  public URL = "https://api.gridt.org";
 
   constructor (
     private http: HttpClient,
@@ -31,10 +27,11 @@ export class SettingsService {
 
   /**
    * Create ReplaySubject which yields the latest user settings.
+   * The depth of the ReplaySubject is set to 1, which makes sure only the
+   * latest available settings are retured to the user.
    */
   public _user_settings$ = new ReplaySubject<Settings>(1);
-  // The depth of the ReplaySubject is set to 1, which makes sure only the
-  // latest available settings are retured to the user.
+
 
   /**
    * Create a pip which skips the trivial updates of _user_settings$
@@ -43,7 +40,6 @@ export class SettingsService {
     pipe(
       skip(1),                // Skip default
       distinctUntilChanged(), // Register the server response
-      // filter(val => !!val ),  // Skip no changes in the server setting
     );
 
   /**
@@ -116,6 +112,7 @@ export class SettingsService {
   /**
    * Update the _user_settings$ by combining Local and Server responses.
    */
+   // Change to updateUserSettings
   public getUserSettings(): void {
     console.log(`Getting user settings from local storage and server.`);
     forkJoin({

@@ -1,4 +1,4 @@
-import {Type } from "@angular/core";
+import { Type } from "@angular/core";
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 
@@ -137,35 +137,30 @@ describe("IdentityService_AuthSuccesfull", () => {
   });
 
   // Local storage
-  it('should create localStorage upon first retreival of settings', () => {
+  it('should create localStorage upon first retrieval of settings', () => {
     // Subscribe local storage
-    service.the_user_settings$.subscribe();
+    service.the_user_settings$;
 
     // Update settings
     service._user_settings$.next(mock_settings[1]);
     service._user_settings$.next(mock_settings[2]);
-
 
     // Test if settings are stored in localStorage
     expect(secStoreStub.set$).toHaveBeenCalledWith('settings', mock_settings[2]);
   });
 
   it('should update localStorage when new settings are available', () => {
-
-
     // Populate the user settings with some mock settings
     service._user_settings$.next(mock_settings[0]);
 
     // Subscribes the local storage to the user settings
-    service.the_user_settings$.subscribe();
+    service.the_user_settings$;
 
     // LocalStorage
     service._user_settings$.next(mock_settings[1]);
 
-
     // Test if the storage has been set
     expect(secStoreStub.set$).toHaveBeenCalledWith('settings', mock_settings[1]);
-
   });
 
   // Server calls
@@ -185,7 +180,7 @@ describe("IdentityService_AuthSuccesfull", () => {
     // See if disabler it set to true
     expect(service.isDisabled$).toBeObservable(
       cold('(a  )', {a: true})
-    )
+    );
   });
 
 });

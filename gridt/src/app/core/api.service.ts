@@ -241,7 +241,7 @@ export class ApiService {
    /**
     * Observable to obtain identity from server
     */
-   public getServerIdentity$ = this.auth.readyAuthentication$.pipe(
+   public getServerIdentity$: Observable<Settings> = this.auth.readyAuthentication$.pipe(
     flatMap((options) => this.http.get<Identity>(
       `${this.URL}/identity`,
       options
@@ -253,7 +253,7 @@ export class ApiService {
   );
 
    public putBio$( bio: string ) {
-      console.debug(`Saving new biography ${bio} to the server. (at leat it should now create a http.put)`);
+      console.debug(`Saving new biography to the server. (at least it should now create a http.put)`);
 
       return this.auth.readyAuthentication$.pipe(
        flatMap((options) => this.http.put(
@@ -264,7 +264,7 @@ export class ApiService {
       );
     }
 
-    public postEmail$( password: string, new_email: string ) {
+    public changeEmail$( password: string, new_email: string ) {
       console.debug(`Saving new email address ${new_email} to the server. (at leat it should now create a http.post)`);
 
       return this.auth.readyAuthentication$.pipe(
@@ -276,15 +276,15 @@ export class ApiService {
       );
     }
 
-    public postPassword$( old_password: string, new_password: string ) {
+    public changePassword$( old_password: string, new_password: string ) {
       console.debug(`Saving new password to the server. (at leat it should now create a http.post)`);
 
       return this.auth.readyAuthentication$.pipe(
-       flatMap((options) => this.http.post<ServerMessage>(
-         `${this.URL}/change_password`, {old_password: old_password, new_password: new_password}, options
-       )),
-       catchError( this.handleBadAuth() ),
-       pluck("message")
+        flatMap((options) => this.http.post<ServerMessage>(
+          `${this.URL}/change_password`, {old_password: old_password, new_password: new_password}, options
+        )),
+        catchError( this.handleBadAuth() ),
+        pluck("message")
       );
     }
 }

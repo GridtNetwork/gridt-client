@@ -10,7 +10,7 @@ export interface Identity {
     /**
      * The user's biography
      */
-    bio?: string;
+    bio: string;
     /**
      * The user's email adress (used for gravatar)
      */

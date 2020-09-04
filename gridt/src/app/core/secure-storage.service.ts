@@ -18,6 +18,8 @@ export class SecureStorageService {
             observer.error(`Key "${key}" does not exist in the secure storage.`);
             return;
           } else {
+            // Local storage only stores strings, hence we need to parse
+            // the storage value back into an object.
             const data = JSON.parse(value);
             observer.next(data);
             observer.complete();
@@ -29,6 +31,7 @@ export class SecureStorageService {
 
   set$ (key: string, value: any): Observable<boolean> {
     return new Observable ( (observer) => {
+      // SecStore can only store strings, hence use JSON 
       const data = JSON.stringify(value);
       SecureStoragePlugin.set({key, value: data}).then( (succesObj) => {
         if (succesObj.value) {

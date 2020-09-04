@@ -35,6 +35,7 @@ export class SettingsPage implements OnInit  {
   ) { }
 
   ngOnInit() {
+    this.SetService.getSettingsFromServer();
     this.settings$ = this.SetService.the_user_settings$;
     this.SetService.getUserSettings();
 

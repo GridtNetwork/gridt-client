@@ -261,7 +261,7 @@ describe("ApiService", () => {
     service = new ApiService(httpClientStub, authServiceStub);
     expect(
       service.getServerIdentity$
-    ).toBeObservable(cold("#", {}, "Can't authenticate: no credentials"))
+    ).toBeObservable(cold("#", {}, "Can't authenticate: no credentials"));
 
   });
 

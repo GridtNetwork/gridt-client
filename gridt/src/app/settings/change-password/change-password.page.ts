@@ -47,7 +47,7 @@ export class ChangePasswordPage {
 
     el.present();
 
-    this.api.postPassword$(form.value.old_password, form.value.new_password).pipe(timeout(500)).subscribe(
+    this.api.changePassword$(form.value.old_password, form.value.new_password).pipe(timeout(500)).subscribe(
       () => {
         el.dismiss();
         this.closePopover();
