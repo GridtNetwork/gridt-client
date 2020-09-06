@@ -265,7 +265,7 @@ export class ApiService {
     }
 
     public changeEmail$( password: string, new_email: string ) {
-      console.debug(`Saving new email address ${new_email} to the server. (at leat it should now create a http.post)`);
+      console.debug(`Saving new email address ${new_email} to the server.`);
 
       return this.auth.readyAuthentication$.pipe(
        flatMap((options) => this.http.post<ServerMessage>(
@@ -277,7 +277,7 @@ export class ApiService {
     }
 
     public changePassword$( old_password: string, new_password: string ) {
-      console.debug(`Saving new password to the server. (at leat it should now create a http.post)`);
+      console.debug(`Saving new password to the server.`);
 
       return this.auth.readyAuthentication$.pipe(
         flatMap((options) => this.http.post<ServerMessage>(

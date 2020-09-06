@@ -102,9 +102,6 @@ describe("IdentityService_AuthSuccesfull", () => {
 
   });
 
-  // !!!!!!!!!!!!
-  // Not completely clear why this is needed??? (It's also in api.service.spec)
-  // !!!!!!!!!!!!
   afterEach(() => {
     httpMock.verify();
   });
@@ -116,7 +113,7 @@ describe("IdentityService_AuthSuccesfull", () => {
 
   it('should provide the last available settings', () => {
     for (var val in mock_settings) {
-      service._user_settings$.next(mock_settings[val]);
+      service.set_user_settings(mock_settings[val]);
     }
     expect(service.the_user_settings$).toBeObservable(cold('a',{a:mock_settings[3]}));
   });
@@ -142,8 +139,8 @@ describe("IdentityService_AuthSuccesfull", () => {
     service.the_user_settings$;
 
     // Update settings
-    service._user_settings$.next(mock_settings[1]);
-    service._user_settings$.next(mock_settings[2]);
+    service.set_user_settings(mock_settings[1]);
+    service.set_user_settings(mock_settings[2]);
 
     // Test if settings are stored in localStorage
     expect(secStoreStub.set$).toHaveBeenCalledWith('settings', mock_settings[2]);
@@ -151,13 +148,13 @@ describe("IdentityService_AuthSuccesfull", () => {
 
   it('should update localStorage when new settings are available', () => {
     // Populate the user settings with some mock settings
-    service._user_settings$.next(mock_settings[0]);
+    service.set_user_settings(mock_settings[0]);
 
     // Subscribes the local storage to the user settings
     service.the_user_settings$;
 
     // LocalStorage
-    service._user_settings$.next(mock_settings[1]);
+    service.set_user_settings(mock_settings[1]);
 
     // Test if the storage has been set
     expect(secStoreStub.set$).toHaveBeenCalledWith('settings', mock_settings[1]);
@@ -218,9 +215,6 @@ describe("IdentityService_AuthFailed", () => {
     secStore = TestBed.get(SecureStorageService as Type<SecureStorageService>);
   });
 
-  // !!!!!!!!!!!!
-  // Not completely clear why this is needed??? (It's also in api.service.spec)
-  // !!!!!!!!!!!!
   afterEach(() => {
     httpMock.verify();
   });
@@ -230,12 +224,15 @@ describe("IdentityService_AuthFailed", () => {
   })
 
   it('should fail to update local settings when not logged in', () => {
-    // Make sure there are some settings available
-    service._user_settings$.next(mock_settings[0])
-
     // Create subscription to localstorage
     service.the_user_settings$;
-    expect(secStoreStub.set$).not.toHaveBeenCalledWith('settings')
+
+    // Make sure there are some settings available
+    service.set_user_settings(mock_settings[0]);
+    service.set_user_settings(mock_settings[1]);
+    service.set_user_settings(mock_settings[2]);
+
+    expect(secStoreStub.set$).not.toHaveBeenCalledWith('settings');
   });
 
   it('should remove localStorage upon bad auth.', () => {

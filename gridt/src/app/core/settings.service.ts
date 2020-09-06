@@ -30,6 +30,7 @@ export class SettingsService {
       id: 0,
       username: "",
       bio: "",
+      avatar: "",
       email: ""
     }
   }
@@ -39,17 +40,11 @@ export class SettingsService {
    * The depth of the ReplaySubject is set to 1, which makes sure only the
    * latest available settings are retured to the user.
    */
-  public _user_settings$ = new ReplaySubject<Settings>(1);
+  private _user_settings$ = new ReplaySubject<Settings>(1);
 
-
-  /**
-   * Create a pip which skips the trivial updates of _user_settings$
-   */
-  public special_pipe$: UnaryFunction<Observable<Settings>, Observable<Settings>> =
-    pipe(
-      // skip(1),                // Skip local
-      // distinctUntilChanged(), // Register the server response
-    );
+  public set_user_settings(settings): void {
+    this._user_settings$.next(settings);
+  };
 
   /**
    * Transforms the user settings Subject to an Observable
@@ -104,11 +99,15 @@ export class SettingsService {
 
   /**
    * Update the _user_settings$ by combining Local and Server responses.
+   *
+   * While a forkJoin may be usefull, it doesn't allow for simple error
+   * catching, hence the two seperate subscriptions for local and server.
    */
-   // Change to updateUserSettings
   public updateUserSettings(): void {
     console.log(`Getting user settings from local storage and server.`);
     this.getLocalSettings$.pipe(
+      // To make sure the page loads correctly we simply output an empty
+      // Settings object.
       catchError( ()=> {
         this.disabler$.next(true);
         return of(this.emptySettings)

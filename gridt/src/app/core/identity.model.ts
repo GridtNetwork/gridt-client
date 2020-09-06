@@ -12,11 +12,11 @@ export interface Identity {
      */
     bio: string;
     /**
-     * The user's email adress (used for gravatar)
+     * The user's email adress
      */
     email: string;
     /**
      * The user's MD5 hash for the Gravatar
      */
-    avatar?: string;
+    avatar: string;
 }
