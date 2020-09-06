@@ -16,6 +16,7 @@ import { environment } from '../environments/environment';
 
 import { ChangeEmailPageModule } from './settings/change-email/change-email.module';
 import { ChangePasswordPageModule } from './settings/change-password/change-password.module';
+import { ChangeBioPageModule } from './settings/change-bio/change-bio.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -29,6 +30,7 @@ import { ChangePasswordPageModule } from './settings/change-password/change-pass
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
     ChangeEmailPageModule,
     ChangePasswordPageModule,
+    ChangeBioPageModule,
   ],
   providers: [
     StatusBar,

@@ -1,0 +1,28 @@
+<ion-content class="ion-padding">
+  <ion-item-divider>
+    <ion-label>
+      Change Bio
+    </ion-label>
+  </ion-item-divider>
+
+  <form #eform="ngForm" (ngSubmit)="write_bio(eform)">
+    <ion-item type="reset">
+      <ion-label position="floating">
+        New bio
+      </ion-label>
+      <ion-textarea
+        #biofield
+        ngModel
+        type="string"
+        name="bio"
+        required
+      ></ion-textarea>
+    </ion-item>
+
+    <ion-button ion-button slot="start" (click)="closePopover()">Cancel</ion-button>
+    <ion-button ion-button type="submit" slot="end">Submit</ion-button>
+  </form>
+
+
+
+</ion-content>

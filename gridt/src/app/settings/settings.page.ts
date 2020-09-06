@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild  } from '@angular/core';
 import { AlertController, LoadingController, ModalController, PopoverController, ToastController } from '@ionic/angular';
 import { ChangeEmailPage } from './change-email/change-email.page';
-import { ChangePasswordPage} from './change-password/change-password.page';
+import { ChangePasswordPage } from './change-password/change-password.page';
+import { ChangeBioPage } from './change-bio/change-bio.page';
 import { Observable, timer } from 'rxjs';
 import { timeout, tap, filter } from 'rxjs/operators';
 
@@ -84,49 +85,6 @@ export class SettingsPage implements OnInit  {
   }
 
   /*
-   * Change the bio
-   */
-  async write_bio(form: NgForm) {
-    this.edit_bio$ = true;
-
-    const el = await this.loadingCtrl.create({
-      message: 'Updating bio...'
-    });
-
-    el.present();
-
-    this.api.putBio$(form.value.bio).pipe(timeout(2500)).subscribe(
-      () => el.dismiss(),
-      (error) => {
-        el.dismiss();
-        this.showError(error);
-      }
-    );
-
-    timer(500).subscribe( () => this.SetService.updateUserSettings());
-  }
-
-  /*
-   * Enable editting of the bio
-   */
-  public edit_bio() {
-    this.edit_bio$ = false;
-    this.bioInput.setFocus();
-  }
-
-  /*
-   * Reset the bio value
-   */
-  public reset_bio() {
-    timer(500).subscribe( () => {
-      this.edit_bio$ = true;
-      this.settings$.subscribe(
-        set => this.bioInput.value = set.identity.bio
-      )
-    })
-  }
-
-  /*
    * Show the change Email modal
    */
   async changeEmail() {
@@ -142,6 +100,14 @@ export class SettingsPage implements OnInit  {
       component: ChangePasswordPage
     });
     return await passwordPopover.present();
+  }
+
+  async changeBio() {
+    const bioPopover = await this.popoverCntrl.create({
+      cssClass: 'pop-class',
+      component: ChangeBioPage
+    });
+    return await bioPopover.present();
   }
 
   async showError(error:string) {

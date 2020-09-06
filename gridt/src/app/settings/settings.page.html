@@ -41,41 +41,15 @@
                   </ion-label>
                 </ion-item-divider>
 
-                <!-- <ion-item>
-                  "No bio? I'm sure there's something to tell about yourself!"
-                </ion-item> -->
-                <form #bform="ngForm" (ngSubmit)="write_bio(bform)">
-                  <ion-item lines="none">
-                    <ion-textarea
-                      #bio
-                      ngModel
-                      class="ion-padding"
-                      autoGrow="true"
-                      [readonly]="edit_bio$"
-                      type = "text"
-                      name = "bio"
-                      (ionBlur) = "reset_bio()"
-                      [value]="(settings$ | async)?.identity.bio">
-                    </ion-textarea>
-                  </ion-item>
-                  <ion-item lines="none">
-                    <ion-button
-                      *ngIf = "edit_bio$"
-                      size="small"
-                      slot="start"
-                      [disabled]="( isDisabled$ | async )"
-                      (click) = "edit_bio()"
-                    >edit</ion-button>
-                    <ion-button
-                      *ngIf="!edit_bio$"
-                      type = "submit"
-                      slot="start"
-                      size = "small"
-                      [disabled] = "( isDisabled$ | async )"
-                    >save</ion-button>
-                  </ion-item>
-
-                </form>
+                <ion-item>
+                  {{ (settings$ | async )?.identity.bio }}
+                  <ion-button
+                    slot = "end"
+                    size = "small"
+                    [disabled] = "( isDisabled$ | async )"
+                    (click) = "changeBio()"
+                  >change</ion-button>
+                </ion-item>
               </ion-item-group>
             </ion-list>
           </ion-card-content>
