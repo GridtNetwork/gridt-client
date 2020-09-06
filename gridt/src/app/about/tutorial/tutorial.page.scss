@@ -1,12 +1,12 @@
 .intro-logo {
-    max-width: 20vw;
-    max-height: 20vw;
+    max-width: 50vw;
+    max-height: 50vw;
     overflow: hidden;
 }
 
 .intro-img {
-    max-width: 50vw;
-    max-height: 50vw;
+    max-width: 90vw;
+    max-height: 90vw;
     overflow: hidden;
 }
 
@@ -15,40 +15,30 @@ p {
 }
 
 .step-one {
-    background: var(--ion-color-primary);
-    color: var(--ion-color-primary-contrast);
     height: 100vh;
     flex-direction: column;
     text-align: justify;
 }
 
 .step-two {
-    background: var(--ion-color-secondary);
-    color: var(--ion-color-secondary-contrast);
     height: 100vh;
     flex-direction: column;
     text-align: justify;
 }
 
 .step-three {
-    background: var(--ion-color-tertiary);
-    color: var(--ion-color-tertiary-contrast);
     height: 100vh;
     flex-direction: column;
     text-align: justify;
 }
 
 .step-four {
-    background: var(--ion-color-light);
-    color: var(--ion-color-light-contrast);
     height: 100vh;
     flex-direction: column;
     text-align: justify;
 }
 
 .step-five {
-    background: var(--ion-color-success);
-    color: var(--ion-color-success-contrast);
     height: 100vh;
     flex-direction: column;
     text-align: justify;
