@@ -2,8 +2,7 @@ import { Type } from "@angular/core";
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 
-import { of, throwError, from } from "rxjs";
-import { pluck, delay, concatMap, tap } from 'rxjs/operators';
+import { of, throwError } from "rxjs";
 
 import { SettingsService } from './settings.service';
 import { AuthService } from './auth.service';
@@ -14,7 +13,7 @@ import { Settings } from './settings.model';
 import 'jasmine-marbles';
 import { hot, cold } from 'jasmine-marbles';
 
-import { HttpClient, HttpHeaders, HttpResponse, HttpHeaderResponse, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 
 let mock_settings: Settings[] = [
   {
@@ -56,7 +55,6 @@ let mock_settings: Settings[] = [
 ];
 
 let service: SettingsService;
-let auth: AuthService;
 let httpMock: HttpTestingController;
 let secStore: SecureStorageService;
 let httpClientStub: jasmine.SpyObj<HttpClient>;
@@ -91,19 +89,12 @@ describe("IdentityService_AuthSuccesfull", () => {
         {provide: AuthService, useClass: authServiceStub_succes},
         {provide: SecureStorageService, useValue: secStoreStub},
         {provide: HttpClient, useValue: httpClientStub}
-      ],
-      imports: [HttpClientTestingModule]
+      ]
     });
 
     service = TestBed.get(SettingsService as Type<SettingsService>);
-    auth = TestBed.get(AuthService as Type<AuthService>);
-    httpMock = TestBed.get(HttpTestingController as Type<HttpTestingController>);
     secStore = TestBed.get(SecureStorageService as Type<SecureStorageService>);
 
-  });
-
-  afterEach(() => {
-    httpMock.verify();
   });
 
   // Basic functionality
@@ -180,6 +171,10 @@ describe("IdentityService_AuthSuccesfull", () => {
     );
   });
 
+  it('should display local settings when server settings are not available', () => {
+
+  })
+
 });
 
 describe("IdentityService_AuthFailed", () => {
@@ -210,7 +205,6 @@ describe("IdentityService_AuthFailed", () => {
     });
 
     service = TestBed.get(SettingsService as Type<SettingsService>);
-    auth = TestBed.get(AuthService as Type<AuthService>);
     httpMock = TestBed.get(HttpTestingController as Type<HttpTestingController>);
     secStore = TestBed.get(SecureStorageService as Type<SecureStorageService>);
   });
@@ -235,11 +229,5 @@ describe("IdentityService_AuthFailed", () => {
     expect(secStoreStub.set$).not.toHaveBeenCalledWith('settings');
   });
 
-  it('should remove localStorage upon bad auth.', () => {
-    // Simulate login
-
-    // Simulate logout
-
-    // Make sure localstorage is empty
-  });
+  it('should not attempt to get server settings when not logged in', () => {})
 });

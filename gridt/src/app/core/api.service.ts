@@ -86,15 +86,15 @@ export class ApiService {
    * @param movement The new version of the movement.
    */
   private replace_movement_in_bsubject(bsubject: BehaviorSubject<Movement[]>, movement: Movement) {
-      let all_movements = bsubject.getValue();
-      const index = all_movements.findIndex(m => m.name == movement.name);
-      if (index != -1) {
-        all_movements[index] = movement;
-      } else {
-        all_movements.push(movement);
-      }
+    let all_movements = bsubject.getValue();
+    const index = all_movements.findIndex(m => m.name == movement.name);
+    if (index != -1) {
+      all_movements[index] = movement;
+    } else {
+      all_movements.push(movement);
+    }
 
-      bsubject.next(all_movements);
+    bsubject.next(all_movements);
   }
 
   /*
@@ -253,7 +253,7 @@ export class ApiService {
   );
 
    public putBio$( bio: string ) {
-      console.debug(`Saving new biography to the server. (at least it should now create a http.put)`);
+     	console.debug(`Saving new biography to the server. (at least it should now create a http.put)`);
 
       return this.auth.readyAuthentication$.pipe(
        flatMap((options) => this.http.put(

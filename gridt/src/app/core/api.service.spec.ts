@@ -253,7 +253,7 @@ describe("ApiService", () => {
       `${service.URL}/movements/${movement_id}/leader/1`,
       {},
       default_headers
-    )
+    );
   });
 
   it('should fail to read settings from server when not logged in', () => {
@@ -262,7 +262,6 @@ describe("ApiService", () => {
     expect(
       service.getServerIdentity$
     ).toBeObservable(cold("#", {}, "Can't authenticate: no credentials"));
-
   });
 
 });

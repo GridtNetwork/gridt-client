@@ -1,4 +1,4 @@
 export interface Signal {
-      time_stamp: string;
-      message?: string;
+  time_stamp: string;
+  message?: string;
 }
