@@ -103,10 +103,18 @@ describe("IdentityService_AuthSuccesfull", () => {
   });
 
   it('should provide the last available settings', () => {
-    for (var val in mock_settings) {
-      service.set_user_settings(mock_settings[val]);
-    }
-    expect(service.the_user_settings$).toBeObservable(cold('a',{a:mock_settings[3]}));
+    const source = hot('^-a-b---c', {
+      a: mock_settings[1],
+      b: mock_settings[2],
+      c: mock_settings[3]
+    })
+    source.subscribe( (val) => service.set_user_settings(val))
+    const expected = cold('--a-b---c', {
+      a: mock_settings[1],
+      b: mock_settings[2],
+      c: mock_settings[3]
+    });
+    expect(service.the_user_settings$).toBeObservable(expected);
   });
 
   it('should combine settings from localStorage and from the server.', () => {
@@ -118,7 +126,6 @@ describe("IdentityService_AuthSuccesfull", () => {
 
     service.updateUserSettings();
 
-    // Expect server response to overwrite localstorage
     expect(service.the_user_settings$).toBeObservable(
       cold('a', {a: mock_settings[1]})
     );
@@ -167,12 +174,28 @@ describe("IdentityService_AuthSuccesfull", () => {
 
     // See if disabler it set to true
     expect(service.isDisabled$).toBeObservable(
-      cold('(a  )', {a: true})
+      cold('(a)', {a: true})
     );
   });
 
   it('should display local settings when server settings are not available', () => {
+    // Simulate the server not being reachable.
+    httpClientStub.post.and.returnValue(throwError(
+      new HttpErrorResponse(
+        {
+          status: 400, statusText: "Bad Request",
+          error: { message: "Could not retreive settings from server." }
+        }
+    )));
 
+    // Populate localStorage
+    secStoreStub.get$.and.returnValue(of(mock_settings[0]));
+
+    // Obtain the settings
+    service.updateUserSettings();
+
+    // Make sure the local storage settings are returned
+    expect(service.the_user_settings$).toBeObservable(cold('a',{a: mock_settings[0]}))
   })
 
 });

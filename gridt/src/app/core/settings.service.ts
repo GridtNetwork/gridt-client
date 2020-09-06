@@ -106,8 +106,9 @@ export class SettingsService {
   public updateUserSettings(): void {
     console.log(`Getting user settings from local storage and server.`);
     this.getLocalSettings$.pipe(
+      // Dissable input when error.
       // To make sure the page loads correctly we simply output an empty
-      // Settings object.
+      // Settings object upon error.
       catchError( ()=> {
         this.disabler$.next(true);
         return of(this.emptySettings)
@@ -120,6 +121,7 @@ export class SettingsService {
         this.disabler$.next(true);
         return of(this.emptySettings)
       }),
+      filter( set => set != this.emptySettings), // Makes sure local gets priority
       tap( (set) => console.log(`received server settings ${JSON.stringify(set)}`) )
     ).subscribe( (set) => this._user_settings$.next(set) );
   }
