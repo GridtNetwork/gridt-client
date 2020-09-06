@@ -27,8 +27,8 @@
           <ion-card-content>
             <ion-list>
               <ion-item class="ion-text-center" lines="none">
-                <ion-avatar class="ion-text-center">
-                  <img [src]="gravatar" *ngIf="!(settings$ | async)">
+                <ion-avatar class="ion-text-center"  *ngIf="(settings$ | async)">
+                  <img [src]="gravatar">
                 </ion-avatar>
               </ion-item>
               <ion-item class="ion-text-center" lines="none">

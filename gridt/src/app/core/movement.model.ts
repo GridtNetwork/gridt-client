@@ -1,6 +1,6 @@
 
 import { User } from './user.model';
-import { Signal } from './Signal.model';
+import { Signal } from './signal.model';
 
 export interface Movement {
   /**
@@ -19,7 +19,7 @@ export interface Movement {
   subscribed?: boolean;
 
   /**
-   * Array of user types that demonstrate when they last did their updates. 
+   * Array of user types that demonstrate when they last did their updates.
    * Only available on server responses.
    */
   leaders?: Array<User>;

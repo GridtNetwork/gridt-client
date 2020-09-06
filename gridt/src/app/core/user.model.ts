@@ -1,4 +1,4 @@
-import { Signal } from './Signal.model';
+import { Signal } from './signal.model';
 
 export interface User {
     /**

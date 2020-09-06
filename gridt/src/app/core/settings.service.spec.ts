@@ -252,5 +252,4 @@ describe("IdentityService_AuthFailed", () => {
     expect(secStoreStub.set$).not.toHaveBeenCalledWith('settings');
   });
 
-  it('should not attempt to get server settings when not logged in', () => {})
 });
