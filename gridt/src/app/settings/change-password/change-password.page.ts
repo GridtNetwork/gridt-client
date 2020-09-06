@@ -42,7 +42,7 @@ export class ChangePasswordPage {
     this.edit_password$ = true;
 
     const el = await this.loadingCtrl.create({
-      message: 'Updating email address...'
+      message: 'Updating password...'
     });
 
     el.present();
@@ -57,8 +57,6 @@ export class ChangePasswordPage {
         this.showError(error);
       }
     );
-
-    timer(500).subscribe( () => this.SetService.updateUserSettings());
   }
 
   async showError(error:string) {

@@ -47,8 +47,8 @@ export class SettingsService {
    */
   public special_pipe$: UnaryFunction<Observable<Settings>, Observable<Settings>> =
     pipe(
-      // skip(1),                // Skip default
-      distinctUntilChanged(), // Register the server response
+      // skip(1),                // Skip local
+      // distinctUntilChanged(), // Register the server response
     );
 
   /**
@@ -57,9 +57,11 @@ export class SettingsService {
   get the_user_settings$ (): Observable<Settings> {
     // If the user_settings change, make sure the new settings are stored
     // in the localstorage.
+    let cachedValue: Settings;
     if (this.auth.isLoggedIn$.subscribe()) {
       this._user_settings$.pipe(
-        this.special_pipe$
+        distinctUntilChanged( (prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
+        skip(1)
       ).subscribe(
         new_settings => this.storeLocalSettings(new_settings)
       );
@@ -87,13 +89,8 @@ export class SettingsService {
    * Observable to obtain settings from secure storage
    * If secure storage is empty, return empty settings object
    */
-  private getLocalSettings$ = this.auth.readyAuthentication$.pipe(
-   flatMap(() => this.secStore.get$("settings")),
-   catchError( (error) => {
-     console.log(error)
-     console.log("Got empty settings from localstorage")
-     return of(this.emptySettings)
-   })
+  private getLocalSettings$: Observable<Settings> = this.auth.readyAuthentication$.pipe(
+   flatMap(() => this.secStore.get$("settings"))
  );
 
   /**
@@ -111,27 +108,20 @@ export class SettingsService {
    // Change to updateUserSettings
   public updateUserSettings(): void {
     console.log(`Getting user settings from local storage and server.`);
-    forkJoin({
-      local: this.getLocalSettings$,
-      server: this.api.getServerIdentity$.pipe(catchError( () => {
+    this.getLocalSettings$.pipe(
+      catchError( ()=> {
         this.disabler$.next(true);
         return of(this.emptySettings)
-      }))
-    }).pipe(
-      catchError( this.Dissable(this.disabler$) ),
-      tap( console.log ),
-      map( (settings) => {
-        console.log(`received local settings ${JSON.stringify(settings.local)}`);
-        console.log(`received server settings ${JSON.stringify(settings.server)}`);
-        if (JSON.stringify(settings.server) == JSON.stringify(this.emptySettings)) {
-          return {...settings.local}
-        } else {
-          return {...settings.local, ...settings.server}
-        }
-        // Server settings have priority over local settings
-      })
+      }),
+      tap ( (set) => console.log(`received local settings ${JSON.stringify(set)}`) )
+    ).subscribe( (set) => this._user_settings$.next(set) );
+
+    this.api.getServerIdentity$.pipe(
+      catchError( ()=> {
+        this.disabler$.next(true);
+        return of(this.emptySettings)
+      }),
+      tap( (set) => console.log(`received server settings ${JSON.stringify(set)}`) )
     ).subscribe( (set) => this._user_settings$.next(set) );
   }
-
-
 }
