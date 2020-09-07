@@ -61,10 +61,17 @@
       </ion-row>
     </ion-grid>
   </ion-list>
-  <!-- Floating button for adding movements -->
+  <!-- Custom floating button for adding movements -->
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button color="primary" routerLink="/add">
-      <ion-icon name="add"></ion-icon>
+    <ion-fab-button class="custom" color="primary" routerLink="/add">
+      Add Movement <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
+
+  <!-- Regular floating button
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab-button color="primary" routerLink="/add">
+        <ion-icon name="add"></ion-icon>
+      </ion-fab-button>
+    </ion-fab> -->
 </ion-content>
