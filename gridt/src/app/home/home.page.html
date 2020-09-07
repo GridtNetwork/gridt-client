@@ -27,8 +27,8 @@
 
   <!-- Can be rewritten as an if/else statement together with previous if-->
   <ion-grid *ngIf="movements$ && (movements$ | async).length > 0">
-    <ion-col>
-      <ion-row>
+    <ion-row>
+      <ion-col offset-md="2" size-md="8" >
         <!-- Create a list item for each movement the user is in. -->
          <ion-card *ngFor="let movement of movements$ | async" class="movement-card">
           <!-- Display the title on top -->
@@ -76,8 +76,8 @@
             </ion-grid>
           </ion-card-content>
         </ion-card>
-      </ion-row>
     </ion-col>
+  </ion-row>
   </ion-grid>
 
 </ion-content>
