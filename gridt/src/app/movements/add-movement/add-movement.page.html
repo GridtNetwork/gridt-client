@@ -18,7 +18,7 @@
       <ion-row>
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
-            <ion-label position="floating">Title</ion-label>
+            <ion-label position="floating">Movement name</ion-label>
             <ion-input type="text" autocomplete autocorrect ngDefaultControl formControlName="name"></ion-input>
           </ion-item>
         </ion-col>
@@ -36,7 +36,7 @@
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
             <ion-label position="floating">Short Description</ion-label>
-            <ion-textarea rows="2" ngDefaultControl formControlName="short_description"></ion-textarea>
+            <ion-textarea rows="2" ngDefaultControl formControlName="short_description"placeholder="What are we going to do?"></ion-textarea>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -53,7 +53,7 @@
         <ion-col size-sm="6" offset-sm="3">
           <ion-item>
             <ion-label position="floating">Description</ion-label>
-            <ion-textarea rows="3" ngDefaultControl formControlName="description"></ion-textarea>
+            <ion-textarea autoGrow="true" rows="3" ngDefaultControl formControlName="description" placeholder="Inspire others to join! After which activities are we allowed to fire the signal? Why and how are we going to do this. What messages should users spread around the movement to encourage others? The more specific and engaging you specify the details, the easier it will be for people to participate in the movement."></ion-textarea>
           </ion-item>
         </ion-col>
       </ion-row>
