@@ -61,10 +61,8 @@ export class HomePage implements OnInit, OnDestroy {
         }
         break;
       case "weekly":
+        date.setUTCDate(date.getUTCDate() - date.getUTCDay());
         date.setUTCHours(hour_offset, 0, 0, 0);
-        // On monday go back an entire week.
-        const reduction = date.getUTCDay() ?  date.getUTCDay(): 7
-        date.setUTCDate(date.getUTCDate() - reduction);
         break;
     }
 
@@ -186,13 +184,11 @@ export class HomePage implements OnInit, OnDestroy {
       ],
       buttons: [
         {
-          text: "No",
-          handler: () => {
-            this.signal(movement);
-          }
+          text: "Cancel",
+          role: 'cancel',
         },
         {
-          text: "Yes",
+          text: "Send!",
           handler: (data) => {
             if ( data.message !== null && data.message.length < 140){
               this.signal(movement, data.message);

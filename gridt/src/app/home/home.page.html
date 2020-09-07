@@ -9,7 +9,7 @@
 
 <ion-content>
 
-  <ion-grid *ngIf="(movements$ | async)?.length != 0; else Tutorial">
+  <ion-grid *ngIf="movements$ && (movements$ | async).length > 0; else Tutorial">
     <ion-col>
       <ion-row>
         <!-- Create a list item for each movement the user is in. -->
