@@ -1,73 +1,70 @@
 <ion-header>
-  <ion-toolbar >
+  <ion-toolbar>
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>
-      Movements
-    </ion-title>
-    <ion-buttons slot="primary">
-      <ion-button routerLink="/add">
-        <ion-icon name="add" slot="icon-only"></ion-icon>
-      </ion-button>
-    </ion-buttons>
+    <ion-title>Movements </ion-title>
   </ion-toolbar>
 </ion-header>
-
 
 <ion-content padding>
   <!-- First an explicit search bar -->
   <ion-row>
     <ion-col size-md="6" offset-md="3">
       <ion-toolbar>
-        <ion-searchbar 
-          showCancelButton="focus" 
+        <ion-searchbar
+          showCancelButton="focus"
           [(ngModel)]="searchText"
         ></ion-searchbar>
       </ion-toolbar>
     </ion-col>
   </ion-row>
-<!-- Then print a list of all the movements -->
-<ion-list>
-    <ion-grid
-      *ngIf="!(movements$ | async)">
-    <ion-row>
-      <ion-col size="12" size-sm="8" offset-sm="2" text-center>
-        <p>There are no movements  right now, please come back later!</p>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+  <!-- Then print a list of all the movements -->
+  <ion-list>
+    <ion-grid *ngIf="!(movements$ | async)">
+      <ion-row>
+        <ion-col size="12" size-sm="8" offset-sm="2" text-center>
+          <p>There are no movements right now, please come back later!</p>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
     <ion-grid *ngIf="movements$ | async">
-
-  <!-- Create a list item for each search result.
+      <!-- Create a list item for each search result.
     Here I had to guess the routerLink, but that can be changed later.
     async allows the results to change by making a new search.
   -->
       <ion-row>
         <ion-col size-md="6" offset-md="3">
-          <ion-item *ngFor="let movement of movements$ | async | movementFilter: searchText"
-            [routerLink]="['/', 'movements', movement.name]" 
-            detail button
+          <ion-item
+            *ngFor="let movement of movements$ | async | movementFilter: searchText"
+            [routerLink]="['/', 'movements', movement.name]"
+            detail
+            button
           >
             <!-- Right now, this just shows every single movement -->
             <!-- Display the title on the left with icon if user is subscribed-->
             <ion-label text-wrap>
               <h3>
-                {{ movement.name }} 
-                <ion-icon *ngIf="movement.subscribed" name="people-sharp"></ion-icon> 
+                {{ movement.name }}
+                <ion-icon
+                  *ngIf="movement.subscribed"
+                  name="people-sharp"
+                ></ion-icon>
               </h3>
-              <p class="shortdescription">{{ movement.short_description }}</p> 
+              <p class="shortdescription">{{ movement.short_description }}</p>
             </ion-label>
 
-             <!-- Display the interval (like, weekly, monthly etc.) on the right -->
-            <ion-label slot="end"> 
-              {{ movement.interval }}
-            </ion-label>
+            <!-- Display the interval (like, weekly, monthly etc.) on the right -->
+            <ion-label slot="end"> {{ movement.interval }} </ion-label>
           </ion-item>
-         </ion-col>
+        </ion-col>
       </ion-row>
     </ion-grid>
-
-</ion-list>
-
+  </ion-list>
+  <!-- Floating button for adding movements -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button color="primary" routerLink="/add">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
