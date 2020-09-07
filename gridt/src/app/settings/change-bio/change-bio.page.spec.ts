@@ -7,7 +7,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { SettingsService } from '../../core/settings.service';
 import { AuthService } from '../../core/auth.service';
-import { Settings } from '../../core/settings.model';
+import { Identity } from '../../core/models/identity.model';
 
 import { ChangeBioPage } from './change-bio.page';
 
@@ -28,20 +28,18 @@ describe('ChangeBioPage', () => {
 
   let setSpy: SettingsService;
 
-  let mock_movement: Settings = {
-    identity: {
-      id: 4,
-      username: "Yo mamma",
-      email: "yomamma@gridt.org",
-      bio: "Don't make me mad",
-      avatar: "abc"
-      }
-    }
+  let mock_identity: Identity = {
+    id: 4,
+    username: "Yo mamma",
+    email: "yomamma@gridt.org",
+    bio: "Don't make me mad",
+    avatar: "abc"
+  }
 
   setSpy = jasmine.createSpyObj('SettingsService',
     {
       getSettingsFromServer: () => {},
-      the_user_settings$: of(mock_movement),
+      the_user_settings$: of(mock_identity),
       getUserSettings: () => {},
     }
   )

@@ -96,30 +96,30 @@ describe("IdentityService_AuthSuccesfull", () => {
 
   it('should provide the last available settings', () => {
     const source = hot('^-a-b---c', {
-      a: mock_settings[1],
-      b: mock_settings[2],
-      c: mock_settings[3]
+      a: mock_identity[1],
+      b: mock_identity[2],
+      c: mock_identity[3]
     })
     source.subscribe( (val) => service.set_identity(val))
     const expected = cold('--a-b---c', {
-      a: mock_settings[1],
-      b: mock_settings[2],
-      c: mock_settings[3]
+      a: mock_identity[1],
+      b: mock_identity[2],
+      c: mock_identity[3]
     });
-    expect(service.the_user_settings$).toBeObservable(expected);
+    expect(service.identity$).toBeObservable(expected);
   });
 
   it('should combine settings from localStorage and from the server.', () => {
     // Populate localStorage
-    secStoreStub.get$.and.returnValue(of(mock_settings[0]));
+    secStoreStub.get$.and.returnValue(of(mock_identity[0]));
 
     // Fake server response
-    httpClientStub.get.and.returnValue(of(mock_settings[1]));
+    httpClientStub.get.and.returnValue(of(mock_identity[1]));
 
-    service.updateUserSettings();
+    service.updateIdentity();
 
     expect(service.identity$).toBeObservable(
-      cold('a', {a: mock_settings[1]})
+      cold('a', {a: mock_identity[1]})
     );
   });
 
@@ -129,25 +129,25 @@ describe("IdentityService_AuthSuccesfull", () => {
     service.identity$;
 
     // Update settings
-    service.set_identity(mock_settings[1]);
-    service.set_identity(mock_settings[2]);
+    service.set_identity(mock_identity[1]);
+    service.set_identity(mock_identity[2]);
 
     // Test if settings are stored in localStorage
-    expect(secStoreStub.set$).toHaveBeenCalledWith('identity', mock_settings[2]);
+    expect(secStoreStub.set$).toHaveBeenCalledWith('identity', mock_identity[2]);
   });
 
   it('should update localStorage when new settings are available', () => {
     // Populate the user settings with some mock settings
-    service.set_identity(mock_settings[0]);
+    service.set_identity(mock_identity[0]);
 
     // Subscribes the local storage to the user settings
     service.identity$;
 
     // LocalStorage
-    service.set_identity(mock_settings[1]);
+    service.set_identity(mock_identity[1]);
 
     // Test if the storage has been set
-    expect(secStoreStub.set$).toHaveBeenCalledWith('identity', mock_settings[1]);
+    expect(secStoreStub.set$).toHaveBeenCalledWith('identity', mock_identity[1]);
   });
 
   // Server calls
@@ -181,13 +181,13 @@ describe("IdentityService_AuthSuccesfull", () => {
     )));
 
     // Populate localStorage
-    secStoreStub.get$.and.returnValue(of(mock_settings[0]));
+    secStoreStub.get$.and.returnValue(of(mock_identity[0]));
 
     // Obtain the settings
     service.updateIdentity();
 
     // Make sure the local storage settings are returned
-    expect(service.identity$).toBeObservable(cold('a',{a: mock_settings[0]}))
+    expect(service.identity$).toBeObservable(cold('a',{a: mock_identity[0]}))
   })
 
 });
@@ -237,9 +237,9 @@ describe("IdentityService_AuthFailed", () => {
     service.identity$;
 
     // Make sure there are some settings available
-    service.set_identity(mock_settings[0]);
-    service.set_identity(mock_settings[1]);
-    service.set_identity(mock_settings[2]);
+    service.set_identity(mock_identity[0]);
+    service.set_identity(mock_identity[1]);
+    service.set_identity(mock_identity[2]);
 
     expect(secStoreStub.set$).not.toHaveBeenCalledWith('identity');
   });
