@@ -17,9 +17,25 @@ export class RegisterPage implements OnInit {
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
     private auth: AuthService,
+    private alertController: AlertController
     ) { }
 
   ngOnInit() {
+    this.showSafetyAlert();
+  }
+  /*
+  * Creates warning for unique password
+  */
+  private async showSafetyAlert() {
+    const alert = await this.alertController.create({
+      header: "Warning",
+      subHeader: "Password Safety",
+      message: "This app is in Alpha and therefore we cannot guarantee the safety of your data. Please keep this in mind when picking your password. We recommend you pick a password you do not use anywhere else.",
+      buttons: ["Accept"],
+      backdropDismiss: false
+    });
+
+    await alert.present();
   }
 
   /*
