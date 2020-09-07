@@ -4,11 +4,11 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { AlertController } from '@ionic/angular';
 
-import { User } from '../core/user.model';
+import { User } from '../core/models/user.model';
 import { HomePage } from './home.page';
 import { AuthService } from '../core/auth.service';
 import { ApiService } from '../core/api.service';
-import { Movement } from '../core/movement.model';
+import { Movement } from '../core/models/movement.model';
 
 class AuthServiceStub {
   isLoggedIn$ = of(true);

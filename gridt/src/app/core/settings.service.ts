@@ -3,7 +3,7 @@ import { Observable, ReplaySubject, BehaviorSubject, throwError, forkJoin, of, p
 import { HttpClient } from "@angular/common/http";
 import { map, tap, flatMap, pluck, delay, catchError, skip, distinctUntilChanged, filter } from "rxjs/operators";
 
-import { Identity } from './identity.model';
+import { Identity } from './models/identity.model';
 import { AuthService } from './auth.service';
 import { SecureStorageService } from './secure-storage.service';
 import { ApiService } from './api.service';

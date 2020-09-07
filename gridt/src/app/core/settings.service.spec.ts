@@ -8,7 +8,7 @@ import { SettingsService } from './settings.service';
 import { AuthService } from './auth.service';
 import { SecureStorageService } from './secure-storage.service';
 
-import { Identity } from './identity.model';
+import { Identity } from './models/identity.model';
 
 import 'jasmine-marbles';
 import { hot, cold } from 'jasmine-marbles';

@@ -14,7 +14,7 @@ import { AuthService } from '../core/auth.service';
 import { SettingsPage } from './settings.page';
 import { BehaviorSubject } from 'rxjs';
 
-import { Identity } from '../core/identity.model';
+import { Identity } from '../core/models/identity.model';
 
 const default_headers = {
   headers: new HttpHeaders({

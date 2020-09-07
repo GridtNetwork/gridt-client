@@ -3,9 +3,9 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable, BehaviorSubject, throwError, merge, partition } from "rxjs";
 import { map, tap, pluck, catchError, flatMap, distinctUntilChanged, take } from "rxjs/operators";
 
-import { Movement } from "./movement.model";
-import { User } from './user.model';
-import { Identity } from './identity.model';
+import { Movement } from "./models/movement.model";
+import { User } from './models/user.model';
+import { Identity } from './models/identity.model';
 
 import { AuthService } from './auth.service';
 

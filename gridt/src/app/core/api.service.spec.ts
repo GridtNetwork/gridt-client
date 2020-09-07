@@ -6,8 +6,8 @@ import { forkJoin, of, throwError } from "rxjs";
 import { skip, take, toArray } from "rxjs/operators";
 
 import { ApiService } from "./api.service";
-import { Movement } from "./movement.model";
-import { User } from './user.model';
+import { Movement } from "./models/movement.model";
+import { User } from './models/user.model';
 import { AuthService } from './auth.service';
 
 import { cold } from 'jasmine-marbles';

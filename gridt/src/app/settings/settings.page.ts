@@ -10,7 +10,7 @@ import { NgForm } from '@angular/forms';
 
 import { ApiService } from '../core/api.service'
 import { SettingsService} from '../core/settings.service'
-import { Identity } from '../core/identity.model';
+import { Identity } from '../core/models/identity.model';
 
 @Component({
   selector: 'app-settings',
