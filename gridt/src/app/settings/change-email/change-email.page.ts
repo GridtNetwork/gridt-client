@@ -7,7 +7,6 @@ import { timeout } from 'rxjs/operators';
 import { NgForm } from '@angular/forms';
 
 import { SettingsService} from '../../core/settings.service'
-import { Settings } from '../../core/settings.model';
 import { ApiService } from '../../core/api.service'
 
 @Component({
@@ -58,7 +57,7 @@ export class ChangeEmailPage{
       }
     );
 
-    timer(500).subscribe( () => this.SetService.updateUserSettings());
+    this.SetService.updateIdentity();
   }
 
   async showError(error:string) {

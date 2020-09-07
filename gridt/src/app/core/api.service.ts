@@ -6,7 +6,6 @@ import { map, tap, pluck, catchError, flatMap, distinctUntilChanged, take } from
 import { Movement } from "./movement.model";
 import { User } from './user.model';
 import { Identity } from './identity.model';
-import { Settings } from './settings.model';
 
 import { AuthService } from './auth.service';
 
@@ -241,18 +240,15 @@ export class ApiService {
    /**
     * Observable to obtain identity from server
     */
-   public getServerIdentity$: Observable<Settings> = this.auth.readyAuthentication$.pipe(
+   public Identity$: Observable<Identity> = this.auth.readyAuthentication$.pipe(
     flatMap((options) => this.http.get<Identity>(
       `${this.URL}/identity`,
       options
     )),
-    catchError( this.handleBadAuth() ),
-    map( id => {
-      return {identity: id} // Return a <Settings> compatible object
-    })
+    catchError( this.handleBadAuth() )
   );
 
-   public putBio$( bio: string ) {
+   public changeBio$( bio: string ) {
      	console.debug(`Saving new biography to the server. (at least it should now create a http.put)`);
 
       return this.auth.readyAuthentication$.pipe(

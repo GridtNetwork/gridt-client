@@ -14,7 +14,7 @@ import { AuthService } from '../core/auth.service';
 import { SettingsPage } from './settings.page';
 import { BehaviorSubject } from 'rxjs';
 
-import { Settings } from '../core/settings.model';
+import { Identity } from '../core/identity.model';
 
 const default_headers = {
   headers: new HttpHeaders({
@@ -32,20 +32,18 @@ describe('SettingsPage', () => {
   let fixture: ComponentFixture<SettingsPage>;
   let setSpy: SettingsService;
 
-  let mock_movement: Settings = {
-      identity: {
-        id: 4,
-        username: "Yo mamma",
-        email: "yomamma@gridt.org",
-        bio: "Don't make me mad",
-        avatar: "abc"
-        }
-      }
+  let mock_identity: Identity = {
+      id: 4,
+      username: "Yo mamma",
+      email: "yomamma@gridt.org",
+      bio: "Don't make me mad",
+      avatar: "abc"
+    }
 
   setSpy = jasmine.createSpyObj('SettingsService',
     {
       getSettingsFromServer: () => {},
-      the_user_settings$: of(mock_movement),
+      the_user_settings$: of(mock_identity),
       getUserSettings: () => {},
     }
   )

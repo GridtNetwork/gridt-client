@@ -10,7 +10,7 @@ import { NgForm } from '@angular/forms';
 
 import { ApiService } from '../core/api.service'
 import { SettingsService} from '../core/settings.service'
-import { Settings } from '../core/settings.model';
+import { Identity } from '../core/identity.model';
 
 @Component({
   selector: 'app-settings',
@@ -18,7 +18,7 @@ import { Settings } from '../core/settings.model';
   styleUrls: ['./settings.page.scss'],
 })
 export class SettingsPage implements OnInit  {
-  settings$: Observable<Settings>;
+  identity$: Observable<Identity>;
   isDisabled$: Observable<boolean>;
   isDisabledval: boolean;
   gravatar: string;
@@ -36,12 +36,12 @@ export class SettingsPage implements OnInit  {
   ) { }
 
   ngOnInit() {
-    this.settings$ = this.SetService.the_user_settings$;
-    this.SetService.updateUserSettings();
+    this.identity$ = this.SetService.identity$;
+    this.SetService.updateIdentity();
 
     this.isDisabled$ = this.SetService.isDisabled$;
 
-    this.settings$.subscribe(set => this.gravatar = "https://www.gravatar.com/avatar/" + set.identity.avatar);
+    this.identity$.subscribe(set => this.gravatar = "https://www.gravatar.com/avatar/" + set.avatar);
     console.log(`gravatar is ${JSON.stringify(this.gravatar)}`)
 
     // Raise warning toast when isDisabled$ becomes true
@@ -51,14 +51,8 @@ export class SettingsPage implements OnInit  {
     ).subscribe();
   }
 
-  // Create objects for the input field so we can set focus later.
-  @ViewChild('bio', {static: true}) bioInput;
-  @ViewChild('name', {static: true}) nameInput;
-  @ViewChild('emailfield', {static: true}) emailInput;
-  @ViewChild('passwordfield', {static: true}) passwordInput;
-
   public refreshPage(event?) {
-    this.SetService.updateUserSettings();
+    this.SetService.updateIdentity();
     if (event) { event.target.complete(); }
   }
 

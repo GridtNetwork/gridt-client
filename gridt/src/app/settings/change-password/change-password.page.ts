@@ -8,7 +8,6 @@ import { NgForm } from '@angular/forms';
 
 import { SettingsService} from '../../core/settings.service'
 import { ApiService } from '../../core/api.service'
-import { Settings } from '../../core/settings.model';
 
 @Component({
   selector: 'app-change-password',

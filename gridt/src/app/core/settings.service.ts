@@ -2,11 +2,10 @@ import { Injectable } from "@angular/core";
 import { Observable, ReplaySubject, BehaviorSubject, throwError, forkJoin, of, pipe, UnaryFunction } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { map, tap, flatMap, pluck, delay, catchError, skip, distinctUntilChanged, filter } from "rxjs/operators";
+
 import { Identity } from './identity.model';
-import { Settings } from './settings.model';
 import { AuthService } from './auth.service';
 import { SecureStorageService } from './secure-storage.service';
-
 import { ApiService } from './api.service';
 
 export interface ServerMessage {
@@ -25,14 +24,12 @@ export class SettingsService {
     private api: ApiService
   ) {}
 
-  private emptySettings: Settings = {
-    identity: {
-      id: 0,
-      username: "",
-      bio: "",
-      avatar: "",
-      email: ""
-    }
+  private emptyIdentity: Identity = {
+    id: 0,
+    username: "",
+    bio: "",
+    avatar: "",
+    email: ""
   }
 
   /**
@@ -40,27 +37,27 @@ export class SettingsService {
    * The depth of the ReplaySubject is set to 1, which makes sure only the
    * latest available settings are retured to the user.
    */
-  private _user_settings$ = new ReplaySubject<Settings>(1);
+  private _the_identity$ = new ReplaySubject<Identity>(1);
 
-  public set_user_settings(settings): void {
-    this._user_settings$.next(settings);
+  public set_identity(identity): void {
+    this._the_identity$.next(identity);
   };
 
   /**
    * Transforms the user settings Subject to an Observable
    */
-  get the_user_settings$ (): Observable<Settings> {
+  get identity$ (): Observable<Identity> {
     // If the user_settings change, make sure the new settings are stored
     // in the localstorage.
-    let cachedValue: Settings;
+    let cachedValue: Identity;
     if (this.auth.isLoggedIn$.subscribe()) {
-      this._user_settings$.pipe(
+      this._the_identity$.pipe(
         distinctUntilChanged( (prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
         skip(1)
       ).subscribe(
-        new_settings => this.storeLocalSettings(new_settings)
+        new_settings => this.storeLocalIdentity(new_settings)
       );
-      return this._user_settings$.asObservable();
+      return this._the_identity$.asObservable();
     }
   }
 
@@ -84,17 +81,17 @@ export class SettingsService {
    * Observable to obtain settings from secure storage
    * If secure storage is empty, return empty settings object
    */
-  private getLocalSettings$: Observable<Settings> = this.auth.readyAuthentication$.pipe(
-   flatMap(() => this.secStore.get$("settings"))
+  private LocalIdentity$: Observable<Identity> = this.auth.readyAuthentication$.pipe(
+   flatMap(() => this.secStore.get$("identity"))
  );
 
   /**
    * Store settings in the secure storage.
-   * @param settings Settings to be stored.
+   * @param identity Settings to be stored.
    */
-  private storeLocalSettings(settings: Settings): void {
-    console.log(`Storing ${JSON.stringify(settings)} into the local storage.`);
-    this.secStore.set$("settings", settings).subscribe();
+  private storeLocalIdentity(identity: Identity): void {
+    console.log(`Storing ${JSON.stringify(identity)} into the local storage.`);
+    this.secStore.set$("identity", identity).subscribe();
   }
 
   /**
@@ -103,26 +100,26 @@ export class SettingsService {
    * While a forkJoin may be usefull, it doesn't allow for simple error
    * catching, hence the two seperate subscriptions for local and server.
    */
-  public updateUserSettings(): void {
-    console.log(`Getting user settings from local storage and server.`);
-    this.getLocalSettings$.pipe(
+  public updateIdentity(): void {
+    console.log(`Getting user identity from local storage and server.`);
+    this.LocalIdentity$.pipe(
       // Dissable input when error.
       // To make sure the page loads correctly we simply output an empty
       // Settings object upon error.
       catchError( ()=> {
         this.disabler$.next(true);
-        return of(this.emptySettings)
+        return of(this.emptyIdentity)
       }),
       tap ( (set) => console.log(`received local settings ${JSON.stringify(set)}`) )
-    ).subscribe( (set) => this._user_settings$.next(set) );
+    ).subscribe( (set) => this._the_identity$.next(set) );
 
-    this.api.getServerIdentity$.pipe(
+    this.api.Identity$.pipe(
       catchError( ()=> {
         this.disabler$.next(true);
-        return of(this.emptySettings)
+        return of(this.emptyIdentity)
       }),
-      filter( set => set != this.emptySettings), // Makes sure local gets priority
+      filter( set => set != this.emptyIdentity), // Makes sure local gets priority
       tap( (set) => console.log(`received server settings ${JSON.stringify(set)}`) )
-    ).subscribe( (set) => this._user_settings$.next(set) );
+    ).subscribe( (set) => this._the_identity$.next(set) );
   }
 }
