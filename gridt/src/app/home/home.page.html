@@ -27,10 +27,10 @@
 
   <!-- Can be rewritten as an if/else statement together with previous if-->
   <ion-grid *ngIf="movements$ && (movements$ | async).length > 0">
-    <ion-col>
-      <ion-row>
+    <ion-row class="ion-justify-content-center">
+      <ion-col *ngFor="let movement of movements$ | async" offset-lg="auto" size-sm="12" size-md="6" size-lg="4">
         <!-- Create a list item for each movement the user is in. -->
-         <ion-card *ngFor="let movement of movements$ | async" class="movement-card">
+         <ion-card  class="movement-card">
           <!-- Display the title on top -->
           <ion-card-header>
             <ion-card-title>{{ movement.name }}</ion-card-title>
@@ -76,8 +76,8 @@
             </ion-grid>
           </ion-card-content>
         </ion-card>
-      </ion-row>
     </ion-col>
+  </ion-row>
   </ion-grid>
 
 </ion-content>
