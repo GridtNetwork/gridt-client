@@ -7,6 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { AddMovementPage } from './add-movement.page';
 import { AuthService } from 'src/app/core/auth.service';
+import { AlertController } from '@ionic/angular';
 
 class AuthServiceStub {
   isLoggedIn$ = of(true);
@@ -16,6 +17,7 @@ describe('AddMovementPage', () => {
   let component: AddMovementPage;
   let fixture: ComponentFixture<AddMovementPage>;
   let authSpy: AuthService;
+  let alertSpy: AlertController = jasmine.createSpyObj("alertSpy", ["create", "dismiss"]);
 
   beforeEach(async(() => {    
     TestBed.configureTestingModule({
@@ -28,7 +30,8 @@ describe('AddMovementPage', () => {
         ReactiveFormsModule 
       ],
       providers: [
-        { provide: AuthService, useClass: AuthServiceStub }
+        { provide: AuthService, useClass: AuthServiceStub },
+        { provide: AlertController, useValue: alertSpy}
       ]
     })
     .compileComponents();
@@ -40,5 +43,10 @@ describe('AddMovementPage', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should dismiss the alert when leaving the page', () => {
+    component.ngOnDestroy();
+    expect(alertSpy.dismiss).toHaveBeenCalled();
   });
 });

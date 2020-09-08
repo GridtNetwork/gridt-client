@@ -19,7 +19,7 @@ describe('MovementsPage', () => {
   let component: MovementsPage;
   let fixture: ComponentFixture<MovementsPage>;
   let apiSpy: ApiService;
-  let alertSpy: AlertController;
+  let alertSpy: AlertController = jasmine.createSpyObj("alertSpy", ["create", "dismiss"]);
 
   beforeEach(async(() => {
     apiSpy = jasmine.createSpyObj('ApiService', {
@@ -36,7 +36,8 @@ describe('MovementsPage', () => {
       ],
       providers: [
         { provide: AuthService, useClass: AuthServiceStub },
-        { provide: ApiService, useValue: apiSpy }
+        { provide: ApiService, useValue: apiSpy },
+        { provide: AlertController, useValue: alertSpy}
       ]
     })
     .compileComponents();
@@ -52,7 +53,7 @@ describe('MovementsPage', () => {
     expect(component).toBeTruthy();
   });
 
-  it("should dismiss the alert when leaving the page", () => {
+  it('should dismiss the alert when leaving the page', () => {
     component.ngOnDestroy();
     expect(alertSpy.dismiss).toHaveBeenCalled();
   });

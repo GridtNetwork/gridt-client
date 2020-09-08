@@ -19,6 +19,8 @@ describe('HomePage', () => {
   let fixture: ComponentFixture<HomePage>;
   let apiSpy: ApiService;
   let alertSpy: AlertController;
+  let alertSpy2: AlertController = jasmine.createSpyObj("alertSpy", ["create", "dismiss"]);
+  
 
   beforeEach(() => {
     jasmine.clock().install();
@@ -48,7 +50,8 @@ describe('HomePage', () => {
       providers: [
         { provide: ApiService, useValue: apiSpy },
         { provide: AlertController, useValue: alertSpy },
-        { provide: AuthService, useClass: AuthServiceStub }
+        { provide: AuthService, useClass: AuthServiceStub },
+        { provide: AlertController, useValue: alertSpy2}
       ]
     }).compileComponents();
 
@@ -63,6 +66,11 @@ describe('HomePage', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should dismiss the alert when leaving the page', () => {
+    component.ngOnDestroy();
+    expect(alertSpy2.dismiss).toHaveBeenCalled();
   });
 
   it('should find proper last signals', () => {
