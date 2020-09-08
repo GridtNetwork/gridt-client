@@ -6,6 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { MovementsDetailPage } from './movements-detail.page';
 import { AuthService } from 'src/app/core/auth.service';
 import { of } from 'rxjs';
+import { AlertController } from '@ionic/angular';
 
 class AuthServiceStub {
   isLoggedIn$ = of(true);
@@ -14,6 +15,7 @@ class AuthServiceStub {
 describe('MovementsDetailPage', () => {
   let component: MovementsDetailPage;
   let fixture: ComponentFixture<MovementsDetailPage>;
+  let alertSpy: AlertController;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -38,5 +40,10 @@ describe('MovementsDetailPage', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it("should dismiss the alert when leaving the page", () => {
+    component.ngOnDestroy();
+    expect(alertSpy.dismiss).toHaveBeenCalled();
   });
 });

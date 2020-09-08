@@ -1,5 +1,5 @@
 import { of } from 'rxjs';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, AlertController } from '@ionic/angular';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
@@ -19,6 +19,7 @@ describe('MovementsPage', () => {
   let component: MovementsPage;
   let fixture: ComponentFixture<MovementsPage>;
   let apiSpy: ApiService;
+  let alertSpy: AlertController;
 
   beforeEach(async(() => {
     apiSpy = jasmine.createSpyObj('ApiService', {
@@ -49,5 +50,10 @@ describe('MovementsPage', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it("should dismiss the alert when leaving the page", () => {
+    component.ngOnDestroy();
+    expect(alertSpy.dismiss).toHaveBeenCalled();
   });
 });

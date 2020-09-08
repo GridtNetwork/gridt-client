@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MenuController, AlertController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 
@@ -10,7 +10,7 @@ import { Movement } from '../core/movement.model';
   templateUrl: './movements.page.html',
   styleUrls: ['./movements.page.scss'],
 })
-export class MovementsPage implements OnInit {
+export class MovementsPage implements OnInit, OnDestroy {
   searchText: string = "";
   movements$: Observable<Movement[]>;
 
@@ -23,6 +23,9 @@ export class MovementsPage implements OnInit {
   ngOnInit() {
     this.movements$ = this.api.allMovements$;
     this.api.getAllMovements();
+  }
+  ngOnDestroy() {
+    this.alertCtrl.dismiss();
   }
 
   async showError(error:string) {
