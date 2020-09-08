@@ -211,6 +211,16 @@ export class HomePage implements OnInit, OnDestroy {
     el.present();
   }
 
+  async showFullMessage(messageLeader: string) {
+    const alert = await this.alertCtrl.create({
+      header: 'Signal message',
+      message: messageLeader,
+      buttons: ['Okay']
+    });
+    await alert.present();
+ 
+  }
+
   async signal(movement: Movement, message?: string) {
     this.api.sendSignal$(movement, message).subscribe(
       () => {
