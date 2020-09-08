@@ -26,7 +26,7 @@ export class HomePage implements OnInit, OnDestroy {
     this.api.getSubscriptions();
   }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {this.alertCtrl.dismiss(); }
 
   /**
    * Extract the timezone of a date string.
