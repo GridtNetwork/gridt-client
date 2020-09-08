@@ -2,6 +2,10 @@ import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { RouterTestingModule } from "@angular/router/testing";
 import { HttpClientModule } from "@angular/common/http";
+<<<<<<< HEAD
+=======
+
+>>>>>>> fe1feac8813acb9cbd3248540d796f9397e807e6
 
 import { MovementsDetailPage } from "./movements-detail.page";
 import { AuthService } from "src/app/core/auth.service";

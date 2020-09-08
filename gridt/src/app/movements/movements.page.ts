@@ -28,7 +28,14 @@ export class MovementsPage implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.alertCtrl.dismiss();
   }
+<<<<<<< HEAD
   
+=======
+
+  ngOnDestroy() {
+    this.alertCtrl.dismiss();
+  }
+>>>>>>> fe1feac8813acb9cbd3248540d796f9397e807e6
   async showError(error:string) {
     const el = await this.alertCtrl.create({
       header: "Something went wrong while creating your movement.", 
