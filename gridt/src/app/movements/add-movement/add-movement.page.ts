@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
@@ -10,7 +10,7 @@ import { Movement } from '../../core/movement.model';
   templateUrl: './add-movement.page.html',
   styleUrls: ['./add-movement.page.scss'],
 })
-export class AddMovementPage implements OnInit {
+export class AddMovementPage implements OnInit, OnDestroy {
   form: FormGroup; 
   intervalTypes: string[] = [
     'daily',
@@ -48,6 +48,10 @@ export class AddMovementPage implements OnInit {
       }),
       interval: new FormControl("", [Validators.required])
     });
+  }
+
+  ngOnDestroy() {
+    this.alertCtrl.dismiss();
   }
 
   async createMovement() {
