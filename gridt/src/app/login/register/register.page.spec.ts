@@ -11,7 +11,14 @@ describe("RegisterPage", () => {
   //testing suite, (de pagina te testen)
   let component: RegisterPage;
   let fixture: ComponentFixture<RegisterPage>;
-  let alertSpy: AlertController = jasmine.createSpyObj("alertSpy", ["create", "dismiss"]);
+  let alertSpy: AlertController = jasmine.createSpyObj("alertSpy", {
+    "create": {
+      "present": function() {
+        return true
+      }},
+    "dismiss": function() {
+      return true
+    }});
 //worden elke test opnieuw geladen
   beforeEach(async(() => {
     TestBed.configureTestingModule({
