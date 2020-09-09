@@ -18,7 +18,8 @@ describe("RegisterPage", () => {
       }},
     "dismiss": function() {
       return true
-    }});
+    }}
+  );
 //worden elke test opnieuw geladen
   beforeEach(async(() => {
     TestBed.configureTestingModule({
