@@ -53,12 +53,7 @@ describe('MovementsPage', () => {
     expect(component).toBeTruthy();
   });
 
-<<<<<<< HEAD
   it('should dismiss the alert when leaving the page', () => {
-=======
-
-  it("should dismiss the alert when leaving the page", () => {
->>>>>>> fe1feac8813acb9cbd3248540d796f9397e807e6
     component.ngOnDestroy();
     expect(alertSpy.dismiss).toHaveBeenCalled();
   });
