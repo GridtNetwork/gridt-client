@@ -7,6 +7,7 @@ import { skip, take, toArray } from "rxjs/operators";
 
 import { ApiService } from "./api.service";
 import { Movement } from "./models/movement.model";
+import { Identity } from "./models/identity.model";
 import { User } from './models/user.model';
 import { AuthService } from './auth.service';
 
@@ -15,6 +16,7 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpHeaderResponse, HttpErrorRes
 
 let mock_movements: Movement[];
 let mock_subscriptions: Movement[];
+let mock_identity: Identity[];
 
 describe("ApiService", () => {
   let service: ApiService;
@@ -40,7 +42,7 @@ describe("ApiService", () => {
     auth = TestBed.get(AuthService as Type<AuthService>);
 
     httpClientStub = jasmine.createSpyObj(
-      'httpClient', ['get', 'post']
+      'httpClient', ['get', 'post', 'put']
     );
 
     authServiceStub = jasmine.createSpyObj(
@@ -86,6 +88,17 @@ describe("ApiService", () => {
         interval: "daily"
       }
     ];
+
+    mock_identity = [
+      {
+        id: 1,
+        username: "ALittleOne",
+        bio: "Less then one foot tall.",
+        email: "a_little@one.com",
+        avatar: "arandomstring"
+      }
+    ]
+
     mock_subscriptions = [...mock_movements].filter(m => m.subscribed);
   });
 
@@ -256,11 +269,12 @@ describe("ApiService", () => {
     );
   });
 
-  it('should fail to read settings from server when not logged in', () => {
+  it('should fail to read identity from server when not logged in', () => {
     authServiceStub.readyAuthentication$ = cold('#', null , "Can't authenticate: no credentials");
     service = new ApiService(httpClientStub, authServiceStub);
+
     expect(
-      service.Identity$
+      service.Identity$()
     ).toBeObservable(cold("#", {}, "Can't authenticate: no credentials"));
   });
 
@@ -274,9 +288,50 @@ describe("ApiService", () => {
   it('should fail to update password when not logged in', () => {
     authServiceStub.readyAuthentication$ = cold('#', null , "Can't authenticate: no credentials");
     service = new ApiService(httpClientStub, authServiceStub);
+
     let old_password = "ABCDEF";
-    let new_password = "abcdef"
+    let new_password = "abcdef";
+
     expect(service.changePassword$( old_password, new_password )).toBeTruthy( cold('#', null, "Can't authenticate: no credentials"))
   })
 
+  it('should be able to retreive identity', () => {
+    httpClientStub.get.and.returnValue(of(mock_identity[0]));
+    service = new ApiService(httpClientStub, authServiceStub);
+
+    expect(service.Identity$()).toBeObservable(cold('(a|)',{a: mock_identity[0]}));
+    expect(httpClientStub.get).toHaveBeenCalledWith(
+      `${service.URL}/identity`,
+      default_headers
+    );
+  })
+
+  it('should be able to update the user bio', () => {
+    httpClientStub.put.and.returnValue(of(
+      { "message": "Succesfully updated bio." }
+    ));
+
+    service = new ApiService(httpClientStub, authServiceStub);
+
+    let mock_bio = "My insanely good new bio."
+
+    expect(service.changeBio$( mock_bio )).toBeObservable(
+      cold("(a|)", {a: "Succesfully updated bio."})
+    );
+  })
+
+  it('should be able to update the user password', () => {
+    httpClientStub.post.and.returnValue(of(
+      { "message": "Succesfully replaced password." }
+    ));
+
+    service = new ApiService(httpClientStub, authServiceStub);
+
+    let old_password = "ABCDEF";
+    let new_password = "abcdef";
+
+    expect(service.changePassword$( old_password, new_password )).toBeObservable(
+      cold("(a|)", {a: "Succesfully replaced password."})
+    );
+  })
 });
