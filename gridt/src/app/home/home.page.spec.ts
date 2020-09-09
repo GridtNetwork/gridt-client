@@ -18,8 +18,7 @@ describe('HomePage', () => {
   let component: HomePage;
   let fixture: ComponentFixture<HomePage>;
   let apiSpy: ApiService;
-  let alertSpy: AlertController;
-  let alertSpy2: AlertController = jasmine.createSpyObj("alertSpy", ["create", "dismiss"]);
+  let alertSpy: AlertController = jasmine.createSpyObj("alertSpy", ["create", "dismiss"]);
   
 
   beforeEach(() => {
@@ -39,9 +38,6 @@ describe('HomePage', () => {
       }
     );
 
-    alertSpy = jasmine.createSpyObj('alertSpy', {
-      create: new Promise( resolve => resolve({present: () => {}}) )
-    });
 
     TestBed.configureTestingModule({
       declarations: [ HomePage ],
@@ -50,8 +46,7 @@ describe('HomePage', () => {
       providers: [
         { provide: ApiService, useValue: apiSpy },
         { provide: AlertController, useValue: alertSpy },
-        { provide: AuthService, useClass: AuthServiceStub },
-        { provide: AlertController, useValue: alertSpy2}
+        { provide: AuthService, useClass: AuthServiceStub }
       ]
     }).compileComponents();
 
@@ -70,7 +65,7 @@ describe('HomePage', () => {
 
   it('should dismiss the alert when leaving the page', () => {
     component.ngOnDestroy();
-    expect(alertSpy2.dismiss).toHaveBeenCalled();
+    expect(alertSpy.dismiss).toHaveBeenCalled();
   });
 
   it('should find proper last signals', () => {
