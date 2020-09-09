@@ -2,10 +2,16 @@ import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable, BehaviorSubject, throwError, merge, partition } from "rxjs";
 import { map, tap, pluck, catchError, flatMap, distinctUntilChanged, take } from "rxjs/operators";
+
 import { Movement } from "./models/movement.model";
 import { User } from './models/user.model';
-import { ServerMessage } from './models/server-responses.model';
+import { Identity } from './models/identity.model';
+
 import { AuthService } from './auth.service';
+
+export interface ServerMessage {
+  message: string;
+}
 
 @Injectable({
   providedIn: "root"
@@ -79,15 +85,15 @@ export class ApiService {
    * @param movement The new version of the movement.
    */
   private replace_movement_in_bsubject(bsubject: BehaviorSubject<Movement[]>, movement: Movement) {
-      let all_movements = bsubject.getValue();
-      const index = all_movements.findIndex(m => m.name == movement.name);
-      if (index != -1) {
-        all_movements[index] = movement;
-      } else {
-        all_movements.push(movement);
-      }
+    let all_movements = bsubject.getValue();
+    const index = all_movements.findIndex(m => m.name == movement.name);
+    if (index != -1) {
+      all_movements[index] = movement;
+    } else {
+      all_movements.push(movement);
+    }
 
-      bsubject.next(all_movements);
+    bsubject.next(all_movements);
   }
 
   /*
@@ -225,4 +231,44 @@ export class ApiService {
       catchError( this.handleBadAuth() )
     );
   }
+
+  /**
+   * Settings related API functions
+   */
+
+
+   /**
+    * Observable to obtain identity from server
+    */
+   public Identity$: Observable<Identity> = this.auth.readyAuthentication$.pipe(
+    flatMap((options) => this.http.get<Identity>(
+      `${this.URL}/identity`,
+      options
+    )),
+    catchError( this.handleBadAuth() )
+  );
+
+   public changeBio$( bio: string ) {
+     	console.debug(`Saving new biography to the server. (at least it should now create a http.put)`);
+
+      return this.auth.readyAuthentication$.pipe(
+       flatMap((options) => this.http.put(
+         `${this.URL}/bio`, {bio: bio}, options
+       )),
+       catchError( this.handleBadAuth() ),
+       pluck("message")
+      );
+    }
+
+    public changePassword$( old_password: string, new_password: string ) {
+      console.debug(`Saving new password to the server.`);
+
+      return this.auth.readyAuthentication$.pipe(
+        flatMap((options) => this.http.post<ServerMessage>(
+          `${this.URL}/change_password`, {old_password: old_password, new_password: new_password}, options
+        )),
+        catchError( this.handleBadAuth() ),
+        pluck("message")
+      );
+    }
 }
