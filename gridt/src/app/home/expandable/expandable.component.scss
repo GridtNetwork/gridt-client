@@ -1,0 +1,11 @@
+.expand-wrapper {
+        height: 0px;
+        min-height: 0px;
+        max-height: 0px;
+    }
+
+.expanded {
+        height: 200px !important;
+        min-height: 200px;
+        max-height: 200px;
+}
