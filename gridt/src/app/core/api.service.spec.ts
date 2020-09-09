@@ -253,6 +253,30 @@ describe("ApiService", () => {
       `${service.URL}/movements/${movement_id}/leader/1`,
       {},
       default_headers
-    )
+    );
   });
+
+  it('should fail to read settings from server when not logged in', () => {
+    authServiceStub.readyAuthentication$ = cold('#', null , "Can't authenticate: no credentials");
+    service = new ApiService(httpClientStub, authServiceStub);
+    expect(
+      service.Identity$
+    ).toBeObservable(cold("#", {}, "Can't authenticate: no credentials"));
+  });
+
+  it('should fail to update bio when not logged in', () => {
+    authServiceStub.readyAuthentication$ = cold('#', null , "Can't authenticate: no credentials");
+    service = new ApiService(httpClientStub, authServiceStub);
+    let mock_bio = "My very first bio."
+    expect(service.changeBio$( mock_bio )).toBeTruthy( cold('#', null, "Can't authenticate: no credentials"))
+  })
+
+  it('should fail to update password when not logged in', () => {
+    authServiceStub.readyAuthentication$ = cold('#', null , "Can't authenticate: no credentials");
+    service = new ApiService(httpClientStub, authServiceStub);
+    let old_password = "ABCDEF";
+    let new_password = "abcdef"
+    expect(service.changePassword$( old_password, new_password )).toBeTruthy( cold('#', null, "Can't authenticate: no credentials"))
+  })
+
 });
