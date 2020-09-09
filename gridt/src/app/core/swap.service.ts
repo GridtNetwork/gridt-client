@@ -4,12 +4,7 @@
 import { Injectable } from '@angular/core';
 import { Movement } from './models/movement.model';
 import { User } from './models/user.model';
-
-export interface SwapEvent {
-  date: Date;
-  movement: Movement;
-  user: User;
-}
+import { SwapEvent } from './models/swapevent.model';
 
 @Injectable({
   providedIn: "root"

@@ -4,26 +4,18 @@ import { flatMap, tap, catchError, map, mapTo, pluck } from 'rxjs/operators';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { ServerMessage } from './api.service';
-
-interface Credentials {
-  username: string;
-  password: string;
-}
-
-export interface AccessToken {
-  access_token: string;
-}
+import { Credentials, AccessToken} from './models/credentials.model';
+import { ServerMessage } from './models/servermessage.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  
+
   constructor(private http: HttpClient, private secStore: SecureStorageService) {}
-  
+
   public error_codes = {
-    TOKENEXPIRED: "Token expired", 
+    TOKENEXPIRED: "Token expired",
     TOKENUNAVAILABLE: 'Key "token" does not exist in the secure storage.',
     NOCREDENTIALS: "Can't authenticate: no credentials",
     INVALIDCREDENTIALS: "Authentication unsuccessful: invalid credentials"
@@ -37,15 +29,15 @@ export class AuthService {
     const token = accessToken.access_token;
     const exp = JSON.parse(atob(token.split(".")[1]))["exp"];
     const expiration_date = new Date(exp * 1000);
-    
+
     if (expiration_date < new Date()) {
       console.debug(`Token expired. Expiration date: ${expiration_date}`);
       return true;
     }
-    
+
     return false;
   }
-  
+
   /**
    * Pipe to handle authentication. Clears credentials when fails to authenticate.
    */
@@ -70,7 +62,7 @@ export class AuthService {
         if (error.status) {
           return throwError(error.message);
         }
-        
+
         // Error in previous steps
         return throwError(error);
       })
@@ -84,7 +76,7 @@ export class AuthService {
     username: this.secStore.get$("email"),
     password: this.secStore.get$("password")
   });
-  
+
   /**
    * Pipe to make an AccessToken object into headers that can be used for API calls.
    */
@@ -104,7 +96,7 @@ export class AuthService {
     this.secStore.set$("email", credentials.username).subscribe();
     this.secStore.set$("password", credentials.password).subscribe();
   }
-  
+
   /**
    * Store token in secure storage.
    * @param token Token to be stored
@@ -115,12 +107,12 @@ export class AuthService {
 
   /**
    * One-shot observable to ready authentication for API calls.
-   * 
+   *
    * This observable follows the flow diagram in the documentation.
    */
   public readyAuthentication$: Observable<{headers: HttpHeaders}> = this.secStore.get$("token").pipe(
     map( (token_string: string) => ({ access_token: token_string }) ),
-    flatMap( 
+    flatMap(
       token => {
         if (this.isTokenExpired(token)) {
           return throwError(this.error_codes.TOKENEXPIRED);
@@ -129,13 +121,13 @@ export class AuthService {
         }
       }
     ),
-    catchError( (error) => { 
+    catchError( (error) => {
       if( error == this.error_codes.TOKENEXPIRED || error == this.error_codes.TOKENUNAVAILABLE ) {
         return this.getCredentials.pipe(
           catchError( () => throwError(this.error_codes.NOCREDENTIALS) ),
           this.authenticate(),
-          // Bind neccessary to keep "this" pointing to service (instead of tap) 
-          tap( this.storeToken.bind(this) ) 
+          // Bind neccessary to keep "this" pointing to service (instead of tap)
+          tap( this.storeToken.bind(this) )
         );
       } else {
         return throwError(error);
@@ -150,7 +142,7 @@ export class AuthService {
    */
   public isLoggedIn$: Observable<boolean> = this.secStore.get$("token").pipe(
     map( () => true ),
-    catchError( () => of(false)) 
+    catchError( () => of(false))
   );
 
   /**
@@ -169,7 +161,7 @@ export class AuthService {
       catchError( () => {
         this.secStore.clear$().subscribe();
         return of(false); // Not sure if this is better, or just leave the error.
-      }) 
+      })
     );
   }
 
@@ -189,7 +181,7 @@ export class AuthService {
   }
 
   /**
-   * Clear all information stored in the secure storage concerning previous logins. 
+   * Clear all information stored in the secure storage concerning previous logins.
    */
   public logout(): void {
     this.secStore.clear$().subscribe();
