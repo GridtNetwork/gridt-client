@@ -14,6 +14,8 @@ import { SwapService } from '../core/swap.service';
 })
 export class HomePage implements OnInit, OnDestroy {
   movements$ = new Observable<Movement[]>();
+  itemExpanded = true;
+  itemExpandedHeight = 200;
 
   constructor(
     private api: ApiService,
@@ -212,12 +214,13 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   async showFullMessage(messageLeader: string) {
-    const alert = await this.alertCtrl.create({
-      header: 'Signal message',
-      message: messageLeader,
-      buttons: ['Okay']
-    });
-    await alert.present();
+    // const alert = await this.alertCtrl.create({
+    //   header: 'Signal message',
+    //   message: messageLeader,
+    //   buttons: ['Okay']
+    // });
+    // await alert.present();
+    this.itemExpanded = !this.itemExpanded;
  
   }
 
