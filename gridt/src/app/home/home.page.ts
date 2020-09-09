@@ -14,8 +14,8 @@ import { SwapService } from '../core/swap.service';
 })
 export class HomePage implements OnInit, OnDestroy {
   movements$ = new Observable<Movement[]>();
-  itemExpanded = true;
-  itemExpandedHeight = 200;
+  itemExpanded = false;
+  itemExpandedHeight = 300;
 
   constructor(
     private api: ApiService,

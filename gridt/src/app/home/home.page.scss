@@ -6,10 +6,14 @@
     display: flex;
     justify-content: space-between;
 }
-
-.leader-message {
-    color: black;
+  
+.overflow-visible {
+    white-space: initial;
 }
+
+.overflow-ellipsis {
+    text-overflow: ellipsis;
+  }
 
 .movement-card{
     margin: 5px;

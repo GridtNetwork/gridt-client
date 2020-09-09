@@ -2,10 +2,10 @@
         height: 0px;
         min-height: 0px;
         max-height: 0px;
+        transition: 0.5s;
     }
 
 .expanded {
-        height: 200px !important;
-        min-height: 200px;
-        max-height: 200px;
+        min-height: 100px;
+        max-height: 200
 }

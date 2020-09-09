@@ -16,9 +16,4 @@ export class ExpandableComponent implements OnInit {
 
   ngOnInit() {}
 
-  ngAfterViewInit() {
-    console.log(this.expanded);
-    console.log(this.expandedHeight);
-  }
-
 }

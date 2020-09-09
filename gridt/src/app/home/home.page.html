@@ -68,11 +68,11 @@
                           </div>
                         </ion-button> -->
                         <ion-text *ngIf="!itemExpanded">
-                          <p>{{ leader.last_signal.message }}</p>
+                          <p class="overflow-elipsis">{{ leader.last_signal.message }}</p>
                         </ion-text>
                           <app-expandable [expandedHeight]="itemExpandedHeight" [expanded]="itemExpanded">
-                            <ion-text size="auto">
-                              <p size="auto">{{ leader.last_signal.message }}</p>
+                            <ion-text *ngIf="itemExpanded">
+                              <p class="overflow-visible" size="auto">{{ leader.last_signal.message }}</p>
                             </ion-text>
                           </app-expandable>
                       </div>
