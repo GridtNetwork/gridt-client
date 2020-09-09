@@ -3,8 +3,8 @@ import { AlertController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 
 import { ApiService } from '../core/api.service';
-import { Movement } from '../core/movement.model';
-import { User } from '../core/user.model';
+import { Movement } from '../core/models/movement.model';
+import { User } from '../core/models/user.model';
 import { SwapService } from '../core/swap.service';
 
 @Component({
