@@ -3,7 +3,7 @@ import { MenuController, AlertController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 
 import { ApiService } from '../core/api.service';
-import { Movement } from '../core/movement.model';
+import { Movement } from '../core/models/movement.model';
 
 @Component({
   selector: 'app-movements',
@@ -28,10 +28,10 @@ export class MovementsPage implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.alertCtrl.dismiss();
   }
-  
+
   async showError(error:string) {
     const el = await this.alertCtrl.create({
-      header: "Something went wrong while creating your movement.", 
+      header: "Something went wrong while creating your movement.",
       message: error,
       buttons: ["Okay"]
     });

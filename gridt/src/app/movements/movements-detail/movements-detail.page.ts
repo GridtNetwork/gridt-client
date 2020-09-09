@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { map, flatMap, take } from 'rxjs/operators';
 
 import { ApiService } from '../../core/api.service';
-import { Movement } from '../../core/movement.model';
+import { Movement } from '../../core/models/movement.model';
 
 @Component({
   selector: 'app-movements-detail',
@@ -27,14 +27,14 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('movementId');
     this.movement$ = this.api.allMovements$.pipe(
-      map(movements => movements.filter( movement => movement.name === id )[0]) 
+      map(movements => movements.filter( movement => movement.name === id )[0])
     );
   }
 
   ngOnDestroy() {
     this.alertCtrl.dismiss();
   }
-  
+
   onSubscribe(): void {
     this.alertCtrl.create({
       header: 'Are you sure?',
@@ -87,7 +87,7 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
     el.present();
 
     this.movement$.pipe(
-      take(1), 
+      take(1),
       flatMap( (movement) => this.api.subscribeToMovement$(movement.name)),
       flatMap( () => this.movement$), // We need the movement name again to reload the movement.
       take(1),

@@ -6,8 +6,8 @@ import { forkJoin, of, throwError } from "rxjs";
 import { skip, take, toArray } from "rxjs/operators";
 
 import { ApiService } from "./api.service";
-import { Movement } from "./movement.model";
-import { User } from './user.model';
+import { Movement } from "./models/movement.model";
+import { User } from './models/user.model';
 import { AuthService } from './auth.service';
 
 import { cold } from 'jasmine-marbles';
@@ -38,7 +38,7 @@ describe("ApiService", () => {
     httpMock = TestBed.get(HttpTestingController as Type<HttpTestingController>);
     service = TestBed.get(ApiService as Type<ApiService>);
     auth = TestBed.get(AuthService as Type<AuthService>);
-    
+
     httpClientStub = jasmine.createSpyObj(
       'httpClient', ['get', 'post']
     );
@@ -46,7 +46,7 @@ describe("ApiService", () => {
     authServiceStub = jasmine.createSpyObj(
       'auth', ['readyAuthentication$']
     );
-    // All but a few tests presume a logged in state. readyAuthentication$ is 
+    // All but a few tests presume a logged in state. readyAuthentication$ is
     // defined to always be able to login and easy to compare with the correct
     // headers. (This feature is important, as it makes or breaks communication
     // with the server.)
@@ -97,12 +97,12 @@ describe("ApiService", () => {
     expect(service).toBeTruthy();
   });
 
-  it("should be able to create movements", () => {    
+  it("should be able to create movements", () => {
     httpClientStub.post.and.returnValue(of(
       { "message": "Successfully created movement." }
     ));
     service = new ApiService(httpClientStub, authServiceStub);
-    
+
     expect(service.createMovement$({
       name: "Flossing",
       short_description: "Floss once a day",
@@ -112,7 +112,7 @@ describe("ApiService", () => {
     );
 
     expect(httpClientStub.post).toHaveBeenCalledWith(
-      `${service.URL}/movements`, 
+      `${service.URL}/movements`,
       {
         name: "Flossing",
         short_description: "Floss once a day",
@@ -136,10 +136,10 @@ describe("ApiService", () => {
   it("should be able to request movements", () => {
     httpClientStub.get.and.returnValue(of(mock_movements));
     service = new ApiService(httpClientStub, authServiceStub);
-    
-    service.getAllMovements(); 
 
-    expect(service.allMovements$).toBeObservable( 
+    service.getAllMovements();
+
+    expect(service.allMovements$).toBeObservable(
       cold('(m)', {e: [], m: mock_movements})
     );
 
@@ -173,7 +173,7 @@ describe("ApiService", () => {
   it("should be able to request the subscribed movements", () => {
     httpClientStub.get.and.returnValue(of(mock_subscriptions));
     service = new ApiService(httpClientStub, authServiceStub);
-    
+
     service.getSubscriptions();
 
     expect(service.subscriptions$).toBeObservable(
@@ -206,7 +206,7 @@ describe("ApiService", () => {
     service.getAllMovements();
     service.getSubscriptions();
     service.getMovement$("Flossing").subscribe();
-    
+
     mock_movements.pop();
     mock_movements.push(flossing_movement);
 
@@ -231,17 +231,17 @@ describe("ApiService", () => {
     const mock_user = { id: 2, username: "Good Leader Person" } as User;
     mock_subscriptions[1].leaders = [mock_user];
     const new_subscriptions = [...mock_subscriptions];
-    
+
     httpClientStub.get.and.returnValue(of(old_subscriptions));
     httpClientStub.post.and.returnValue(of(mock_user));
     service = new ApiService(httpClientStub, authServiceStub);
-     
+
     service.getSubscriptions();
     expect(service.swapLeader$(old_subscriptions[1], idiot_user)).toBeObservable(
       cold("(u|)", {u: mock_user})
     );
     expect(service.subscriptions$).toBeObservable(cold("s", {s: new_subscriptions}));
-    
+
     const movement_id = old_subscriptions[1].id;
 
     expect(httpClientStub.get).toHaveBeenCalledWith(
