@@ -4,7 +4,7 @@ import { Observable, BehaviorSubject, throwError, merge, partition } from "rxjs"
 import { map, tap, pluck, catchError, flatMap, distinctUntilChanged, take } from "rxjs/operators";
 import { Movement } from "./models/movement.model";
 import { User } from './models/user.model';
-import { ServerMessage } from './models/servermessage.model';
+import { ServerMessage } from './models/server-responses.model';
 import { AuthService } from './auth.service';
 
 @Injectable({
