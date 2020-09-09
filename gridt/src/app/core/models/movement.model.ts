@@ -1,4 +1,5 @@
 import { User } from './user.model';
+import { Signal } from './signal.model';
 
 export interface Movement {
   /**
@@ -17,7 +18,7 @@ export interface Movement {
   subscribed?: boolean;
 
   /**
-   * Array of user types that demonstrate when they last did their updates. 
+   * Array of user types that demonstrate when they last did their updates.
    * Only available on server responses.
    */
   leaders?: Array<User>;
@@ -30,9 +31,7 @@ export interface Movement {
   /**
    * Last signal that the user sent in this movement.
    */
-  last_signal_sent?: {
-    time_stamp: string;
-  }
+  last_signal_sent?: Signal;
 
   /**
    * A much longer description that is used to 'sell' a movement to it's users.
