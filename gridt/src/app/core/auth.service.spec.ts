@@ -1,7 +1,7 @@
 import { Type } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
 import { AuthService } from './auth.service';
-import { AccessToken } from './models/credentials.model';
+import { AccessToken } from './models/server-responses.model';
 import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 import { pluck, map, tap, take } from 'rxjs/operators';
 import { TestScheduler } from 'rxjs/testing';

@@ -4,8 +4,8 @@ import { flatMap, tap, catchError, map, mapTo, pluck } from 'rxjs/operators';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { Credentials, AccessToken} from './models/credentials.model';
-import { ServerMessage } from './models/servermessage.model';
+import { Credentials } from './models/credentials.model';
+import { ServerMessage, AccessToken } from './models/server-responses.model';
 
 @Injectable({
   providedIn: 'root'
