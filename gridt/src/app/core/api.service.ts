@@ -1,17 +1,15 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Observable, BehaviorSubject, ReplaySubject, throwError, merge, partition } from "rxjs";
-import { map, tap, pluck, catchError, flatMap, distinctUntilChanged, take } from "rxjs/operators";
+import { HttpClient } from "@angular/common/http";
+
+import { Observable, BehaviorSubject, throwError } from "rxjs";
+import { map, tap, pluck, catchError, flatMap } from "rxjs/operators";
+
+import { AuthService } from './auth.service';
 
 import { Movement } from "./models/movement.model";
 import { User } from './models/user.model';
 import { Identity } from './models/identity.model';
-
-import { AuthService } from './auth.service';
-
-export interface ServerMessage {
-  message: string;
-}
+import { ServerMessage } from './models/server-responses.model';
 
 @Injectable({
   providedIn: "root"
@@ -232,32 +230,40 @@ export class ApiService {
     );
   }
 
-   /**
-    * Observable to obtain identity from server
-    */
-
-  public Identity$(): Observable<Identity> {
+  /**
+  * Observable to obtain identity from server.
+  */
+  public userIdentity$(): Observable<Identity> {
     return this.auth.readyAuthentication$.pipe(
       flatMap((options) => this.http.get<Identity>(
         `${this.URL}/identity`,
         options
       )),
       catchError( this.handleBadAuth())
-    )
-  }
-
-  public changeBio$( bio: string ) {
-   	console.debug(`Saving new biography to the server. (at least it should now create a http.put)`);
-
-    return this.auth.readyAuthentication$.pipe(
-     flatMap((options) => this.http.put(
-       `${this.URL}/bio`, {bio: bio}, options
-     )),
-     catchError( this.handleBadAuth() ),
-     pluck("message")
     );
   }
 
+  /**
+  * Changes the biography of the user on the server.
+  * @param bio the new bio that the user wants.
+  */
+  public changeBio$( bio: string ) {
+   	console.debug(`Saving new biography to the server.`);
+
+    return this.auth.readyAuthentication$.pipe(
+      flatMap((options) => this.http.put(
+        `${this.URL}/bio`, {bio: bio}, options
+      )),
+      catchError( this.handleBadAuth() ),
+      pluck("message")
+    );
+  }
+
+  /**
+  * Changes the password of the user on the server.
+  * @param old_password The password of the user before changing it.
+  * @param new_password The new password of the user after changing it.
+  */
   public changePassword$( old_password: string, new_password: string ) {
     console.debug(`Saving new password to the server.`);
 
