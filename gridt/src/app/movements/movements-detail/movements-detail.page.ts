@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
 
@@ -13,7 +13,7 @@ import { Movement } from '../../core/movement.model';
   templateUrl: './movements-detail.page.html',
   styleUrls: ['./movements-detail.page.scss'],
 })
-export class MovementsDetailPage implements OnInit {
+export class MovementsDetailPage implements OnInit, OnDestroy {
 
   movement$: Observable<Movement>;
 
@@ -29,6 +29,10 @@ export class MovementsDetailPage implements OnInit {
     this.movement$ = this.api.allMovements$.pipe(
       map(movements => movements.filter( movement => movement.name === id )[0]) 
     );
+  }
+
+  ngOnDestroy() {
+    this.alertCtrl.dismiss();
   }
   
   onSubscribe(): void {
