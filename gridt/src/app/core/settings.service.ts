@@ -38,7 +38,7 @@ export class SettingsService {
       this.secStore.set$("identity", identity).subscribe();
       return of(true);
     } else {
-      return throwError("Not logged in");
+      return throwError("Not logged in: can't store identity in local storage.");
     }
   }
 }
