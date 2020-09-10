@@ -57,6 +57,20 @@ let mock_identity: Identity[] = [
     bio: "Less then one foot tall.",
     email: "a_little@one.com",
     avatar: "arandomstring"
+  },
+  {
+    id: 2,
+    username: "JoeFlosser",
+    bio: "Clean as ever.",
+    email: "joe@flosser.com",
+    avatar: "arandomstring"
+  },
+  {
+    id: 3,
+    username: "YoMamma",
+    bio: "When I walk by, you experience a solar eclipse.",
+    email: "YoMamma@isfat.com",
+    avatar: "arandomstring"
   }
 ];
 
@@ -115,7 +129,7 @@ describe("ApiService_failed_auth", () => {
 
   it('should fail to read identity from server when not logged in', () => {
     expect(
-      service.userIdentity$()
+      service.userIdentity$
     ).toBeObservable(cold("#", {}, "Can't authenticate: no credentials"));
   });
 
@@ -300,7 +314,11 @@ describe("ApiService_succesful_auth", () => {
   it('should be able to retreive identity', () => {
     httpClientStub.get.and.returnValue(of(mock_identity[0]));
 
-    expect(service.userIdentity$()).toBeObservable(cold('(a|)',{a: mock_identity[0]}));
+    expect(service.userIdentity$).toBeObservable(cold('(a|)',{a: mock_identity[0]}));
+    expect(httpClientStub.get).toHaveBeenCalledWith(
+      `${service.URL}/identity`,
+      default_headers
+    );
   });
 
   it('should be able to update the user bio', () => {
@@ -312,6 +330,9 @@ describe("ApiService_succesful_auth", () => {
 
     expect(service.changeBio$( mock_bio )).toBeObservable(
       cold("(a|)", {a: "Succesfully updated bio."})
+    );
+    expect(httpClientStub.put).toHaveBeenCalledWith(
+      `${service.URL}/bio`, {bio: mock_bio}, default_headers
     );
   });
 
@@ -325,6 +346,9 @@ describe("ApiService_succesful_auth", () => {
 
     expect(service.changePassword$( old_password, new_password )).toBeObservable(
       cold("(a|)", {a: "Succesfully replaced password."})
+    );
+    expect(httpClientStub.post).toHaveBeenCalledWith(
+      `${service.URL}/change_password`, {old_password: old_password, new_password: new_password}, default_headers
     );
   });
 });
