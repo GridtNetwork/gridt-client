@@ -115,7 +115,7 @@ describe("ApiService_failed_auth", () => {
 
   it('should fail to read identity from server when not logged in', () => {
     expect(
-      service.userIdentity$()
+      service.userIdentity$
     ).toBeObservable(cold("#", {}, "Can't authenticate: no credentials"));
   });
 
@@ -300,7 +300,7 @@ describe("ApiService_succesful_auth", () => {
   it('should be able to retreive identity', () => {
     httpClientStub.get.and.returnValue(of(mock_identity[0]));
 
-    expect(service.userIdentity$()).toBeObservable(cold('(a|)',{a: mock_identity[0]}));
+    expect(service.userIdentity$).toBeObservable(cold('(a|)',{a: mock_identity[0]}));
   });
 
   it('should be able to update the user bio', () => {
