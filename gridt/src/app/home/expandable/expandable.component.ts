@@ -7,10 +7,18 @@ import { Component, OnInit, Input } from "@angular/core";
 })
 export class ExpandableComponent implements OnInit {
 
-  @Input() expanded;
+  @Input() signalMessage;
+  itemExpanded = false;
 
   constructor() { }
 
   ngOnInit() {}
+
+  async toggleFullMessage() {
+    if(this.signalMessage.length > 10) {
+      this.itemExpanded = !this.itemExpanded;
+    }
+  }
+
 
 }

@@ -1,3 +1,5 @@
-<div class='expand-wrapper' [class.expanded]="expanded">
-  <ng-content></ng-content>
+<div class='expand-wrapper' [class.expanded]="itemExpanded" (click)="toggleFullMessage()" id='expandable'>
+  <ion-text>
+    <p class="overflow-visible">{{signalMessage}}</p>
+  </ion-text>
 </div>

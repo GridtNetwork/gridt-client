@@ -214,10 +214,6 @@ export class HomePage implements OnInit, OnDestroy {
     el.present();
   }
 
-  async showFullMessage() {
-    this.itemExpanded = !this.itemExpanded;
-  }
-
   async signal(movement: Movement, message?: string) {
     this.api.sendSignal$(movement, message).subscribe(
       () => {
