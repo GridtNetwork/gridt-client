@@ -29,7 +29,7 @@ export class SettingsService {
    * Store settings in the secure storage.
    * @param identity Settings to be stored.
    */
-  public setLocalIdentity(identity: Identity): Observable<boolean> {
+  public setLocalIdentity$(identity: Identity): Observable<boolean> {
     console.debug(`Storing identity: ${JSON.stringify(identity)} into the local storage.`);
     let loggedIn: boolean;
     this.auth.isLoggedIn$.subscribe( (val) => {loggedIn = val;});
