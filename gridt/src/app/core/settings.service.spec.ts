@@ -17,31 +17,46 @@ let secStore: SecureStorageService;
 let authServiceStub: jasmine.SpyObj<AuthService>;
 let secStoreStub: jasmine.SpyObj<SecureStorageService>;
 
-let mock_id: Identity[] = [
+let mock_identity: Identity[] = [
   {
     id: 1,
     username: "ALittleOne",
     bio: "Less then one foot tall.",
     email: "a_little@one.com",
     avatar: "arandomstring"
+  },
+  {
+    id: 2,
+    username: "JoeFlosser",
+    bio: "Clean as ever.",
+    email: "joe@flosser.com",
+    avatar: "arandomstring"
+  },
+  {
+    id: 3,
+    username: "YoMamma",
+    bio: "When I walk by, you experience a solar eclipse.",
+    email: "YoMamma@isfat.com",
+    avatar: "arandomstring"
   }
-]
+];
+
 const default_headers = {
   headers: new HttpHeaders({
     Authorization: "JWT aksdajskd.asdjknaskdn.asdjknakdnasjd"
-  })
+  });
 };
 
 class authServiceStub_succes {
   isLoggedIn$ = of(true);
   readyAuthentication$ = of(default_headers);
-}
+};
 
 class authServiceStub_failed {
   isLoggedIn$ = of(false);
   readyAuthentication$ = throwError("Can't authenticate: no credentials");
   error_codes = {NOCREDENTIALS: "Can't authenticate: no credentials"};
-}
+};
 
 describe("SettingsService_failed_auth", () => {
   beforeEach( () => {
