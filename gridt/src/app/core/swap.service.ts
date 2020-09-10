@@ -2,19 +2,14 @@
  * A service for storing the swap events, created for solving issue #54.
  */
 import { Injectable } from '@angular/core';
-import { Movement } from './movement.model';
-import { User } from './user.model';
-
-export interface SwapEvent {
-  date: Date;
-  movement: Movement;
-  user: User;
-}
+import { Movement } from './models/movement.model';
+import { User } from './models/user.model';
+import { SwapEvent } from './models/swapevent.model';
 
 @Injectable({
   providedIn: "root"
 })
-export class SwapService {  
+export class SwapService {
   public swapEvents: SwapEvent[] = [];
 
   addSwapEvent (movement: Movement, user: User) {
@@ -34,8 +29,8 @@ export class SwapService {
     if (!events.length) {
       return null;
     }
-    
-    const lastSwapEvent = events.reduce( 
+
+    const lastSwapEvent = events.reduce(
       (prev, current) => (prev.date > current.date) ? prev : current
     );
 
