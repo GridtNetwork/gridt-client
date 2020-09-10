@@ -17,7 +17,7 @@ let secStore: SecureStorageService;
 let authServiceStub: jasmine.SpyObj<AuthService>;
 let secStoreStub: jasmine.SpyObj<SecureStorageService>;
 
-let mock_identity: Identity[] = [
+let mock_id: Identity[] = [
   {
     id: 1,
     username: "ALittleOne",
@@ -44,7 +44,7 @@ let mock_identity: Identity[] = [
 const default_headers = {
   headers: new HttpHeaders({
     Authorization: "JWT aksdajskd.asdjknaskdn.asdjknakdnasjd"
-  });
+  })
 };
 
 class authServiceStub_succes {
