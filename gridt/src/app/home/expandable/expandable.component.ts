@@ -8,9 +8,6 @@ import { Component, OnInit, Input } from "@angular/core";
 export class ExpandableComponent implements OnInit {
 
   @Input() expanded;
-  @Input() expandedHeight;
-
-  currentHeight = 0;
 
   constructor() { }
 

@@ -21,4 +21,13 @@ describe('ExpandableComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should have a value for expanded', () => {
+    component.expanded = true;
+    expect(component.expanded).toBe(true);
+    expect()
+    component.expanded = false;
+    expect(component.expanded).toBe(false);
+  });
+
 });

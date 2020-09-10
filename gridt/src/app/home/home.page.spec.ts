@@ -198,4 +198,12 @@ describe('HomePage', () => {
     movement.last_signal_sent.time_stamp = '2020-04-09 10:00:00+01:00';
     expect(component.canSwap(movement)).toBeTruthy();
   });
+
+  it('shoould toggle itemExpanded', () => {
+    expect(component.itemExpanded).toBe(false, 'false at first');
+    component.showFullMessage();
+    expect(component.itemExpanded).toBe(true, 'true after toggle');
+    component.showFullMessage();
+    expect(component.itemExpanded).toBe(false, 'false at first');
+  });
 });
