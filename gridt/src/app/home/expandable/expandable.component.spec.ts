@@ -23,14 +23,8 @@ describe('ExpandableComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have a value for itemExpanded', () => {
-    component.itemExpanded = true;
-    expect(component.itemExpanded).toBe(true);
-    component.itemExpanded = false;
-    expect(component.itemExpanded).toBe(false);
-  });
-
-  it('shoould toggle itemExpanded', () => {
+  it('should toggle itemExpanded', () => {
+    component.signalMessage = "this message is long enough to require more space.";
     expect(component.itemExpanded).toBe(false, 'false at first');
     component.toggleFullMessage();
     expect(component.itemExpanded).toBe(true, 'true after toggle');
@@ -38,16 +32,23 @@ describe('ExpandableComponent', () => {
     expect(component.itemExpanded).toBe(false, 'false after second toggle');
   });
 
-  it('should toggleFullMessage on click', () => {
-    let button = fixture.debugElement.nativeElement.querySelector('#expandable');
+  it('should toggleFullMessage on click', (done) => {
+    spyOn(component, 'toggleFullMessage');
+
+    let button = fixture.debugElement.query(By.css('.expand-wrapper')).nativeElement;
     button.click();
-    expect(component.toggleFullMessage).toHaveBeenCalled();
+
+    fixture.whenStable().then(() => {
+      expect(component.toggleFullMessage).toHaveBeenCalled();
+    });
+    done();
   });
 
-  // it ("test css style", async() =>{
-  //   component.itemExpanded = false;
-  //   let element1= fixture.debugElement.query(By.css('.expand-wrapper')).nativeElement;
-  //   expect(element1.innerHTML);
-
-  // });
+  it('should show the expanded view', () => {
+    component.signalMessage = "this message is long enough to require more space.";
+    component.toggleFullMessage();
+    expect(component.itemExpanded).toBe(true, 'true after toggle');
+    let expandedEl = fixture.debugElement.query(By.css('.expand-wrapper, .expanded')).nativeElement;
+    expect(expandedEl.innerHTML).not.toBeNull();
+  });
 });

@@ -4,6 +4,10 @@
         max-height: 300px;
         transition: 0.5s;
     }
+.expanded {
+        min-height: 150px;
+}
+
 @media screen and (max-width: 280px) {
         .expanded {
                 min-height: 310px;
@@ -47,7 +51,6 @@
                 min-height: 70px;
         }
 } 
-
 
 .overflow-visible {
         white-space: initial;
