@@ -80,7 +80,7 @@ describe("SettingsService_failed_auth", () => {
   });
 
   it("should fail to set local identity when not logged in", () => {
-    service.setLocalIdentity(mock_id[0]);
+    expect(service.setLocalIdentity(mock_id[0])).toBeObservable(cold('#', null, "Not logged in"));
     expect(secStoreStub.set$).not.toHaveBeenCalled();
   });
 
@@ -112,7 +112,7 @@ describe("SettingsService_succesful_auth", () => {
   });
 
   it("should be able to set the local user Identity", () => {
-    service.setLocalIdentity(mock_id[0]);
+    expect(service.setLocalIdentity(mock_id[0])).toBeObservable(cold('(a|)',{a: true}));
     expect(secStoreStub.set$).toHaveBeenCalledWith("identity", mock_id[0]);
   })
 
