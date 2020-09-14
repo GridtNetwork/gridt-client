@@ -14,7 +14,6 @@ import { SwapService } from '../core/swap.service';
 })
 export class HomePage implements OnInit, OnDestroy {
   movements$ = new Observable<Movement[]>();
-  itemExpanded = false;
 
   constructor(
     private api: ApiService,

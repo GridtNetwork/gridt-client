@@ -1,6 +1,6 @@
 import { of } from 'rxjs';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { AlertController } from '@ionic/angular';
 
@@ -9,7 +9,6 @@ import { HomePage } from './home.page';
 import { AuthService } from '../core/auth.service';
 import { ApiService } from '../core/api.service';
 import { Movement } from '../core/models/movement.model';
-import { By } from 'protractor';
 
 class AuthServiceStub {
   isLoggedIn$ = of(true);

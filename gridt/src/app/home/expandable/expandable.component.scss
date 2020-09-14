@@ -1,58 +1,17 @@
-.expand-wrapper {
-        height: 0px;
-        min-height: 20px;
-        max-height: 300px;
-        transition: 0.5s;
-    }
-.expanded {
-        min-height: 150px;
+.p {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    height: 16;
+    width: 200;
+    max-height: 20px;
 }
 
-@media screen and (max-width: 280px) {
-        .expanded {
-                min-height: 310px;
-        }
+.p-expanded {
+    text-overflow: initial;
+    overflow: visible;
+    white-space: normal;
+    height: 200;
+    width: 200;
+    max-height: 200px;
+    transition: max-height 1s ease-in-out;
 }
-
-@media screen and (min-width: 281px) and (max-width: 370px) {
-        .expanded {
-                min-height: 150px;
-
-        }
-}
-@media screen  and (min-width: 371px) and (max-width: 400px) {
-        .expanded {
-                min-height: 120px;
-        }
-} 
-@media screen  and (min-width: 401px) and (max-width: 500px) {
-        .expanded {
-                min-height: 110px;
-        }
-} 
-@media screen  and (min-width: 501px) and (max-width: 600px) {
-        .expanded {
-                min-height: 70px;
-        }
-} 
-@media screen  and (min-width: 601px) and (max-width: 800px) {
-        .expanded {
-                min-height: 100px;
-        }
-} 
-
-@media screen  and (min-width: 801px) and (max-width: 1500px) {
-        .expanded {
-                min-height: 120px;
-        }
-} 
-@media screen  and (min-width: 1501px) {
-        .expanded {
-                min-height: 70px;
-        }
-} 
-
-.overflow-visible {
-        white-space: initial;
-    }
-    

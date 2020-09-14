@@ -5,20 +5,18 @@ import { Component, OnInit, Input } from "@angular/core";
   templateUrl: "./expandable.component.html",
   styleUrls: ["./expandable.component.scss"],
 })
-export class ExpandableComponent implements OnInit {
+export class SignalMessageComponent implements OnInit{
 
   @Input() signalMessage;
   itemExpanded = false;
+  width = 0;
+  ngOnInit() {
+    this.width = document.getElementById('signalText').offsetWidth;
+  }
 
-  constructor() { }
-
-  ngOnInit() {}
-
-  async toggleFullMessage() {
-    if(this.signalMessage.length > 10) {
+  toggleFullMessage() {
+    if (this.signalMessage.length > this.width) {
       this.itemExpanded = !this.itemExpanded;
     }
   }
-
-
 }

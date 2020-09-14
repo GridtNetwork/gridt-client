@@ -1,5 +1,3 @@
-<div class='expand-wrapper' [class.expanded]="itemExpanded" (click)="toggleFullMessage()">
-  <ion-text>
-    <p class="overflow-visible">{{signalMessage}}</p>
-  </ion-text>
+<div (click)="toggleFullMessage()">
+  <p id="signalText" class="p" [class.p-expanded]="itemExpanded">{{ signalMessage }}</p>
 </div>

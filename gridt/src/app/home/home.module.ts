@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { HomePageRoutingModule } from './home-routing.module';
 
 import { HomePage } from './home.page';
-import { ExpandableComponent } from './expandable/expandable.component'
+import { SignalMessageComponent } from './expandable/expandable.component'
 
 @NgModule({
   imports: [
@@ -16,6 +16,6 @@ import { ExpandableComponent } from './expandable/expandable.component'
     IonicModule,
     HomePageRoutingModule
   ],
-  declarations: [HomePage, ExpandableComponent]
+  declarations: [HomePage, SignalMessageComponent]
 })
 export class HomePageModule {}

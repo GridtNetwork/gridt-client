@@ -61,21 +61,6 @@
                       </div>
                       <div *ngIf="isLeaderDone(leader, movement) && leader.last_signal.message" id="expandable">
                         <app-expandable signalMessage={{leader.last_signal.message}}></app-expandable>
-                        <!-- <ion-button fill="clear" (click)="showFullMessage(leader.last_signal.message)">
-                          <div class="leader-message">
-                            <small>
-                              {{ leader.last_signal.message }}
-                            </small>
-                          </div>
-                        </ion-button> -->
-                        <!-- <ion-text *ngIf="!itemExpanded">
-                          <p class="overflow-elipsis">{{ leader.last_signal.message }}</p>
-                        </ion-text>
-                          <app-expandable [signalMessage]="leader.last_signal.message">
-                            <ion-text *ngIf="itemExpanded">
-                              <p class="overflow-visible">{{ leader.last_signal.message }}</p>
-                            </ion-text>
-                          </app-expandable> -->
                       </div>
                     </ion-label>
                     <ion-button
