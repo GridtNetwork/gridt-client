@@ -1,96 +1,169 @@
-import {Type } from "@angular/core";
+import { Type } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 
-import { forkJoin, of, throwError } from "rxjs";
-import { skip, take, toArray } from "rxjs/operators";
-
-import { ApiService } from "./api.service";
-import { Movement } from "./models/movement.model";
-import { User } from './models/user.model';
-import { AuthService } from './auth.service';
-
 import { cold } from 'jasmine-marbles';
-import { HttpClient, HttpHeaders, HttpResponse, HttpHeaderResponse, HttpErrorResponse } from '@angular/common/http';
+import { of, throwError } from "rxjs";
 
-let mock_movements: Movement[];
+import { AuthService } from './auth.service';
+import { ApiService } from "./api.service";
+
+import { Movement } from "./models/movement.model";
+import { Identity } from "./models/identity.model";
+import { User } from './models/user.model';
+
+let mock_movements: Movement[] = [
+  {
+    id: 10129312983,
+    name: "Mock Name",
+    short_description: "Mocking the short description",
+    description: "I will mock description. You are a fool, description.",
+    subscribed: false,
+    interval: "daily"
+  },
+  {
+    id: 1283912983123,
+    name: "Another mocked movement",
+    short_description: "This one only has a short description and no long one",
+    subscribed: false,
+    interval: "twice daily"
+  },
+  {
+    id: 10023123,
+    name: "Subscribed movement",
+    short_description: "This movement is supposed to come from the server.",
+    description: "We need some way to fake a response from the server, telling the client that it \
+     is subscribed to this particular movement",
+    subscribed: true,
+    interval: "daily"
+  },
+  {
+    id: 112312983,
+    name: "Flossing",
+    short_description: "Floss every day",
+    description: "We floss every day because it is good for our theeth.",
+    subscribed: true,
+    interval: "daily"
+  }
+];
+
 let mock_subscriptions: Movement[];
 
-describe("ApiService", () => {
-  let service: ApiService;
-  let auth: AuthService;
-  let httpMock: HttpTestingController;
-  let httpClientStub: jasmine.SpyObj<HttpClient>;
-  let authServiceStub: jasmine.SpyObj<AuthService>;
+let mock_identity: Identity[] = [
+  {
+    id: 1,
+    username: "ALittleOne",
+    bio: "Less then one foot tall.",
+    email: "a_little@one.com",
+    avatar: "arandomstring"
+  },
+  {
+    id: 2,
+    username: "JoeFlosser",
+    bio: "Clean as ever.",
+    email: "joe@flosser.com",
+    avatar: "arandomstring"
+  },
+  {
+    id: 3,
+    username: "YoMamma",
+    bio: "When I walk by, you experience a solar eclipse.",
+    email: "YoMamma@isfat.com",
+    avatar: "arandomstring"
+  }
+];
 
-  const default_headers = {
-    headers: new HttpHeaders({
-      Authorization: "JWT aksdajskd.asdjknaskdn.asdjknakdnasjd"
-    })
-  };
+const default_headers = {
+  headers: new HttpHeaders({
+    Authorization: "JWT aksdajskd.asdjknaskdn.asdjknakdnasjd"
+  })
+};
 
+let service: ApiService;
+let auth: AuthService;
+let httpMock: HttpTestingController;
+let httpClientStub: jasmine.SpyObj<HttpClient>;
+let authServiceStub: jasmine.SpyObj<AuthService>;
+
+class authServiceStub_succes {
+  isLoggedIn$ = of(true);
+  readyAuthentication$ = of(default_headers);
+}
+
+class authServiceStub_failed {
+  isLoggedIn$ = of(false);
+  readyAuthentication$ = throwError("Can't authenticate: no credentials");
+}
+
+describe("ApiService_failed_auth", () => {
   beforeEach(() => {
+    httpClientStub = jasmine.createSpyObj(
+      'httpClient', ['get', 'post', 'put']
+    );
+
     TestBed.configureTestingModule({
-      providers: [ApiService, AuthService],
-      imports: [HttpClientTestingModule]
+      providers: [
+        ApiService,
+        {provide: AuthService, useClass: authServiceStub_failed},
+        {provide: HttpClient, useValue: httpClientStub}
+      ]
     });
 
-    httpMock = TestBed.get(HttpTestingController as Type<HttpTestingController>);
     service = TestBed.get(ApiService as Type<ApiService>);
-    auth = TestBed.get(AuthService as Type<AuthService>);
 
-    httpClientStub = jasmine.createSpyObj(
-      'httpClient', ['get', 'post']
-    );
-
-    authServiceStub = jasmine.createSpyObj(
-      'auth', ['readyAuthentication$']
-    );
-    // All but a few tests presume a logged in state. readyAuthentication$ is
-    // defined to always be able to login and easy to compare with the correct
-    // headers. (This feature is important, as it makes or breaks communication
-    // with the server.)
-    authServiceStub.readyAuthentication$ = of(default_headers);
-
-    mock_movements = [
-      {
-        id: 10129312983,
-        name: "Mock Name",
-        short_description: "Mocking the short description",
-        description: "I will mock description. You are a fool, description.",
-        subscribed: false,
-        interval: "daily"
-      },
-      {
-        id: 1283912983123,
-        name: "Another mocked movement",
-        short_description: "This one only has a short description and no long one",
-        subscribed: false,
-        interval: "twice daily"
-      },
-      {
-        id: 10023123,
-        name: "Subscribed movement",
-        short_description: "This movement is supposed to come from the server.",
-        description: "We need some way to fake a response from the server, telling the client that it \
-         is subscribed to this particular movement",
-        subscribed: true,
-        interval: "daily"
-      },
-      {
-        id: 112312983,
-        name: "Flossing",
-        short_description: "Floss every day",
-        description: "We floss every day because it is good for our theeth.",
-        subscribed: true,
-        interval: "daily"
-      }
-    ];
     mock_subscriptions = [...mock_movements].filter(m => m.subscribed);
   });
 
-  afterEach(() => {
-    httpMock.verify();
+  it("should be created", () => {
+    expect(service).toBeTruthy();
+  });
+
+  it("should fail to create a movement when not logged in.", () => {
+    expect(service.createMovement$({
+      name: "Flossing",
+      short_description: "Floss once a day",
+      interval: "daily"
+    })).toBeObservable(cold("#", null, "Can't authenticate: no credentials"));
+  });
+
+  it('should fail to read identity from server when not logged in', () => {
+    expect(
+      service.userIdentity$
+    ).toBeObservable(cold("#", {}, "Can't authenticate: no credentials"));
+  });
+
+  it('should fail to update bio when not logged in', () => {
+    let mock_bio = "My very first bio."
+    expect(service.changeBio$( mock_bio )).toBeTruthy( cold('#', null, "Can't authenticate: no credentials"));
+  });
+
+  it('should fail to update password when not logged in', () => {
+    let old_password = "ABCDEF";
+    let new_password = "abcdef";
+
+    expect(service.changePassword$( old_password, new_password )).toBeTruthy( cold('#', null, "Can't authenticate: no credentials"));
+  });
+});
+
+describe("ApiService_succesful_auth", () => {
+
+  beforeEach(() => {
+    httpClientStub = jasmine.createSpyObj(
+      'httpClient', ['get', 'post', 'put']
+    );
+
+    TestBed.configureTestingModule({
+      providers: [
+        ApiService,
+        {provide: AuthService, useClass: authServiceStub_succes},
+        {provide: HttpClient, useValue: httpClientStub}
+      ]
+    });
+
+    service = TestBed.get(ApiService as Type<ApiService>);
+
+    mock_subscriptions = [...mock_movements].filter(m => m.subscribed);
   });
 
   it("should be created", () => {
@@ -101,7 +174,6 @@ describe("ApiService", () => {
     httpClientStub.post.and.returnValue(of(
       { "message": "Successfully created movement." }
     ));
-    service = new ApiService(httpClientStub, authServiceStub);
 
     expect(service.createMovement$({
       name: "Flossing",
@@ -122,20 +194,8 @@ describe("ApiService", () => {
     );
   });
 
-  it("should fail to create a movement when not logged in.", () => {
-    authServiceStub.readyAuthentication$ = cold('#', null , "Can't authenticate: no credentials");
-    service = new ApiService(httpClientStub, authServiceStub);
-
-    expect(service.createMovement$({
-      name: "Flossing",
-      short_description: "Floss once a day",
-      interval: "daily"
-    })).toBeObservable(cold("#", null, "Can't authenticate: no credentials"));
-  });
-
   it("should be able to request movements", () => {
     httpClientStub.get.and.returnValue(of(mock_movements));
-    service = new ApiService(httpClientStub, authServiceStub);
 
     service.getAllMovements();
 
@@ -157,7 +217,6 @@ describe("ApiService", () => {
           error: { message: "Could not create movement, because movement name is already in use." }
         }
     )));
-    service = new ApiService(httpClientStub, authServiceStub);
 
     expect(service.createMovement$(mock_movements[0])).toBeObservable(
       cold("#", null, "Could not create movement, because movement name is already in use.")
@@ -172,7 +231,6 @@ describe("ApiService", () => {
 
   it("should be able to request the subscribed movements", () => {
     httpClientStub.get.and.returnValue(of(mock_subscriptions));
-    service = new ApiService(httpClientStub, authServiceStub);
 
     service.getSubscriptions();
 
@@ -200,8 +258,6 @@ describe("ApiService", () => {
       of(mock_subscriptions),
       of(flossing_movement)
     );
-
-    service = new ApiService(httpClientStub, authServiceStub);
 
     service.getAllMovements();
     service.getSubscriptions();
@@ -234,7 +290,6 @@ describe("ApiService", () => {
 
     httpClientStub.get.and.returnValue(of(old_subscriptions));
     httpClientStub.post.and.returnValue(of(mock_user));
-    service = new ApiService(httpClientStub, authServiceStub);
 
     service.getSubscriptions();
     expect(service.swapLeader$(old_subscriptions[1], idiot_user)).toBeObservable(
@@ -253,6 +308,47 @@ describe("ApiService", () => {
       `${service.URL}/movements/${movement_id}/leader/1`,
       {},
       default_headers
-    )
+    );
+  });
+
+  it('should be able to retreive identity', () => {
+    httpClientStub.get.and.returnValue(of(mock_identity[0]));
+
+    expect(service.userIdentity$).toBeObservable(cold('(a|)',{a: mock_identity[0]}));
+    expect(httpClientStub.get).toHaveBeenCalledWith(
+      `${service.URL}/identity`,
+      default_headers
+    );
+  });
+
+  it('should be able to update the user bio', () => {
+    httpClientStub.put.and.returnValue(of(
+      { "message": "Succesfully updated bio." }
+    ));
+
+    let mock_bio = "My insanely good new bio.";
+
+    expect(service.changeBio$( mock_bio )).toBeObservable(
+      cold("(a|)", {a: "Succesfully updated bio."})
+    );
+    expect(httpClientStub.put).toHaveBeenCalledWith(
+      `${service.URL}/bio`, {bio: mock_bio}, default_headers
+    );
+  });
+
+  it('should be able to update the user password', () => {
+    httpClientStub.post.and.returnValue(of(
+      { "message": "Succesfully replaced password." }
+    ));
+
+    let old_password = "ABCDEF";
+    let new_password = "abcdef";
+
+    expect(service.changePassword$( old_password, new_password )).toBeObservable(
+      cold("(a|)", {a: "Succesfully replaced password."})
+    );
+    expect(httpClientStub.post).toHaveBeenCalledWith(
+      `${service.URL}/change_password`, {old_password: old_password, new_password: new_password}, default_headers
+    );
   });
 });
