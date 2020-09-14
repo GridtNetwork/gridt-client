@@ -1,6 +1,6 @@
 import { of } from 'rxjs';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed} from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { AlertController } from '@ionic/angular';
 
