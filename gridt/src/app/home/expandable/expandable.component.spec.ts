@@ -24,7 +24,7 @@ describe('ExpandableComponent', () => {
   });
 
   it('should toggle itemExpanded', () => {
-    component.leadersMessage = "this message is long enough to require more space.";
+    component.signalText = "this message is long enough to require more space.";
     component.width = 5;
     expect(component.itemExpanded).toBe(false, 'false at first');
     component.toggleFullMessage();
@@ -34,7 +34,7 @@ describe('ExpandableComponent', () => {
   });
 
   it('should not toggle itemExpanded', () => {
-    component.leadersMessage = "this message is long enough to require more space.";
+    component.signalText = "this message is long enough to require more space.";
     component.width = 100;
     expect(component.itemExpanded).toBe(false, 'false at first');
     component.toggleFullMessage();
@@ -43,7 +43,7 @@ describe('ExpandableComponent', () => {
 
   it('should toggleFullMessage on click', (done) => {
     spyOn(component, 'toggleFullMessage').and.callThrough();
-    component.leadersMessage = "this message is long enough to require more space.";
+    component.signalText = "this message is long enough to require more space.";
     component.width = 5;
 
     let button = fixture.debugElement.query(By.css('div')).nativeElement;
@@ -59,7 +59,7 @@ describe('ExpandableComponent', () => {
   it('should not toggleFullMessage on click', (done) => {
     spyOn(component, 'toggleFullMessage').and.callThrough();
     component.width = 100;
-    component.leadersMessage = "this message is short enough to not require more space.";
+    component.signalText = "this message is short enough to not require more space.";
 
     let button = fixture.debugElement.query(By.css('div')).nativeElement;
     button.click();
@@ -73,7 +73,7 @@ describe('ExpandableComponent', () => {
 
   it('should show the expanded view', () => {
     component.width = 5;
-    component.leadersMessage = "this message is long enough to require more space.";
+    component.signalText = "this message is long enough to require more space.";
     component.toggleFullMessage();
     expect(component.itemExpanded).toBe(true, 'true after toggle');
     let expandedEl = fixture.debugElement.query(By.css('div, .p-expanded')).nativeElement;
