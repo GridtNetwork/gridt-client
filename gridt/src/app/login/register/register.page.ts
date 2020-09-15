@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../../core/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -11,6 +12,7 @@ import { AuthService } from '../../core/auth.service';
 })
 export class RegisterPage implements OnInit, OnDestroy {
 
+  private registerSubscription: Subscription;
 
   constructor(
     private router: Router,
@@ -25,6 +27,11 @@ export class RegisterPage implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.alertCtrl.dismiss();
+    this.cancelAllSubscriptions();
+  }
+
+  private cancelAllSubscriptions() {
+    this.registerSubscription.unsubscribe();
   }
   /*
   * Creates warning for unique password
@@ -44,13 +51,13 @@ export class RegisterPage implements OnInit, OnDestroy {
   /*
    * Do API call and handle loading element.
    */
-  public async register (username:string, email: string, password: string ) {
-    const el = await this.loadingCtrl.create({ 
+  public async register (username: string, email: string, password: string ) {
+    const el = await this.loadingCtrl.create({
       keyboardClose: true,
       message: 'Signing you up...' 
     });
 
-    this.auth.register$(username, email, password).subscribe(
+    this.registerSubscription = this.auth.register$(username, email, password).subscribe(
       () => {
         this.router.navigateByUrl('/login');
         el.dismiss();
@@ -58,8 +65,8 @@ export class RegisterPage implements OnInit, OnDestroy {
       (error) => {
           this.showAlert(error);
           el.dismiss();
-      }
-    )
+      },
+    );
     el.present();
   }
 

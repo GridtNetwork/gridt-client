@@ -4,15 +4,16 @@ import { Router, NavigationStart } from '@angular/router';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { Plugins, AppState, Capacitor } from '@capacitor/core';
 import { AuthService } from './core/auth.service';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { filter, flatMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html'
 })
-export class AppComponent implements OnInit, OnDestroy{
+export class AppComponent implements OnInit {
   public isLoggedIn$: Observable<boolean>;
+  private subscriptions: Subscription;
 
   public appPages = [
     {
@@ -64,15 +65,14 @@ export class AppComponent implements OnInit, OnDestroy{
     );
   }
 
-  onLogout() {
+  public unsubscribeLoggedIn() {
+    this.subscriptions.unsubscribe();
   }
-
-  ngOnDestroy() { }
 
   private checkAuthOnResume(state: AppState) {
     this.zone.run( () => {
       if (state.isActive) {
-        this.auth.isLoggedIn$.subscribe(loggedIn => {
+        this.subscriptions = this.auth.isLoggedIn$.subscribe(loggedIn => {
           if (!loggedIn) {
             console.log('On resuming the app found user is now logged out. Redirecting to /login');
             this.router.navigate(['/login']);

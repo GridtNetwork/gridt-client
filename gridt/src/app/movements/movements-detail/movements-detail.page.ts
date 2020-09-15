@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
 
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { map, flatMap, take } from 'rxjs/operators';
 
 import { ApiService } from '../../core/api.service';
@@ -16,6 +16,8 @@ import { Movement } from '../../core/models/movement.model';
 export class MovementsDetailPage implements OnInit, OnDestroy {
 
   movement$: Observable<Movement>;
+  private movSubSubscription: Subscription;
+  private movUnsubSubscription: Subscription;
 
   constructor(
     private alertCtrl: AlertController,
@@ -32,7 +34,18 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.alertCtrl.dismiss();
+    if (this.alertCtrl) {
+      this.alertCtrl.dismiss();
+    }
+    this.cancelAllSubscriptions();
+  }
+  private cancelAllSubscriptions() {
+    if (this.movSubSubscription) {
+      this.movSubSubscription.unsubscribe();
+    }
+    if (this.movUnsubSubscription) {
+      this.movUnsubSubscription.unsubscribe();
+    }
   }
 
   onSubscribe(): void {
@@ -86,7 +99,7 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
 
     el.present();
 
-    this.movement$.pipe(
+    this.movSubSubscription = this.movement$.pipe(
       take(1),
       flatMap( (movement) => this.api.subscribeToMovement$(movement.name)),
       flatMap( () => this.movement$), // We need the movement name again to reload the movement.
@@ -116,7 +129,7 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
 
     el.present();
 
-    this.movement$.pipe(
+    this.movUnsubSubscription = this.movement$.pipe(
       take(1),
       flatMap( movement => this.api.unsubscribeFromMovement$(movement.name) ),
       flatMap( () => this.movement$ ),

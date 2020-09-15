@@ -14,12 +14,13 @@ describe("SecureStorageService", () => {
   
   it('should be able to store data and retrieve it', (done: DoneFn) => {
     service.set$("test_key", "test_value").subscribe(
-      () => service.get$("test_key").subscribe( 
+      () => service.get$("test_key").subscribe(
         (value: string) => expect(value).toEqual("test_value"),
         fail,
         done
       ),
       fail
-    )        
+    );
   });
-});
+}
+);

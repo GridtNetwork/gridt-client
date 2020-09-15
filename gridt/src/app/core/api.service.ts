@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 
-import { Observable, BehaviorSubject, throwError } from "rxjs";
+import { Observable, BehaviorSubject, throwError, Subscription } from "rxjs";
 import { map, tap, pluck, catchError, flatMap } from "rxjs/operators";
 
 import { AuthService } from './auth.service';
@@ -16,6 +16,8 @@ import { ServerMessage } from './models/server-responses.model';
 })
 export class ApiService {
   public username: string;
+  private getAllMovementsSubscription: Subscription;
+  private getAllSubbedMovementsSubscription: Subscription;
 
   /*
    * Subscribe to this observable to ready the API.
@@ -119,7 +121,7 @@ export class ApiService {
   public getAllMovements(): void {
     console.debug("Getting all movements from the server");
 
-    this.auth.readyAuthentication$.pipe(
+    this.getAllMovementsSubscription = this.auth.readyAuthentication$.pipe(
       flatMap((options) => this.http.get<Movement[]>(
         `${this.URL}/movements`,
         options
@@ -136,7 +138,7 @@ export class ApiService {
   public getSubscriptions(): void {
     console.debug("Getting all movements that the user is subscribed to.");
 
-    this.auth.readyAuthentication$.pipe(
+    this.getAllSubbedMovementsSubscription = this.auth.readyAuthentication$.pipe(
       flatMap((options) => this.http.get<Movement[]>(
         `${this.URL}/movements/subscriptions`,
         options
@@ -152,6 +154,7 @@ export class ApiService {
    */
   public subscribeToMovement$ (movement_id: number | string) {
     console.debug(`Subscribing to movement "${movement_id}".`);
+  
 
     return this.auth.readyAuthentication$.pipe(
       flatMap((options) => this.http.put(

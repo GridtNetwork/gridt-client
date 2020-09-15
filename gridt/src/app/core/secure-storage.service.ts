@@ -34,7 +34,7 @@ export class SecureStorageService {
         } else {
           observer.error(`Could not set ${key} in the secure storage.`);
         }
-      })
+      });
     });
   }
 
@@ -47,7 +47,7 @@ export class SecureStorageService {
         } else {
           observer.error("Could not clear the secure storage.");
         }
-      })
+      });
     });
   }
 
@@ -60,7 +60,7 @@ export class SecureStorageService {
         } else {
           observer.error(`Could not remove ${key} from the secure storage.`);
         }
-      })
+      });
     });
   }
 }

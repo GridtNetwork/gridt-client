@@ -4,6 +4,7 @@ import { LoadingController, AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { ApiService } from '../../core/api.service';
 import { Movement } from '../../core/models/movement.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-add-movement',
@@ -11,6 +12,8 @@ import { Movement } from '../../core/models/movement.model';
   styleUrls: ['./add-movement.page.scss'],
 })
 export class AddMovementPage implements OnInit, OnDestroy {
+  private getMovementSubscription: Subscription;
+  private createMovementSubscription: Subscription;
   form: FormGroup;
   intervalTypes: string[] = [
     'daily',
@@ -51,7 +54,19 @@ export class AddMovementPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.alertCtrl.dismiss();
+    if (this.alertCtrl) {
+      this.alertCtrl.dismiss();
+    }
+    this.cancelAllSubscriptions();
+  }
+
+  private cancelAllSubscriptions() {
+    if (this.createMovementSubscription) {
+      this.createMovementSubscription.unsubscribe();
+    }
+    if (this.getMovementSubscription) {
+      this.getMovementSubscription.unsubscribe();
+    }
   }
 
   async createMovement() {
