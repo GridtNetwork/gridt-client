@@ -7,7 +7,7 @@ import { Component, OnInit, Input } from "@angular/core";
 })
 export class SignalMessageComponent implements OnInit{
 
-  @Input() signalMessage;
+  @Input() leadersMessage;
   itemExpanded = false;
   width = 0;
   ngOnInit() {
@@ -15,7 +15,7 @@ export class SignalMessageComponent implements OnInit{
   }
 
   toggleFullMessage() {
-    if (this.signalMessage.length > this.width) {
+    if (this.leadersMessage.length > this.width) {
       this.itemExpanded = !this.itemExpanded;
     }
   }
