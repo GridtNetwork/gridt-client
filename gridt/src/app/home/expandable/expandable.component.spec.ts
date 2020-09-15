@@ -52,8 +52,8 @@ describe('ExpandableComponent', () => {
     fixture.whenStable().then(() => {
       expect(component.toggleFullMessage).toHaveBeenCalled();
       expect(component.itemExpanded).toBe(true, 'true after toggle');
+      done();
     });
-    done();
   });
 
   it('should not toggleFullMessage on click', (done) => {
@@ -67,8 +67,8 @@ describe('ExpandableComponent', () => {
     fixture.whenStable().then(() => {
       expect(component.toggleFullMessage).toHaveBeenCalled();
       expect(component.itemExpanded).toBe(false, 'not toggled');
+      done();
     });
-    done();
   });
 
   it('should show the expanded view', () => {
