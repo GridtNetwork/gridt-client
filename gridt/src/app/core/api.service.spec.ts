@@ -141,7 +141,6 @@ describe("ApiService when authentication fails", () => {
   it('should fail to update password when not logged in', () => {
     let old_password = "ABCDEF";
     let new_password = "abcdef";
-
     expect(service.changePassword$( old_password, new_password )).toBeObservable( cold('#', null, "Can't authenticate: no credentials"));
   });
 });
@@ -313,7 +312,7 @@ describe("ApiService when authentication is succesful", () => {
 
   it('should be able to retreive identity', () => {
     httpClientStub.get.and.returnValue(of(mock_identity[0]));
-
+    
     expect(service.userIdentity$).toBeObservable(cold('(a|)', {a: mock_identity[0]}));
     expect(httpClientStub.get).toHaveBeenCalledWith(
       `${service.URL}/identity`,
