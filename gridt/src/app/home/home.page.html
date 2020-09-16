@@ -60,7 +60,7 @@
                         <p>{{ isLeaderDone(leader, movement) ? 'Done!' : 'Pending...' }}</p>
                       </div>
                       <div *ngIf="isLeaderDone(leader, movement) && leader.last_signal.message" id="expandable">
-                        <signal-message signalText={{leader.last_signal.message}}></signal-message>
+                        <signal-message signalText={{ leader.last_signal.message }}></signal-message>
                       </div>
                     </ion-label>
                     <ion-button
