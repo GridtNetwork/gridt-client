@@ -4,7 +4,7 @@ import { IonicModule } from '@ionic/angular';
 import { SignalMessageComponent } from './expandable.component';
 import { By } from '@angular/platform-browser';
 
-describe('ExpandableComponent', () => {
+describe('SignalMessageComponent', () => {
   let component: SignalMessageComponent;
   let fixture: ComponentFixture<SignalMessageComponent>;
 
