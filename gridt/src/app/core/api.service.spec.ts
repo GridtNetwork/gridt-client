@@ -96,7 +96,7 @@ class authServiceStub_failed {
   readyAuthentication$ = throwError("Can't authenticate: no credentials");
 }
 
-describe("ApiService_failed_auth", () => {
+describe("ApiService when authentication fails", () => {
   beforeEach(() => {
     httpClientStub = jasmine.createSpyObj(
       'httpClient', ['get', 'post', 'put']
@@ -135,18 +135,18 @@ describe("ApiService_failed_auth", () => {
 
   it('should fail to update bio when not logged in', () => {
     let mock_bio = "My very first bio."
-    expect(service.changeBio$( mock_bio )).toBeTruthy( cold('#', null, "Can't authenticate: no credentials"));
+    expect(service.changeBio$( mock_bio )).toBeObservable( cold('#', null, "Can't authenticate: no credentials"));
   });
 
   it('should fail to update password when not logged in', () => {
     let old_password = "ABCDEF";
     let new_password = "abcdef";
 
-    expect(service.changePassword$( old_password, new_password )).toBeTruthy( cold('#', null, "Can't authenticate: no credentials"));
+    expect(service.changePassword$( old_password, new_password )).toBeObservable( cold('#', null, "Can't authenticate: no credentials"));
   });
 });
 
-describe("ApiService_succesful_auth", () => {
+describe("ApiService when authentication is succesful", () => {
 
   beforeEach(() => {
     httpClientStub = jasmine.createSpyObj(
@@ -314,7 +314,7 @@ describe("ApiService_succesful_auth", () => {
   it('should be able to retreive identity', () => {
     httpClientStub.get.and.returnValue(of(mock_identity[0]));
 
-    expect(service.userIdentity$).toBeObservable(cold('(a|)',{a: mock_identity[0]}));
+    expect(service.userIdentity$).toBeObservable(cold('(a|)', {a: mock_identity[0]}));
     expect(httpClientStub.get).toHaveBeenCalledWith(
       `${service.URL}/identity`,
       default_headers

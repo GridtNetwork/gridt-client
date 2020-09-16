@@ -55,10 +55,9 @@ class authServiceStub_succes {
 class authServiceStub_failed {
   isLoggedIn$ = of(false);
   readyAuthentication$ = throwError("Can't authenticate: no credentials");
-  error_codes = {NOCREDENTIALS: "Can't authenticate: no credentials"};
 };
 
-describe("SettingsService_failed_auth", () => {
+describe("SettingsService when authentication fails", () => {
   beforeEach( () => {
     secStoreStub = jasmine.createSpyObj(
       'secStore', {'get$': of(mock_id[0]), 'set$': of(true), 'clear$': of(true), 'remove$': of(true)}
@@ -90,7 +89,7 @@ describe("SettingsService_failed_auth", () => {
   });
 });
 
-describe("SettingsService_succesful_auth", () => {
+describe("SettingsService when authentication is succesful", () => {
   beforeEach( () => {
     secStoreStub = jasmine.createSpyObj(
       'secStore', {'get$': of(mock_id[0]), 'set$': of(true), 'clear$': of(true), 'remove$': of(true)}

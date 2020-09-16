@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { Observable, pipe, throwError, of } from "rxjs";
-import { flatMap, tap, map, catchError, pluck } from "rxjs/operators";
+import { Observable, pipe, throwError, of, iif } from "rxjs";
+import { flatMap, tap, map, catchError, pluck, mergeMap, take } from "rxjs/operators";
 
 import { Identity } from './models/identity.model';
 import { AuthService } from './auth.service';
@@ -30,15 +30,15 @@ export class SettingsService {
    * @param identity Settings to be stored.
    */
   public setLocalIdentity$(identity: Identity): Observable<boolean> {
-    console.debug(`Storing identity: ${JSON.stringify(identity)} into the local storage.`);
-    let loggedIn: boolean;
-    this.auth.isLoggedIn$.subscribe( (val) => {loggedIn = val;});
-
-    if (loggedIn) {
-      this.secStore.set$("identity", identity).subscribe();
-      return of(true);
-    } else {
-      return throwError("Not logged in: can't store identity in local storage.");
-    }
+    return this.auth.isLoggedIn$.pipe(
+      take(1),
+      tap( (val) => {
+        if (val === true) {
+          console.debug(`Storing identity: ${JSON.stringify(identity)} into the local storage.`);
+          this.secStore.set$("identity", identity).subscribe();
+        }
+      }),
+      mergeMap( val => iif( () => val === true, of(true), throwError("Not logged in: can't store identity in local storage.")))
+    )
   }
 }

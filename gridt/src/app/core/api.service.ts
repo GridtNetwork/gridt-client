@@ -246,7 +246,7 @@ export class ApiService {
   * @param bio the new bio that the user wants.
   */
   public changeBio$( bio: string ) {
-   	console.debug(`Saving new biography to the server.`);
+    console.debug(`Saving new biography to the server.`);
 
     return this.auth.readyAuthentication$.pipe(
       flatMap((options) => this.http.put(
