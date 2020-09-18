@@ -11,9 +11,9 @@ import { filter, flatMap } from 'rxjs/operators';
   selector: 'app-root',
   templateUrl: 'app.component.html'
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   public isLoggedIn$: Observable<boolean>;
-  private subscriptions: Subscription;
+  private isLoggedInSubscription: Subscription;
 
   public appPages = [
     {
@@ -64,15 +64,21 @@ export class AppComponent implements OnInit {
       this.checkAuthOnResume.bind(this)
     );
   }
+  
+  ngOnDestroy() {
+    this.cancelAllSubscriptions();
+  }
 
-  public unsubscribeLoggedIn() {
-    this.subscriptions.unsubscribe();
+  private cancelAllSubscriptions() {
+    if (this.isLoggedInSubscription) {
+      this.isLoggedInSubscription.unsubscribe();
+    }
   }
 
   private checkAuthOnResume(state: AppState) {
     this.zone.run( () => {
       if (state.isActive) {
-        this.subscriptions = this.auth.isLoggedIn$.subscribe(loggedIn => {
+        this.isLoggedInSubscription = this.auth.isLoggedIn$.subscribe(loggedIn => {
           if (!loggedIn) {
             console.log('On resuming the app found user is now logged out. Redirecting to /login');
             this.router.navigate(['/login']);

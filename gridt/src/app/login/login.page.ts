@@ -10,7 +10,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
-export class LoginPage implements OnInit, OnDestroy {
+export class LoginPage implements OnDestroy {
 
   private loginSubscription: Subscription;
 
@@ -21,20 +21,20 @@ export class LoginPage implements OnInit, OnDestroy {
     private auth: AuthService
     ) { }
 
-  ngOnInit() { 
-  }
   ngOnDestroy() {
     this.cancelAllSubscriptions();
   }
 
   private cancelAllSubscriptions() {
-    this.loginSubscription.unsubscribe();
+    if (this.loginSubscription) {
+      this.loginSubscription.unsubscribe();
+    }
   }
   /*
    * Log user in with api and handle loading popup
    */
   public async authenticate(email: string, password: string) {
-    const el = await this.loadingCtrl.create({ 
+    const el = await this.loadingCtrl.create({
       keyboardClose: true, 
       message: 'Logging in...' 
     });

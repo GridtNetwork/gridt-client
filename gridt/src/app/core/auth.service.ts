@@ -2,7 +2,7 @@ import { Observable, of, pipe, UnaryFunction, throwError, forkJoin, Subscription
 import { SecureStorageService } from './secure-storage.service';
 import { flatMap, tap, catchError, map, mapTo, pluck } from 'rxjs/operators';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 
 import { Credentials } from './models/credentials.model';
 import { ServerMessage, AccessToken } from './models/server-responses.model';
@@ -10,14 +10,33 @@ import { ServerMessage, AccessToken } from './models/server-responses.model';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class AuthService implements OnDestroy{
 
   private storeTokenSubscription: Subscription;
   private storePasswordSubscription: Subscription;
   private storeUsernameSubscription: Subscription;
   private clearStorageSubscription: Subscription;
+  private clearStorageSubscription2: Subscription;
 
   constructor(private http: HttpClient, private secStore: SecureStorageService) {}
+
+  ngOnDestroy() {
+    if (this.storeTokenSubscription) {
+      this.storeTokenSubscription.unsubscribe();
+    }
+    if (this.storePasswordSubscription) {
+      this.storePasswordSubscription.unsubscribe();
+    }
+    if (this.storeUsernameSubscription) {
+      this.storeUsernameSubscription.unsubscribe();
+    }
+    if (this.clearStorageSubscription) {
+      this.clearStorageSubscription.unsubscribe();
+    }
+    if (this.clearStorageSubscription2) {
+      this.clearStorageSubscription2.unsubscribe();
+    }
+  }
 
   public error_codes = {
     TOKENEXPIRED: "Token expired",
@@ -190,6 +209,6 @@ export class AuthService {
    * Clear all information stored in the secure storage concerning previous logins.
    */
   public logout(): void {
-    this.clearStorageSubscription = this.secStore.clear$().subscribe();
+    this.clearStorageSubscription2 = this.secStore.clear$().subscribe();
   }
 }

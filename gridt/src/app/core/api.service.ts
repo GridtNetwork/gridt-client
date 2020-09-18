@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable, OnDestroy } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 
 import { Observable, BehaviorSubject, throwError, Subscription } from "rxjs";
@@ -14,10 +14,19 @@ import { ServerMessage } from './models/server-responses.model';
 @Injectable({
   providedIn: "root"
 })
-export class ApiService {
+export class ApiService implements OnDestroy{
   public username: string;
   private getAllMovementsSubscription: Subscription;
   private getAllSubbedMovementsSubscription: Subscription;
+
+  ngOnDestroy() {
+    if (this.getAllMovementsSubscription) {
+      this.getAllMovementsSubscription.unsubscribe();
+    }
+    if (this.getAllSubbedMovementsSubscription) {
+      this.getAllSubbedMovementsSubscription.unsubscribe();
+    }
+  }
 
   /*
    * Subscribe to this observable to ready the API.
@@ -86,7 +95,7 @@ export class ApiService {
    */
   private replace_movement_in_bsubject(bsubject: BehaviorSubject<Movement[]>, movement: Movement) {
     let all_movements = bsubject.getValue();
-    const index = all_movements.findIndex(m => m.name == movement.name);
+    const index = all_movements.findIndex(m => m.name === movement.name);
     if (index != -1) {
       all_movements[index] = movement;
     } else {
@@ -112,7 +121,7 @@ export class ApiService {
         this.replace_movement_in_bsubject(this._subscriptions$, movement);
         this.replace_movement_in_bsubject(this._allMovements$, movement);
       })
-    )
+    );
   }
 
   /**

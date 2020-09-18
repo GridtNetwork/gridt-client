@@ -141,6 +141,6 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
         el.dismiss();
         this.showError(error);
       }
-    )
+    );
   }
 }
