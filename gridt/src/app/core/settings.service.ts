@@ -30,15 +30,13 @@ export class SettingsService {
    * @param identity Settings to be stored.
    */
   public setLocalIdentity$(identity: Identity): Observable<boolean> {
-    return this.auth.isLoggedIn$.pipe(
-      take(1),
-      tap( (val) => {
-        if (val === true) {
-          console.debug(`Storing identity: ${JSON.stringify(identity)} into the local storage.`);
-          this.secStore.set$("identity", identity).subscribe();
-        }
-      }),
-      mergeMap( val => iif( () => val === true, of(true), throwError("Not logged in: can't store identity in local storage.")))
+    return this.auth.readyAuthentication$.pipe(
+      catchError( () => throwError("Could not set identity: not logged in")),
+      take(1), // Makes sure the observable completes
+      flatMap( () => this.secStore.set$("identity", identity).pipe(
+          catchError(()=> throwError("Could not set identity: secure storage not available."))
+        )
+      )
     )
   }
 }
