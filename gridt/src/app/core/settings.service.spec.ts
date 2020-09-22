@@ -79,12 +79,14 @@ describe("SettingsService when authentication fails", () => {
   });
 
   it("should fail to set local identity when not logged in", () => {
-    expect(service.setLocalIdentity$(mock_id[0])).toBeObservable(cold('#', null, "Could not set identity: not logged in"));
+    let error = service.error_codes.SETIDFAIL + ": " + service.error_codes.NOTLOGGEDIN;
+    expect(service.setLocalIdentity$(mock_id[0])).toBeObservable(cold('#', null, error));
     expect(secStoreStub.set$).not.toHaveBeenCalled();
   });
 
   it("should fail to get local identity when not logged in", () => {
-    expect(service.localIdentity$).toBeObservable(cold('#', null, "Can't authenticate: no credentials"));
+    let error = service.error_codes.GETIDFAIL + ": " + service.error_codes.NOTLOGGEDIN;
+    expect(service.localIdentity$).toBeObservable(cold('#', null, error));
     expect(secStoreStub.get$).not.toHaveBeenCalled();
   });
 });
