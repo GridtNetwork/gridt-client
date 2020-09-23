@@ -31,7 +31,9 @@ export class RegisterPage implements OnInit, OnDestroy {
   }
 
   private cancelAllSubscriptions() {
-    this.registerSubscription.unsubscribe();
+    if (this.registerSubscription) {
+      this.registerSubscription.unsubscribe();
+    }
   }
   /*
   * Creates warning for unique password

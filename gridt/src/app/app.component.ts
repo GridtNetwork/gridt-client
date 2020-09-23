@@ -64,7 +64,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.checkAuthOnResume.bind(this)
     );
   }
-  
+
   ngOnDestroy() {
     this.cancelAllSubscriptions();
   }

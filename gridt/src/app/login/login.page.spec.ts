@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { LoginPage } from './login.page';
+import { of } from 'rxjs';
 
 describe('LoginPage', () => {
   let component: LoginPage;
@@ -33,5 +34,11 @@ describe('LoginPage', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it("should unsubscribe all subscriptions when leaving the page", () => {
+    component['loginSubscription'] = of(true).subscribe();
+    component.ngOnDestroy();
+    expect(component['loginSubscription'].closed).toBeTruthy();
   });
 });
