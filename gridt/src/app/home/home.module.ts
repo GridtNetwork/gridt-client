@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { HomePageRoutingModule } from './home-routing.module';
 
 import { HomePage } from './home.page';
-import { SignalMessageComponent } from './expandable/expandable.component'
+import { SignalMessageComponent } from './signal-message/signal-message.component';
 
 @NgModule({
   imports: [
