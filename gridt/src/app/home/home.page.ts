@@ -14,7 +14,7 @@ import { SwapService } from '../core/swap.service';
 })
 export class HomePage implements OnInit, OnDestroy {
   movements$ = new Observable<Movement[]>();
-  private subscriptions: Subscription[] =[];
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private api: ApiService,
