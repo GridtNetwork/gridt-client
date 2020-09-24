@@ -79,7 +79,12 @@ export class AddMovementPage implements OnInit, OnDestroy {
       (message) => {
         el.dismiss();
         this.showMessage(message);
-        this.subscriptions.push(this.api.getMovement$(this.form.value.name).subscribe());
+        this.subscriptions.push(this.api.getMovement$(this.form.value.name).subscribe({
+        error(err) {
+          el.dismiss();
+          this.showError(err);
+        },
+      }));
       },
       (error) => {
         el.dismiss();
