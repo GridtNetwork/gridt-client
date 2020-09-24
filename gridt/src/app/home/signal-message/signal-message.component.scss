@@ -1,0 +1,21 @@
+.container {
+    height: 16;
+    width: 200;
+    max-height: 20px;
+}
+.container-expanded {
+    width: 200;
+    max-height: 200px;
+    transition: max-height 1s ease-in-out;
+}
+
+.text {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.text-expanded {
+    overflow: visible;
+    white-space: normal;
+
+}
