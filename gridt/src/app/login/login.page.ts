@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs';
 })
 export class LoginPage implements OnDestroy {
 
-  private loginSubscription: Subscription;
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private router: Router,
@@ -26,9 +26,7 @@ export class LoginPage implements OnDestroy {
   }
 
   private cancelAllSubscriptions() {
-    if (this.loginSubscription) {
-      this.loginSubscription.unsubscribe();
-    }
+    this.subscriptions.map( subscription => subscription.unsubscribe());
   }
   /*
    * Log user in with api and handle loading popup
@@ -41,7 +39,7 @@ export class LoginPage implements OnDestroy {
 
     el.present();
 
-    this.loginSubscription = this.auth.login$(email, password).subscribe(
+    this.subscriptions.push(this.auth.login$(email, password).subscribe(
       loggedIn => {
         if (!loggedIn) {
           el.dismiss();
@@ -54,7 +52,7 @@ export class LoginPage implements OnDestroy {
         el.dismiss();
         this.showAlert(error);
       }
-    );
+    ));
   }
 
   /*

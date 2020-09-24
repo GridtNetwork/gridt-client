@@ -14,9 +14,7 @@ import { SwapService } from '../core/swap.service';
 })
 export class HomePage implements OnInit, OnDestroy {
   movements$ = new Observable<Movement[]>();
-  private swapLeaderSubscription: Subscription;
-  private sendSignalSubscription: Subscription;
-  private getMovementsSubscription: Subscription;
+  private subscriptions: Subscription[] =[];
 
   constructor(
     private api: ApiService,
@@ -35,15 +33,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   private cancelAllSubscriptions() {
-    if (this.swapLeaderSubscription) {
-      this.swapLeaderSubscription.unsubscribe();
-    }
-    if (this.sendSignalSubscription) {
-      this.sendSignalSubscription.unsubscribe();
-    }
-    if (this.getMovementsSubscription) {
-      this.getMovementsSubscription.unsubscribe();
-    }
+    this.subscriptions.map( subscription => subscription.unsubscribe());
   }
 
   /**
@@ -152,7 +142,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   swapLeader(movement: Movement, leader: User): void {
     this.swapService.addSwapEvent(movement, leader);
-    this.swapLeaderSubscription = this.api.swapLeader$(movement, leader).subscribe(
+    this.subscriptions.push(this.api.swapLeader$(movement, leader).subscribe(
       async user => {
         const el = await this.alertCtrl.create({
           header: "Found new leader",
@@ -171,7 +161,7 @@ export class HomePage implements OnInit, OnDestroy {
 
         el.present();
       }
-    );
+    ));
   }
 
   readyToSignal (movement: Movement): boolean {
@@ -230,9 +220,9 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   async signal(movement: Movement, message?: string) {
-    this.sendSignalSubscription = this.api.sendSignal$(movement, message).subscribe(
+    this.subscriptions.push(this.api.sendSignal$(movement, message).subscribe(
       () => {
-        this.getMovementsSubscription = this.api.getMovement$(movement.id).subscribe();
+        this.subscriptions.push(this.api.getMovement$(movement.id).subscribe());
       },
       (error) => {
         this.alertCtrl.create({
@@ -242,6 +232,6 @@ export class HomePage implements OnInit, OnDestroy {
         })
         .then(alertEl => alertEl.present());
       }
-    );
+    ));
   }
 }

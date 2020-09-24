@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs';
 })
 export class RegisterPage implements OnInit, OnDestroy {
 
-  private registerSubscription: Subscription;
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private router: Router,
@@ -31,9 +31,7 @@ export class RegisterPage implements OnInit, OnDestroy {
   }
 
   private cancelAllSubscriptions() {
-    if (this.registerSubscription) {
-      this.registerSubscription.unsubscribe();
-    }
+    this.subscriptions.map( subscription => subscription.unsubscribe());
   }
   /*
   * Creates warning for unique password
@@ -59,7 +57,7 @@ export class RegisterPage implements OnInit, OnDestroy {
       message: 'Signing you up...' 
     });
 
-    this.registerSubscription = this.auth.register$(username, email, password).subscribe(
+    this.subscriptions.push(this.auth.register$(username, email, password).subscribe(
       () => {
         this.router.navigateByUrl('/login');
         el.dismiss();
@@ -68,7 +66,7 @@ export class RegisterPage implements OnInit, OnDestroy {
           this.showAlert(error);
           el.dismiss();
       },
-    );
+    ));
     el.present();
   }
 

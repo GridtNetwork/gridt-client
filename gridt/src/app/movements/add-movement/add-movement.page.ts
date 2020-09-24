@@ -12,8 +12,8 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./add-movement.page.scss'],
 })
 export class AddMovementPage implements OnInit, OnDestroy {
-  private getMovementSubscription: Subscription;
-  private createMovementSubscription: Subscription;
+  
+  private subscriptions: Subscription[] = [];
   form: FormGroup;
   intervalTypes: string[] = [
     'daily',
@@ -61,12 +61,7 @@ export class AddMovementPage implements OnInit, OnDestroy {
   }
 
   private cancelAllSubscriptions() {
-    if (this.createMovementSubscription) {
-      this.createMovementSubscription.unsubscribe();
-    }
-    if (this.getMovementSubscription) {
-      this.getMovementSubscription.unsubscribe();
-    }
+    this.subscriptions.map( subscription => subscription.unsubscribe())
   }
 
   async createMovement() {
@@ -80,17 +75,17 @@ export class AddMovementPage implements OnInit, OnDestroy {
 
     await el.present();
 
-    this.createMovementSubscription = this.api.createMovement$(this.form.value as Movement).subscribe(
+    this.subscriptions.push(this.api.createMovement$(this.form.value as Movement).subscribe(
       (message) => {
         el.dismiss();
         this.showMessage(message);
-        this.getMovementSubscription = this.api.getMovement$(this.form.value.name).subscribe();
+        this.subscriptions.push(this.api.getMovement$(this.form.value.name).subscribe());
       },
       (error) => {
         el.dismiss();
         this.showError(error);
       }
-    );
+    ));
   }
 
   async confirmCreation () {

@@ -16,8 +16,7 @@ import { Movement } from '../../core/models/movement.model';
 export class MovementsDetailPage implements OnInit, OnDestroy {
 
   movement$: Observable<Movement>;
-  private movSubSubscription: Subscription;
-  private movUnsubSubscription: Subscription;
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private alertCtrl: AlertController,
@@ -40,12 +39,7 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
     this.cancelAllSubscriptions();
   }
   private cancelAllSubscriptions() {
-    if (this.movSubSubscription) {
-      this.movSubSubscription.unsubscribe();
-    }
-    if (this.movUnsubSubscription) {
-      this.movUnsubSubscription.unsubscribe();
-    }
+    this.subscriptions.map( subscription => subscription.unsubscribe());
   }
 
   onSubscribe(): void {
@@ -99,7 +93,7 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
 
     el.present();
 
-    this.movSubSubscription = this.movement$.pipe(
+    this.subscriptions.push(this.movement$.pipe(
       take(1),
       flatMap( (movement) => this.api.subscribeToMovement$(movement.name)),
       flatMap( () => this.movement$), // We need the movement name again to reload the movement.
@@ -111,7 +105,7 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
         el.dismiss();
         this.showError(error);
       }
-    );
+    ));
   }
 
   async showError(error: string) {
@@ -129,7 +123,7 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
 
     el.present();
 
-    this.movUnsubSubscription = this.movement$.pipe(
+    this.subscriptions.push(this.movement$.pipe(
       take(1),
       flatMap( movement => this.api.unsubscribeFromMovement$(movement.name) ),
       flatMap( () => this.movement$ ),
@@ -141,6 +135,6 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
         el.dismiss();
         this.showError(error);
       }
-    );
+    ));
   }
 }
