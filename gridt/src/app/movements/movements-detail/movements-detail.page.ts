@@ -7,23 +7,25 @@ import { map, flatMap, take } from 'rxjs/operators';
 
 import { ApiService } from '../../core/api.service';
 import { Movement } from '../../core/models/movement.model';
+import { Subscriptions } from 'src/app/core/models/subscriptions.model';
 
 @Component({
   selector: 'app-movements-detail',
   templateUrl: './movements-detail.page.html',
   styleUrls: ['./movements-detail.page.scss'],
 })
-export class MovementsDetailPage implements OnInit, OnDestroy {
+export class MovementsDetailPage extends Subscriptions implements OnInit, OnDestroy {
 
   movement$: Observable<Movement>;
-  private subscriptions: Subscription[] = [];
 
   constructor(
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController,
     private route: ActivatedRoute,
     private api: ApiService
-  ) { }
+  ) {
+    super();
+  }
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('movementId');
@@ -37,9 +39,6 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
       this.alertCtrl.dismiss();
     }
     this.cancelAllSubscriptions();
-  }
-  private cancelAllSubscriptions() {
-    this.subscriptions.map( subscription => subscription.unsubscribe() );
   }
 
   onSubscribe(): void {

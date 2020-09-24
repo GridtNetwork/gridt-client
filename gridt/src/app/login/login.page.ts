@@ -4,30 +4,28 @@ import { NgForm } from '@angular/forms';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { AuthService } from '../core/auth.service';
 import { Subscription } from 'rxjs';
+import { Subscriptions } from '../core/models/subscriptions.model';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
-export class LoginPage implements OnDestroy {
-
-  private subscriptions: Subscription[] = [];
+export class LoginPage extends Subscriptions implements OnDestroy {
 
   constructor(
     private router: Router,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
     private auth: AuthService
-    ) { }
+    ) {
+    super();
+  }
 
   ngOnDestroy() {
     this.cancelAllSubscriptions();
   }
 
-  private cancelAllSubscriptions() {
-    this.subscriptions.map( subscription => subscription.unsubscribe() );
-  }
   /*
    * Log user in with api and handle loading popup
    */

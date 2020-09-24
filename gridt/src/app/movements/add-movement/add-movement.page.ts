@@ -5,15 +5,15 @@ import { Router } from '@angular/router';
 import { ApiService } from '../../core/api.service';
 import { Movement } from '../../core/models/movement.model';
 import { Subscription } from 'rxjs';
+import { Subscriptions } from 'src/app/core/models/subscriptions.model';
 
 @Component({
   selector: 'app-add-movement',
   templateUrl: './add-movement.page.html',
   styleUrls: ['./add-movement.page.scss'],
 })
-export class AddMovementPage implements OnInit, OnDestroy {
+export class AddMovementPage extends Subscriptions implements OnInit, OnDestroy {
   
-  private subscriptions: Subscription[] = [];
   form: FormGroup;
   intervalTypes: string[] = [
     'daily',
@@ -26,7 +26,9 @@ export class AddMovementPage implements OnInit, OnDestroy {
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController,
     private api: ApiService,
-  ) { }
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this.form = new FormGroup({
@@ -58,10 +60,6 @@ export class AddMovementPage implements OnInit, OnDestroy {
       this.alertCtrl.dismiss();
     }
     this.cancelAllSubscriptions();
-  }
-
-  private cancelAllSubscriptions() {
-    this.subscriptions.map( subscription => subscription.unsubscribe() );
   }
 
   async createMovement() {

@@ -4,6 +4,7 @@ import { Observable, Subscription } from 'rxjs';
 
 import { ApiService } from '../core/api.service';
 import { Movement } from '../core/models/movement.model';
+import { Subscriptions } from '../core/models/subscriptions.model';
 import { User } from '../core/models/user.model';
 import { SwapService } from '../core/swap.service';
 
@@ -12,15 +13,16 @@ import { SwapService } from '../core/swap.service';
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
 })
-export class HomePage implements OnInit, OnDestroy {
+export class HomePage extends Subscriptions implements OnInit, OnDestroy{
   movements$ = new Observable<Movement[]>();
-  private subscriptions: Subscription[] = [];
 
   constructor(
     private api: ApiService,
     private alertCtrl: AlertController,
     private swapService: SwapService
-  ) { }
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this.movements$ = this.api.subscriptions$;
@@ -30,10 +32,6 @@ export class HomePage implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.alertCtrl.dismiss();
     this.cancelAllSubscriptions();
-  }
-
-  private cancelAllSubscriptions() {
-    this.subscriptions.map( subscription => subscription.unsubscribe() );
   }
 
   /**

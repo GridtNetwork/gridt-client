@@ -4,22 +4,23 @@ import { LoadingController, AlertController } from '@ionic/angular';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../../core/auth.service';
 import { Subscription } from 'rxjs';
+import { Subscriptions } from 'src/app/core/models/subscriptions.model';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
   styleUrls: ['./register.page.scss'],
 })
-export class RegisterPage implements OnInit, OnDestroy {
-
-  private subscriptions: Subscription[] = [];
+export class RegisterPage extends Subscriptions implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
     private auth: AuthService,
-    ) { }
+    ) {
+    super();
+  }
 
   ngOnInit() {
     this.showSafetyAlert();
@@ -30,9 +31,6 @@ export class RegisterPage implements OnInit, OnDestroy {
     this.cancelAllSubscriptions();
   }
 
-  private cancelAllSubscriptions() {
-    this.subscriptions.map( subscription => subscription.unsubscribe() );
-  }
   /*
   * Creates warning for unique password
   */
