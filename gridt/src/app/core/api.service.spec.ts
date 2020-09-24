@@ -351,12 +351,4 @@ describe("ApiService_succesful_auth", () => {
       `${service.URL}/change_password`, {old_password: old_password, new_password: new_password}, default_headers
     );
   });
-  
-  it("should unsubscribe all subscriptions when leaving the page", () => {
-    service['getAllMovementsSubscription'] = of(true).subscribe();
-    service['getAllSubbedMovementsSubscription'] = of(true).subscribe();
-    service.ngOnDestroy();
-    expect(service['getAllMovementsSubscription'].closed).toBeTruthy();
-    expect(service['getAllSubbedMovementsSubscription'].closed).toBeTruthy();
-  });
 });

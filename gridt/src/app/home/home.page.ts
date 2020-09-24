@@ -33,7 +33,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   private cancelAllSubscriptions() {
-    this.subscriptions.map( subscription => subscription.unsubscribe());
+    this.subscriptions.map( subscription => subscription.unsubscribe() );
   }
 
   /**

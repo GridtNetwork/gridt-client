@@ -13,7 +13,6 @@ import { filter, flatMap } from 'rxjs/operators';
 })
 export class AppComponent implements OnInit {
   public isLoggedIn$: Observable<boolean>;
-  private subscriptions: Subscription[] = [];
 
   public appPages = [
     {
@@ -65,19 +64,15 @@ export class AppComponent implements OnInit {
     );
   }
 
-  private cancelAllSubscriptions() {
-    this.subscriptions.map( subscription => subscription.unsubscribe());
-  }
-
   private checkAuthOnResume(state: AppState) {
     this.zone.run( () => {
       if (state.isActive) {
-        this.subscriptions.push(this.auth.isLoggedIn$.subscribe(loggedIn => {
+        this.auth.isLoggedIn$.subscribe(loggedIn => {
           if (!loggedIn) {
             console.log('On resuming the app found user is now logged out. Redirecting to /login');
             this.router.navigate(['/login']);
           }
-        }));
+        });
       }
     });
   }

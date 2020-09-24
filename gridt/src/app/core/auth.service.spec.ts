@@ -272,18 +272,4 @@ describe("AuthService", () => {
       cold("#", null, "Username already in use.")
     );
   });
-
-  it("should unsubscribe all subscriptions when leaving the page", () => {
-    service['storeTokenSubscription'] = of(true).subscribe();
-    service['storePasswordSubscription'] = of(true).subscribe();
-    service['storeUsernameSubscription'] = of(true).subscribe();
-    service['clearStorageSubscription'] = of(true).subscribe();
-    service['clearStorageSubscription2'] = of(true).subscribe();
-    service.ngOnDestroy();
-    expect(service['storeTokenSubscription'].closed).toBeTruthy();
-    expect(service['storePasswordSubscription'].closed).toBeTruthy();
-    expect(service['storeUsernameSubscription'].closed).toBeTruthy();
-    expect(service['clearStorageSubscription'].closed).toBeTruthy();
-    expect(service['clearStorageSubscription2'].closed).toBeTruthy();
-  });
 });

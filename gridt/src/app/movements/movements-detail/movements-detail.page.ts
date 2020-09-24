@@ -39,7 +39,7 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
     this.cancelAllSubscriptions();
   }
   private cancelAllSubscriptions() {
-    this.subscriptions.map( subscription => subscription.unsubscribe());
+    this.subscriptions.map( subscription => subscription.unsubscribe() );
   }
 
   onSubscribe(): void {

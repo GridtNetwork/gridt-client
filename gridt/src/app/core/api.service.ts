@@ -1,32 +1,31 @@
-import { Injectable, OnDestroy } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 
-import { Observable, BehaviorSubject, throwError, Subscription } from "rxjs";
+import { Observable, BehaviorSubject, throwError } from "rxjs";
 import { map, tap, pluck, catchError, flatMap } from "rxjs/operators";
 
-import { AuthService } from './auth.service';
+import { AuthService } from "./auth.service";
 
 import { Movement } from "./models/movement.model";
-import { User } from './models/user.model';
-import { Identity } from './models/identity.model';
-import { ServerMessage } from './models/server-responses.model';
+import { User } from "./models/user.model";
+import { Identity } from "./models/identity.model";
+import { ServerMessage } from "./models/server-responses.model";
 
 @Injectable({
   providedIn: "root"
 })
-export class ApiService implements OnDestroy{
-  public username: string;
-  private getAllMovementsSubscription: Subscription;
-  private getAllSubbedMovementsSubscription: Subscription;
-
-  ngOnDestroy() {
-    if (this.getAllMovementsSubscription) {
-      this.getAllMovementsSubscription.unsubscribe();
-    }
-    if (this.getAllSubbedMovementsSubscription) {
-      this.getAllSubbedMovementsSubscription.unsubscribe();
-    }
+export class ApiService {
+  get allMovements$ (): Observable<Movement[]> {
+    return this._allMovements$.asObservable();
   }
+  get subscriptions$ (): Observable<Movement[]> {
+    return this._subscriptions$.asObservable();
+  }
+
+  constructor (private http: HttpClient, private auth: AuthService) { }
+  public username: string;
+
+
 
   /*
    * Subscribe to this observable to ready the API.
@@ -37,19 +36,22 @@ export class ApiService implements OnDestroy{
    * Reuse a policy: Rll movements that have been previously obtained.
    */
   private _allMovements$ = new BehaviorSubject<Movement[]>([]);
-  get allMovements$ (): Observable<Movement[]> {
-    return this._allMovements$.asObservable();
-  }
 
   /**
    * Reuse all subscriptions that have been previously obtained.
    */
   private _subscriptions$ = new BehaviorSubject<Movement[]>([]);
-  get subscriptions$ (): Observable<Movement[]> {
-    return this._subscriptions$.asObservable();
-  }
 
-  constructor (private http: HttpClient, private auth: AuthService) { }
+  /**
+  * Observable to obtain identity from server.
+  */
+  public userIdentity$: Observable<Identity> = this.auth.readyAuthentication$.pipe(
+    flatMap((options) => this.http.get<Identity>(
+      `${this.URL}/identity`,
+      options
+    )),
+    catchError( this.handleBadAuth())
+  );
 
   /*
    * Catch any error that is generated from the user not having a valid token.
@@ -130,7 +132,7 @@ export class ApiService implements OnDestroy{
   public getAllMovements(): void {
     console.debug("Getting all movements from the server");
 
-    this.getAllMovementsSubscription = this.auth.readyAuthentication$.pipe(
+    this.auth.readyAuthentication$.pipe(
       flatMap((options) => this.http.get<Movement[]>(
         `${this.URL}/movements`,
         options
@@ -147,7 +149,7 @@ export class ApiService implements OnDestroy{
   public getSubscriptions(): void {
     console.debug("Getting all movements that the user is subscribed to.");
 
-    this.getAllSubbedMovementsSubscription = this.auth.readyAuthentication$.pipe(
+      this.auth.readyAuthentication$.pipe(
       flatMap((options) => this.http.get<Movement[]>(
         `${this.URL}/movements/subscriptions`,
         options
@@ -163,7 +165,6 @@ export class ApiService implements OnDestroy{
    */
   public subscribeToMovement$ (movement_id: number | string) {
     console.debug(`Subscribing to movement "${movement_id}".`);
-  
 
     return this.auth.readyAuthentication$.pipe(
       flatMap((options) => this.http.put(
@@ -241,17 +242,6 @@ export class ApiService implements OnDestroy{
       catchError( this.handleBadAuth() )
     );
   }
-
-  /**
-  * Observable to obtain identity from server.
-  */
-  public userIdentity$: Observable<Identity> = this.auth.readyAuthentication$.pipe(
-    flatMap((options) => this.http.get<Identity>(
-      `${this.URL}/identity`,
-      options
-    )),
-    catchError( this.handleBadAuth())
-  );
 
   /**
   * Changes the biography of the user on the server.

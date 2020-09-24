@@ -1,8 +1,8 @@
-import { Observable, of, pipe, UnaryFunction, throwError, forkJoin, Subscription } from 'rxjs';
+import { Observable, of, pipe, UnaryFunction, throwError, forkJoin } from 'rxjs';
 import { SecureStorageService } from './secure-storage.service';
 import { flatMap, tap, catchError, map, mapTo, pluck } from 'rxjs/operators';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 
 import { Credentials } from './models/credentials.model';
 import { ServerMessage, AccessToken } from './models/server-responses.model';
@@ -10,33 +10,10 @@ import { ServerMessage, AccessToken } from './models/server-responses.model';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService implements OnDestroy{
+export class AuthService {
 
-  private storeTokenSubscription: Subscription;
-  private storePasswordSubscription: Subscription;
-  private storeUsernameSubscription: Subscription;
-  private clearStorageSubscription: Subscription;
-  private clearStorageSubscription2: Subscription;
 
   constructor(private http: HttpClient, private secStore: SecureStorageService) {}
-
-  ngOnDestroy() {
-    if (this.storeTokenSubscription) {
-      this.storeTokenSubscription.unsubscribe();
-    }
-    if (this.storePasswordSubscription) {
-      this.storePasswordSubscription.unsubscribe();
-    }
-    if (this.storeUsernameSubscription) {
-      this.storeUsernameSubscription.unsubscribe();
-    }
-    if (this.clearStorageSubscription) {
-      this.clearStorageSubscription.unsubscribe();
-    }
-    if (this.clearStorageSubscription2) {
-      this.clearStorageSubscription2.unsubscribe();
-    }
-  }
 
   public error_codes = {
     TOKENEXPIRED: "Token expired",
@@ -117,8 +94,8 @@ export class AuthService implements OnDestroy{
    * @param credentials Credentials to be stored.
    */
   private storeCredentials(credentials: Credentials): void {
-    this.storeUsernameSubscription = this.secStore.set$("email", credentials.username).subscribe();
-    this.storePasswordSubscription = this.secStore.set$("password", credentials.password).subscribe();
+    this.secStore.set$("email", credentials.username).subscribe();
+    this.secStore.set$("password", credentials.password).subscribe();
   }
 
   /**
@@ -126,7 +103,7 @@ export class AuthService implements OnDestroy{
    * @param token Token to be stored
    */
   private storeToken(token: AccessToken) {
-    this.storeTokenSubscription = this.secStore.set$("token", token.access_token).subscribe();
+    this.secStore.set$("token", token.access_token).subscribe();
   }
 
   /**
@@ -183,7 +160,7 @@ export class AuthService implements OnDestroy{
       tap( this.storeToken.bind(this) ),
       mapTo(true),
       catchError( () => {
-        this.clearStorageSubscription = this.secStore.clear$().subscribe();
+        this.secStore.clear$().subscribe();
         return of(false); // Not sure if this is better, or just leave the error.
       })
     );
@@ -209,6 +186,6 @@ export class AuthService implements OnDestroy{
    * Clear all information stored in the secure storage concerning previous logins.
    */
   public logout(): void {
-    this.clearStorageSubscription2 = this.secStore.clear$().subscribe();
+    this.secStore.clear$().subscribe();
   }
 }

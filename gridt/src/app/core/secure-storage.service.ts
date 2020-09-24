@@ -10,9 +10,9 @@ const { SecureStoragePlugin } = Plugins;
   providedIn: 'root'
 })
 export class SecureStorageService {
-  // setting the timer for the observables to finnish
-  private seconds = 5000;
-  private timer = timer(this.seconds);
+  // Setting the timer for the time to live for the observables so that they always finish.
+  private timeToLiveSubs = 5000;
+  private timer = timer(this.timeToLiveSubs);
 
   get$ (key: string): Observable<any> {
     return new Observable ( (observer) => {
@@ -28,6 +28,7 @@ export class SecureStorageService {
           }
         }
       ).catch( () => observer.error(`Key "${key}" does not exist in the secure storage.`) );
+      // This is used because this observable is only used once. To make sure this observable finishes we give it a time to live.
     }).pipe(takeUntil(this.timer));
   }
 
@@ -41,6 +42,7 @@ export class SecureStorageService {
           observer.error(`Could not set ${key} in the secure storage.`);
         }
       });
+      // This is used because this observable is only used once. To make sure this observable finishes we give it a time to live.
     }).pipe(takeUntil(this.timer));
   }
 
@@ -54,6 +56,7 @@ export class SecureStorageService {
           observer.error("Could not clear the secure storage.");
         }
       });
+      // This is used because this observable is only used once. To make sure this observable finishes we give it a time to live.
     }).pipe(takeUntil(this.timer));
   }
 
@@ -67,6 +70,7 @@ export class SecureStorageService {
           observer.error(`Could not remove ${key} from the secure storage.`);
         }
       });
+      // This is used because this observable is only used once. To make sure this observable finishes we give it a time to live.
     }).pipe(takeUntil(this.timer));
   }
 }

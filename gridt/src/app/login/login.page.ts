@@ -26,7 +26,7 @@ export class LoginPage implements OnDestroy {
   }
 
   private cancelAllSubscriptions() {
-    this.subscriptions.map( subscription => subscription.unsubscribe());
+    this.subscriptions.map( subscription => subscription.unsubscribe() );
   }
   /*
    * Log user in with api and handle loading popup
