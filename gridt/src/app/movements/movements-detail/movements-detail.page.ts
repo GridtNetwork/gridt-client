@@ -53,10 +53,7 @@ export class MovementsDetailPage extends Subscriptions implements OnInit, OnDest
         {
           text: 'Yes',
           handler: () => {
-            this.subscribe({
-              error(error) {console.log(error);
-              }
-            });
+            this.subscribe();
           },
         },
       ]
