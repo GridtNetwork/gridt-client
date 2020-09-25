@@ -6,6 +6,7 @@ import { cold } from 'jasmine-marbles';
 import { of, throwError } from "rxjs";
 
 import { AuthService } from './auth.service';
+import { ApiService } from './api.service';
 import { SettingsService } from "./settings.service";
 import { SecureStorageService } from './secure-storage.service';
 
@@ -13,9 +14,12 @@ import { Identity } from "./models/identity.model";
 
 let service: SettingsService;
 let auth: AuthService;
+let api: ApiService;
 let secStore: SecureStorageService;
 let authServiceStub: jasmine.SpyObj<AuthService>;
+let apiStub: jasmine.SpyObj<ApiService>;
 let secStoreStub: jasmine.SpyObj<SecureStorageService>;
+let httpClientStub: jasmine.SpyObj<HttpClient>;
 
 let mock_id: Identity[] = [
   {
@@ -59,23 +63,39 @@ class authServiceStub_failed {
 
 describe("SettingsService when authentication fails", () => {
   beforeEach( () => {
+    apiStub = jasmine.createSpyObj('ApiService', ['userIdentity$']);
+
     secStoreStub = jasmine.createSpyObj(
       'secStore', {'get$': of(mock_id[0]), 'set$': of(true), 'clear$': of(true), 'remove$': of(true)}
+    );
+
+    httpClientStub = jasmine.createSpyObj(
+      'httpClient', ['get', 'post', 'put']
     );
 
     TestBed.configureTestingModule({
       providers: [
         SettingsService,
         {provide: AuthService, useClass: authServiceStub_failed},
+        {provide: ApiService, useValue: apiStub},
         {provide: SecureStorageService, useValue: secStoreStub},
+        {provide: HttpClient, useValue: httpClientStub}
       ]
     });
 
     service = TestBed.get(SettingsService as Type<SettingsService>);
+    api = TestBed.get(ApiService as Type<ApiService>);
   });
 
   it("should be created", () => {
     expect(service).toBeTruthy();
+  });
+
+  it("should return an empty identity", () => {
+    // spyOn(api, 'userIdentity$').and.returnValue(of(mock_id[0]));
+    api.userIdentity$ = of(mock_id[0]);
+    service.updateIdentity();
+    expect(service.userIdentity$).toBeObservable(cold('a', {a: service.empty_identity}));
   });
 
   it("should fail to set local identity when not logged in", () => {
@@ -97,11 +117,16 @@ describe("SettingsService when authentication is succesful", () => {
       'secStore', {'get$': of(mock_id[0]), 'set$': of(true), 'clear$': of(true), 'remove$': of(true)}
     );
 
+    httpClientStub = jasmine.createSpyObj(
+      'httpClient', ['get', 'post', 'put']
+    );
+
     TestBed.configureTestingModule({
       providers: [
         SettingsService,
         {provide: AuthService, useClass: authServiceStub_succes},
         {provide: SecureStorageService, useValue: secStoreStub},
+        {provide: HttpClient, useValue: httpClientStub}
       ]
     });
 
