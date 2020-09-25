@@ -43,7 +43,7 @@ export class SettingsService {
       catchError( () => throwError(this.error_codes.SETIDFAIL + ": " + this.error_codes.NOTLOGGEDIN)),
       take(1), // Makes sure the observable completes
       flatMap( () => this.secStore.set$("identity", identity).pipe(
-          catchError(()=> throwError(this.error_codes.SETIDFAIL + ": " + this.error_codes.SECSTOREUNAVAILABLE))
+          catchError(() => throwError(this.error_codes.SETIDFAIL + ": " + this.error_codes.SECSTOREUNAVAILABLE))
       ))
     );
   }

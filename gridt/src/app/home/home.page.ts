@@ -1,16 +1,18 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { AlertController } from '@ionic/angular';
-import { Observable } from 'rxjs';
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { AlertController } from "@ionic/angular";
+import { Observable } from "rxjs";
+import { __values } from 'tslib';
 
-import { ApiService } from '../core/api.service';
-import { Movement } from '../core/models/movement.model';
-import { User } from '../core/models/user.model';
-import { SwapService } from '../core/swap.service';
+import { ApiService } from "../core/api.service";
+import { Movement } from "../core/models/movement.model";
+import { User } from "../core/models/user.model";
+import { SecureStorageService } from '../core/secure-storage.service';
+import { SwapService } from "../core/swap.service";
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.page.html',
-  styleUrls: ['./home.page.scss'],
+  selector: "app-home",
+  templateUrl: "./home.page.html",
+  styleUrls: ["./home.page.scss"],
 })
 export class HomePage implements OnInit, OnDestroy {
   movements$ = new Observable<Movement[]>();
@@ -18,7 +20,8 @@ export class HomePage implements OnInit, OnDestroy {
   constructor(
     private api: ApiService,
     private alertCtrl: AlertController,
-    private swapService: SwapService
+    private swapService: SwapService,
+    private secStore: SecureStorageService
   ) { }
 
   ngOnInit() {
@@ -173,7 +176,7 @@ export class HomePage implements OnInit, OnDestroy {
   async confirmSignal (movement: Movement) {
     const el = await this.alertCtrl.create({
       header: "Want to send a message with your signal?",
-      message: '',
+      message: "",
       cssClass: "confirmSignal-alert", // makes message text go red
       inputs: [
         {
@@ -185,7 +188,7 @@ export class HomePage implements OnInit, OnDestroy {
       buttons: [
         {
           text: "Cancel",
-          role: 'cancel',
+          role: "cancel",
         },
         {
           text: "Send!",
@@ -194,15 +197,15 @@ export class HomePage implements OnInit, OnDestroy {
               this.signal(movement, data.message);
             }
             else if ( data.message == null ){
-              el.message = ('Your message is empty!');
+              el.message = ("Your message is empty!");
               return false;
             }
             else if ( data.message.length > 140 ){
-              el.message = ('Your message is longer than 140 characters!');
+              el.message = ("Your message is longer than 140 characters!");
               return false;
             }
             else {
-              el.message = ('Something went wrong, please try again.');
+              el.message = ("Something went wrong, please try again.");
               return false;
             }
           }
@@ -213,16 +216,48 @@ export class HomePage implements OnInit, OnDestroy {
     el.present();
   }
 
+  async getRandomCompliment() {
+    let username = "Replacement";
+    let compliments = [
+      "Awesome, " + username + "!",
+      "Good job, " + username + "!",
+      "Well done, " + username + "! You make us proud!",
+      "Hail, " + username + "! You have inspired your fellows today!",
+      "Your fellows could learn a thing or two from you, " + username + "!",
+      "One step closer to achieving your goal, " + username + "!",
+      "Keep it up, " + username + "!",
+      "Keep up the good work, " + username + "!",
+      "The world could do with more awesome people like you, " + username + "!",
+      "Yeeey, you did it, " + username + "!",
+      "You are doing great, " + username + "!",
+      "We appreciate you, " + username + "!",
+      "Another one down, " + username + "!",
+      "You have inspired those around you today, " + username + "!",
+      "You can accomplish anything you set your mind to, " + username + "!",
+      "You have done well here today, " + username + "!"
+    ];
+    let index = Math.floor(Math.random() * compliments.length);
+    return compliments[index];
+  }
+
+
   async signal(movement: Movement, message?: string) {
     this.api.sendSignal$(movement, message).subscribe(
-      () => {
+      async () => {
         this.api.getMovement$(movement.id).subscribe();
+        const el = await this.alertCtrl.create({
+            header: "good job!",
+            message: await this.getRandomCompliment(),
+            buttons: ["Yeah!"]
+
+        });
+        el.present();
       },
       (error) => {
         this.alertCtrl.create({
-            header: 'Something went wrong while sending your signal.',
+            header: "Something went wrong while sending your signal.",
             message: error,
-            buttons: ['Okay']
+            buttons: ["Okay"]
         })
         .then(alertEl => alertEl.present())
       }
