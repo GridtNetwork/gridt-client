@@ -94,8 +94,14 @@ export class AuthService {
    * @param credentials Credentials to be stored.
    */
   private storeCredentials(credentials: Credentials): void {
-    this.secStore.set$("email", credentials.username).subscribe();
-    this.secStore.set$("password", credentials.password).subscribe();
+    this.secStore.set$("email", credentials.username).subscribe({
+      error(error) {console.log(error);
+      }
+    });
+    this.secStore.set$("password", credentials.password).subscribe({
+      error(error) {console.log(error);
+      }
+    });
   }
 
   /**
@@ -103,7 +109,10 @@ export class AuthService {
    * @param token Token to be stored
    */
   private storeToken(token: AccessToken) {
-    this.secStore.set$("token", token.access_token).subscribe();
+    this.secStore.set$("token", token.access_token).subscribe({
+      error(error) {console.log(error);
+      }
+    });
   }
 
   /**
@@ -160,7 +169,10 @@ export class AuthService {
       tap( this.storeToken.bind(this) ),
       mapTo(true),
       catchError( () => {
-        this.secStore.clear$().subscribe();
+        this.secStore.clear$().subscribe({
+          error(error) {console.log(error);
+          }
+        });
         return of(false); // Not sure if this is better, or just leave the error.
       })
     );
@@ -186,6 +198,9 @@ export class AuthService {
    * Clear all information stored in the secure storage concerning previous logins.
    */
   public logout(): void {
-    this.secStore.clear$().subscribe();
+    this.secStore.clear$().subscribe({
+      error(error) {console.log(error);
+      }
+    });
   }
 }

@@ -220,7 +220,10 @@ export class HomePage extends Subscriptions implements OnInit, OnDestroy{
   async signal(movement: Movement, message?: string) {
     this.subscriptions.push(this.api.sendSignal$(movement, message).subscribe(
       () => {
-        this.subscriptions.push(this.api.getMovement$(movement.id).subscribe());
+        this.subscriptions.push(this.api.getMovement$(movement.id).subscribe({
+          error(error) {console.log(error);
+          }
+        }));
       },
       (error) => {
         this.alertCtrl.create({

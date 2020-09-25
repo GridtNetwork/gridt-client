@@ -140,7 +140,10 @@ export class ApiService {
       catchError( this.handleBadAuth() ),
       tap((movements) => this._allMovements$.next(movements)),
       map( () => true)
-    ).subscribe();
+    ).subscribe({
+      error(error) {console.log(error);
+      }
+    });
   }
 
   /**
@@ -156,7 +159,10 @@ export class ApiService {
       )),
       tap( (movements) => this._subscriptions$.next(movements)),
       catchError( this.handleBadAuth() )
-    ).subscribe();
+    ).subscribe({
+      error(error) {console.log(error);
+      }
+    });
   }
 
   /**
