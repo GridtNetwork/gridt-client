@@ -113,6 +113,8 @@ describe("SettingsService when authentication fails", () => {
 
 describe("SettingsService when authentication is succesful", () => {
   beforeEach( () => {
+    apiStub = jasmine.createSpyObj('ApiService', ['userIdentity$']);
+
     secStoreStub = jasmine.createSpyObj(
       'secStore', {'get$': of(mock_id[0]), 'set$': of(true), 'clear$': of(true), 'remove$': of(true)}
     );
@@ -125,16 +127,63 @@ describe("SettingsService when authentication is succesful", () => {
       providers: [
         SettingsService,
         {provide: AuthService, useClass: authServiceStub_succes},
+        {provide: ApiService, useValue: apiStub},
         {provide: SecureStorageService, useValue: secStoreStub},
         {provide: HttpClient, useValue: httpClientStub}
       ]
     });
 
     service = TestBed.get(SettingsService as Type<SettingsService>);
+    api = TestBed.get(ApiService as Type<ApiService>);
   })
 
   it("should be created", () => {
     expect(service).toBeTruthy();
+  });
+
+  it("should return the local id when server id is unavailable", () => {
+    // When there is no internet, the identity must remain available.
+    api.userIdentity$ = throwError("server unavailable");
+    service.updateIdentity();
+    expect(service.userIdentity$).toBeObservable(cold('a',{a:mock_id[0]}));
+  });
+
+  it("should overwrite local id when server id differs", () => {
+    // Make sure any updates of the ID are reflected in the local storage.
+    api.userIdentity$ = of(mock_id[1]);
+    service.updateIdentity();
+    expect(secStoreStub.set$).toHaveBeenCalledWith("identity", mock_id[1]);
+  });
+
+  it("should not overwrite local id when local and server id are equal", () => {
+    // Reduces number of calls
+    api.userIdentity$ = of(mock_id[0]);
+    service.updateIdentity();
+    expect(secStoreStub.set$).not.toHaveBeenCalled();
+  });
+
+  it("should set local id with server id when local id is unavailable", () => {
+    // This happens for new users, because their localstorage has not been set yet.
+    secStoreStub.get$.and.returnValue(throwError("Oops, localstore not set yet"));
+    api.userIdentity$ = of(mock_id[3]);
+    service.updateIdentity();
+    expect(secStoreStub.set$).toHaveBeenCalledWith("identity", mock_id[3]);
+  });
+
+  it("should return empty identity when local and server are unavailable", () => {
+    // Safety feature to make sure it doesn't prevent a page from loading.
+    secStoreStub.get$.and.returnValue(throwError("Oops, localstore not set yet"));
+    api.userIdentity$ = throwError("Server not available");
+    service.updateIdentity();
+    expect(service.userIdentity$).toBeObservable(cold('a',{a:service.empty_identity}));
+  });
+
+  it("should return local id when server and local id are equal", () => {
+    //  Standard behaviour
+    secStoreStub.get$.and.returnValue(of(mock_id[0]));
+    api.userIdentity$ = of(mock_id[0]);
+    service.updateIdentity();
+    expect(service.userIdentity$).toBeObservable(cold('a',{a: mock_id[0]}))
   });
 
   it("should be able to set the local user Identity", () => {

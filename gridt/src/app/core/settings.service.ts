@@ -57,11 +57,12 @@ export class SettingsService {
   *   output.
   */
   private mapErrorToEmptyID = pipe(
-    catchError( err => of(this.empty_identity))
+    catchError( err => of<Identity>(this.empty_identity)),
+    flatMap( (id) => of(<Identity>(id)))
   );
 
   private mapErrorToFalse = pipe(
-    catchError( err => {console.warn(err); return of(false);})
+    catchError( err => {console.warn(err); return of<boolean>(false);})
   );
 
   public updateIdentity(): void {
@@ -71,29 +72,20 @@ export class SettingsService {
       local: this.localIdentity$.pipe( this.mapErrorToEmptyID )
     }).pipe(
       // Update local id when server id is different.
-      tap( (ids) => console.log(`init ids ${ids} \n = ${JSON.stringify(ids)}`)),
+      tap( (ids) => console.log(`recieved server id = ${JSON.stringify(ids.server)} \n received local id = ${JSON.stringify(ids.local)}`)),
+      tap( (ids) => console.log(`logic result is = ${JSON.stringify(ids.server)==JSON.stringify(ids.local)}`)),
       flatMap( (ids) => iif(
-        () => (ids.server==ids.local && ids.server != this.empty_identity), // && ids[0].id == ids[1].id
+        () => (JSON.stringify(ids.server)==JSON.stringify(ids.local)),// && JSON.stringify(ids.server) != this.empty_identity), // && ids[0].id == ids[1].id
         of(true),
-        this.setLocalIdentity$(ids.server[0])
+        this.setLocalIdentity$(ids.server)
       )),
       // Make sure any errors arising from setting local identity are
       // transformed into a warning and continue.
       this.mapErrorToFalse,
-      tap( (id) => console.log(`after iff ${id}`)),
       // Emit local identity
-      flatMap( () => this.localIdentity$),
+      flatMap( () => this.localIdentity$ ),
       // If local identity unvailable emit empty ID.
       this.mapErrorToEmptyID,
-      tap( (id) => console.log(`after flatmap ${JSON.stringify(id)}`) ),
-
-      // HELP NEEDED HERE!
-      // Somehow the type of the id is corrupted, don't know why. But hence
-      // For now I'm resetting the type.
-      flatMap( (id) => {
-        let idd: Identity = JSON.parse(JSON.stringify(id))
-        return of(idd);
-      }),
       // make sure subscription completes and gives only one update.
       take(1)
     ).subscribe( (id) => {console.log(`emitted id = ${id}`); this._user_identity$.next(id)});
@@ -107,7 +99,8 @@ export class SettingsService {
     catchError( () => throwError(this.error_codes.GETIDFAIL + ": " + this.error_codes.NOTLOGGEDIN)),
     flatMap(() => this.secStore.get$("identity").pipe(
       catchError( () => throwError(this.error_codes.GETIDFAIL + ": " + this.error_codes.SECSTOREUNAVAILABLE))
-    ))
+    )),
+    flatMap( (id) => of<Identity>(id))
   );
 
   /**
