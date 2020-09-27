@@ -57,7 +57,7 @@ export class SettingsService {
   *   output.
   */
   private mapErrorToEmptyID = pipe(
-    catchError( err => of<Identity>(this.empty_identity)),
+    catchError( err => {console.warn(err); return of<Identity>(this.empty_identity);}),
     flatMap( (id) => of(<Identity>(id)))
   );
 
@@ -68,14 +68,13 @@ export class SettingsService {
   public updateIdentity(): void {
     // Combine server and local id. Catch errors to make sure pipe runs.
     forkJoin({
-      server: this.api.userIdentity$.pipe( this.mapErrorToEmptyID ),
+      server: this.api.userIdentity$().pipe( this.mapErrorToEmptyID ),
       local: this.localIdentity$.pipe( this.mapErrorToEmptyID )
     }).pipe(
       // Update local id when server id is different.
-      tap( (ids) => console.log(`recieved server id = ${JSON.stringify(ids.server)} \n received local id = ${JSON.stringify(ids.local)}`)),
-      tap( (ids) => console.log(`logic result is = ${JSON.stringify(ids.server)==JSON.stringify(ids.local)}`)),
+      tap( (ids) => console.debug(`recieved server id = ${JSON.stringify(ids.server)} \n received local id = ${JSON.stringify(ids.local)}`)),
       flatMap( (ids) => iif(
-        () => (JSON.stringify(ids.server)==JSON.stringify(ids.local)),// && JSON.stringify(ids.server) != this.empty_identity), // && ids[0].id == ids[1].id
+        () => ((JSON.stringify(ids.server)==JSON.stringify(ids.local)) || (JSON.stringify(ids.server) == JSON.stringify(this.empty_identity))), // && ids[0].id == ids[1].id
         of(true),
         this.setLocalIdentity$(ids.server)
       )),
@@ -86,9 +85,10 @@ export class SettingsService {
       flatMap( () => this.localIdentity$ ),
       // If local identity unvailable emit empty ID.
       this.mapErrorToEmptyID,
+      tap( (id) => console.debug(`pre emit id = ${JSON.stringify(id)}`)),
       // make sure subscription completes and gives only one update.
       take(1)
-    ).subscribe( (id) => {console.log(`emitted id = ${id}`); this._user_identity$.next(id)});
+    ).subscribe( (id) => {console.log(`emitted id = ${JSON.stringify(id)}`); this._user_identity$.next(id)});
   };
 
   /**
@@ -111,6 +111,7 @@ export class SettingsService {
     return this.auth.readyAuthentication$.pipe(
       catchError( () => throwError(this.error_codes.SETIDFAIL + ": " + this.error_codes.NOTLOGGEDIN)),
       take(1), // Makes sure the observable completes
+      tap( () => console.debug('Storing Identity in Localstorage')),
       flatMap( () => this.secStore.set$("identity", identity).pipe(
           catchError(()=> throwError(this.error_codes.SETIDFAIL + ": " + this.error_codes.SECSTOREUNAVAILABLE))
       ))
