@@ -1,9 +1,9 @@
 import { Type } from "@angular/core";
-import { TestBed } from "@angular/core/testing";
+import { TestBed, fakeAsync, tick } from "@angular/core/testing";
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 
 import { cold } from 'jasmine-marbles';
-import { of, throwError, timer } from "rxjs";
+import { of, throwError, timer, asyncScheduler } from "rxjs";
 import { take, flatMap } from "rxjs/operators"
 
 import { AuthService } from './auth.service';
@@ -136,7 +136,15 @@ describe("SettingsService when authentication is succesful", () => {
 
     service = TestBed.get(SettingsService as Type<SettingsService>);
     api = TestBed.get(ApiService as Type<ApiService>);
-  })
+
+    let tick: (milliseconds: number) => void;
+    let fakeNow = 0;
+    tick = milliseconds => {
+      fakeNow += milliseconds;
+      tick(milliseconds);
+    };
+    asyncScheduler.now = () => fakeNow;
+  });
 
   it("should be created", () => {
     expect(service).toBeTruthy();
@@ -184,7 +192,7 @@ describe("SettingsService when authentication is succesful", () => {
     secStoreStub.get$.and.returnValue(of(mock_id[0]));
     apiStub.userIdentity$.and.returnValue( of(mock_id[0]) );
     service.updateIdentity();
-    expect(service.userIdentity$).toBeObservable(cold('a',{a: mock_id[0]}))
+    expect(service.userIdentity$).toBeObservable(cold('a',{a: mock_id[0]}));
   });
 
   it("should deal with many async calls", () => {
@@ -235,24 +243,34 @@ describe("SettingsService when authentication is succesful", () => {
     expect(service.userIdentity$).toBeObservable(expectedUserID);
   });
 
-  it("should wait for the server to respond", () => {
+  it("should wait for the server to respond", fakeAsync(() => {
     apiStub.userIdentity$.and.returnValue(
-      timer(31).pipe(
+      timer(30).pipe(
         take(1),
         flatMap( () => of(mock_id[1]))
       )
-    )
+    );
+
+    // When secStore is set, make sure it now returns right value upon get.
+    secStoreStub.set$.and.callFake( (key: string, value: any) => {
+      secStoreStub.get$.and.returnValue( of(value) );
+      return of(true);
+    });
+
     service.updateIdentity();
-    expect(service.userIdentity$).toBeObservable(cold('---a',{a:mock_id[1]}));
-  });
+    tick(15);
+    expect(service.userIdentity$).toBeObservable(cold('',{}));
+    tick(30);
+    expect(service.userIdentity$).toBeObservable(cold('a',{a:mock_id[1]}));
+  }));
 
   it("should be able to set the local user Identity", () => {
     expect(service.setLocalIdentity$(mock_id[0])).toBeObservable(cold('(a|)',{a: true}));
     expect(secStoreStub.set$).toHaveBeenCalledWith("identity", mock_id[0]);
-  })
+  });
 
   it("should be able to get the user's local Identity", () => {
     expect(service.localIdentity$).toBeObservable(cold('(a|)',{a: mock_id[0]}));
     expect(secStoreStub.get$).toHaveBeenCalledWith("identity");
-  })
+  });
 });

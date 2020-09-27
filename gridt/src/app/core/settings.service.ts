@@ -24,7 +24,7 @@ export class SettingsService {
     SETIDFAIL: "Could not SET identity",
     NOTLOGGEDIN: "Not logged in",
     SECSTOREUNAVAILABLE: "Secure storage not available.",
-  }
+  };
 
   public empty_identity: Identity = {
     id: null,
@@ -32,7 +32,7 @@ export class SettingsService {
     bio: "",
     email: "",
     avatar: ""
-  }
+  };
 
   /**
   * Emits the last known identity
@@ -47,11 +47,15 @@ export class SettingsService {
 
   /**
   * This function updates the user identity.
-  * - When the server ID is different from the ID stored locally the local ID
-  *   is overwritten with the server ID. Then emit local ID.
-  * - If both the server and local identity agree, emit local ID.
-  * - If the server is unavailable, emit local ID.
   * - If both server and local identity are unavailable, emit empty ID.
+  * - When server ID is retreived, but local ID has not been set yet, store
+  *   server ID in local and emit local ID.
+  * - When the server ID is different from local ID, overwrite local ID with
+  *   the server ID. Then emit local ID.
+  * - If both the server and local identity agree, emit local ID.
+  * - If the server is unavailable but local ID is available, emit local ID.
+  * - Only when updateIdentity() function is called should the userIdentity$
+  *   change.
   *
   * - Makes sure all errors are caught such that this function always gives an
   *   output.
@@ -85,10 +89,9 @@ export class SettingsService {
       flatMap( () => this.localIdentity$ ),
       // If local identity unvailable emit empty ID.
       this.mapErrorToEmptyID,
-      tap( (id) => console.debug(`pre emit id = ${JSON.stringify(id)}`)),
       // make sure subscription completes and gives only one update.
       take(1)
-    ).subscribe( (id) => {console.log(`emitted id = ${JSON.stringify(id)}`); this._user_identity$.next(id)});
+    ).subscribe( (id) => this._user_identity$.next(id));
   };
 
   /**
