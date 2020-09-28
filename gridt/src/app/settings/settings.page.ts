@@ -1,9 +1,10 @@
-import { Component, OnInit, ViewChild  } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild  } from '@angular/core';
 import { AlertController, LoadingController, ModalController, PopoverController, ToastController } from '@ionic/angular';
 import { ChangePasswordPage } from './change-password/change-password.page';
 import { ChangeBioPage } from './change-bio/change-bio.page';
-import { Observable, timer } from 'rxjs';
-import { timeout, tap, filter } from 'rxjs/operators';
+import { Observable, timer, Subscription, of } from 'rxjs';
+import { timeout, tap, filter, take, flatMap, catchError } from 'rxjs/operators';
+// import { Subscription } from 'rxjs/Subscription';
 
 import { NgForm } from '@angular/forms';
 
@@ -18,11 +19,10 @@ import { Identity } from '../core/models/identity.model';
 })
 export class SettingsPage implements OnInit  {
   identity$: Observable<Identity>;
-  isDisabled$: Observable<boolean>;
-  isDisabledval: boolean;
+  isDisabled$: Observable<boolean> = of(true);
   gravatar: string;
 
-  edit_bio$: boolean = true;
+  private subscriptions: Array<Subscription> = [];
 
   constructor(
     private SetService: SettingsService,
@@ -38,16 +38,21 @@ export class SettingsPage implements OnInit  {
     this.identity$ = this.SetService.userIdentity$;
     this.SetService.updateIdentity();
 
-    // this.isDisabled$ = this.SetService.isDisabled$;
+    this.identity$.pipe(take(1)).subscribe(set => this.gravatar = "https://www.gravatar.com/avatar/" + set.avatar);
 
-    this.identity$.subscribe(set => this.gravatar = "https://www.gravatar.com/avatar/" + set.avatar);
-    // console.log(`gravatar is ${JSON.stringify(this.gravatar)}`)
+    this.subscriptions.push( this.identity$.pipe(
+      flatMap( () => of(false) ),
+      catchError( () => {
+        this.serverWarning();
+        return of(true); 
+      })
+    ).subscribe( (val) => {this.isDisabled$ = of(val);}) );
+  }
 
-    // Raise warning toast when isDisabled$ becomes true
-    // this.isDisabled$.pipe(
-    //   filter (val => val == true),
-    //   tap( () =>  this.serverWarning() )
-    // ).subscribe();
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((subscription: Subscription) => {
+      subscription.unsubscribe();
+    });
   }
 
   public refreshPage(event?) {
