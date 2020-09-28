@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { NgForm } from '@angular/forms';
@@ -9,7 +9,7 @@ import { AuthService } from '../../core/auth.service';
   templateUrl: './register.page.html',
   styleUrls: ['./register.page.scss'],
 })
-export class RegisterPage implements OnInit {
+export class RegisterPage implements OnInit, OnDestroy {
 
 
   constructor(
@@ -20,6 +20,25 @@ export class RegisterPage implements OnInit {
     ) { }
 
   ngOnInit() {
+    this.showSafetyAlert();
+  }
+
+  ngOnDestroy() {
+    this.alertCtrl.dismiss();
+  }
+  /*
+  * Creates warning for unique password
+  */
+  private async showSafetyAlert() {
+    const alert = await this.alertCtrl.create({
+      header: "Warning",
+      subHeader: "Password Safety",
+      message: "This app is in Alpha and therefore we cannot guarantee the safety of your data. Please keep this in mind when picking your password. We recommend you pick a password you do not use anywhere else.",
+      buttons: ["Accept"],
+      backdropDismiss: false
+    });
+
+    await alert.present();
   }
 
   /*

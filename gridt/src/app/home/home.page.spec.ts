@@ -4,11 +4,11 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { AlertController } from '@ionic/angular';
 
-import { User } from '../core/user.model';
+import { User } from '../core/models/user.model';
 import { HomePage } from './home.page';
 import { AuthService } from '../core/auth.service';
 import { ApiService } from '../core/api.service';
-import { Movement } from '../core/movement.model';
+import { Movement } from '../core/models/movement.model';
 
 class AuthServiceStub {
   isLoggedIn$ = of(true);
@@ -18,7 +18,8 @@ describe('HomePage', () => {
   let component: HomePage;
   let fixture: ComponentFixture<HomePage>;
   let apiSpy: ApiService;
-  let alertSpy: AlertController;
+  let alertSpy: AlertController = jasmine.createSpyObj("alertSpy", ["create", "dismiss"]);
+
 
   beforeEach(() => {
     jasmine.clock().install();
@@ -37,9 +38,6 @@ describe('HomePage', () => {
       }
     );
 
-    alertSpy = jasmine.createSpyObj('alertSpy', {
-      create: new Promise( resolve => resolve({present: () => {}}) )
-    });
 
     TestBed.configureTestingModule({
       declarations: [ HomePage ],
@@ -63,6 +61,11 @@ describe('HomePage', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should dismiss the alert when leaving the page', () => {
+    component.ngOnDestroy();
+    expect(alertSpy.dismiss).toHaveBeenCalled();
   });
 
   it('should find proper last signals', () => {

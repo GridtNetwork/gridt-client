@@ -1,15 +1,24 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
+import { CUSTOM_ELEMENTS_SCHEMA } from "@angular/core";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
+import { RouterTestingModule } from "@angular/router/testing";
+import { HttpClientModule } from "@angular/common/http";
+import { FormsModule } from "@angular/forms";
+import { IonicModule, AlertController } from "@ionic/angular";
 
-import { RegisterPage } from './register.page';
+import { RegisterPage } from "./register.page";
 
-describe('RegisterPage', () => {
+describe("RegisterPage", () => {
   let component: RegisterPage;
   let fixture: ComponentFixture<RegisterPage>;
+  let alertSpy: AlertController = jasmine.createSpyObj("alertSpy", {
+    "create": {
+      "present": function() {
+        return true
+      }},
+    "dismiss": function() {
+      return true
+    }}
+  );
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -21,6 +30,10 @@ describe('RegisterPage', () => {
         FormsModule,
         IonicModule,
       ],
+      providers: [{
+        provide: AlertController,
+        useValue: alertSpy
+      }]
     })
     .compileComponents();
   }));
@@ -31,7 +44,16 @@ describe('RegisterPage', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
+  });
+
+  it("should alert the user when opening the page", () => {
+    expect(alertSpy.create).toHaveBeenCalled();
+  });
+
+  it("should dismiss the alert when leaving the page", () => {
+    component.ngOnDestroy();
+    expect(alertSpy.dismiss).toHaveBeenCalled();
   });
 });

@@ -1,23 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { ApiService } from '../../core/api.service';
-import { Movement } from '../../core/movement.model';
+import { Movement } from '../../core/models/movement.model';
 
 @Component({
   selector: 'app-add-movement',
   templateUrl: './add-movement.page.html',
   styleUrls: ['./add-movement.page.scss'],
 })
-export class AddMovementPage implements OnInit {
-  form: FormGroup; 
+export class AddMovementPage implements OnInit, OnDestroy {
+  form: FormGroup;
   intervalTypes: string[] = [
     'daily',
-    'twice daily', 
+    'twice daily',
     'weekly'
   ];
-  
+
   constructor(
     private router: Router,
     private alertCtrl: AlertController,
@@ -30,7 +30,7 @@ export class AddMovementPage implements OnInit {
       name: new FormControl("", {
         updateOn: 'blur',
         validators: [
-          Validators.required, 
+          Validators.required,
           Validators.minLength(4),
           Validators.maxLength(50)
          ]
@@ -41,13 +41,17 @@ export class AddMovementPage implements OnInit {
       short_description: new FormControl("", {
         updateOn: 'blur',
         validators: [
-          Validators.required, 
+          Validators.required,
           Validators.minLength(10),
           Validators.maxLength(100)
         ]
       }),
       interval: new FormControl("", [Validators.required])
     });
+  }
+
+  ngOnDestroy() {
+    this.alertCtrl.dismiss();
   }
 
   async createMovement() {
@@ -60,9 +64,9 @@ export class AddMovementPage implements OnInit {
     });
 
     await el.present();
-    
+
     this.api.createMovement$(this.form.value as Movement).subscribe(
-      (message) => { 
+      (message) => {
         el.dismiss();
         this.showMessage(message);
         this.api.getMovement$(this.form.value.name).subscribe();
@@ -84,7 +88,7 @@ export class AddMovementPage implements OnInit {
         },
         {
           text: 'Create it!',
-          handler: () => this.createMovement() 
+          handler: () => this.createMovement()
         }
       ]
     });

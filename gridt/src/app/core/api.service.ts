@@ -1,14 +1,15 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Observable, BehaviorSubject, throwError, merge, partition } from "rxjs";
-import { map, tap, pluck, catchError, flatMap, distinctUntilChanged, take } from "rxjs/operators";
-import { Movement } from "./movement.model";
-import { User } from './user.model';
+import { HttpClient } from "@angular/common/http";
+
+import { Observable, BehaviorSubject, throwError } from "rxjs";
+import { map, tap, pluck, catchError, flatMap } from "rxjs/operators";
+
 import { AuthService } from './auth.service';
 
-export interface ServerMessage {
-  message: string;
-}
+import { Movement } from "./models/movement.model";
+import { User } from './models/user.model';
+import { Identity } from './models/identity.model';
+import { ServerMessage } from './models/server-responses.model';
 
 @Injectable({
   providedIn: "root"
@@ -26,7 +27,7 @@ export class ApiService {
    */
   private _allMovements$ = new BehaviorSubject<Movement[]>([]);
   get allMovements$ (): Observable<Movement[]> {
-    return this._allMovements$.asObservable(); 
+    return this._allMovements$.asObservable();
   }
 
   /**
@@ -50,7 +51,7 @@ export class ApiService {
       if (error.status === 401) {
         return throwError(error.error.description);
       }
-      
+
       // Server error
       if (error.error) {
         return throwError(error.error.message);
@@ -69,28 +70,28 @@ export class ApiService {
     return this.auth.readyAuthentication$.pipe(
       flatMap((options) => this.http.post<ServerMessage>(
         `${this.URL}/movements`, movement, options
-      )),      
+      )),
       catchError( this.handleBadAuth() ),
       pluck("message")
     );
   }
 
   /**
-   * This simple helper functions grants the ability to update a movement in 
+   * This simple helper functions grants the ability to update a movement in
    * the behavior subject containing a list of all movements.
    * @param bsubject BehaviorSubject that you want to update.
    * @param movement The new version of the movement.
    */
   private replace_movement_in_bsubject(bsubject: BehaviorSubject<Movement[]>, movement: Movement) {
-      let all_movements = bsubject.getValue();
-      const index = all_movements.findIndex(m => m.name == movement.name);
-      if (index != -1) {
-        all_movements[index] = movement;
-      } else {
-        all_movements.push(movement);
-      }
+    let all_movements = bsubject.getValue();
+    const index = all_movements.findIndex(m => m.name == movement.name);
+    if (index != -1) {
+      all_movements[index] = movement;
+    } else {
+      all_movements.push(movement);
+    }
 
-      bsubject.next(all_movements);
+    bsubject.next(all_movements);
   }
 
   /*
@@ -184,7 +185,7 @@ export class ApiService {
    * Swap one of the leaders identified with either username or user id in a
    * movement identified with a number or string.
    */
-  public swapLeader$(movement: Movement, user: User): Observable<User> { 
+  public swapLeader$(movement: Movement, user: User): Observable<User> {
     console.debug(`Swapping leader "@${user.username}#${user.id}" in movement "%${movement.name}#${movement.id}".`)
 
     return this.auth.readyAuthentication$.pipe(
@@ -197,7 +198,7 @@ export class ApiService {
         if ("message" in response) {
           throw response.message;
         }
-        
+
         return response as User;
       }),
       tap( new_user => {
@@ -226,6 +227,50 @@ export class ApiService {
       )),
       pluck("message"),
       catchError( this.handleBadAuth() )
+    );
+  }
+
+  /**
+  * Observable to obtain identity from server.
+  */
+  public userIdentity$: Observable<Identity> = this.auth.readyAuthentication$.pipe(
+    flatMap((options) => this.http.get<Identity>(
+      `${this.URL}/identity`,
+      options
+    )),
+    catchError( this.handleBadAuth())
+  );
+
+  /**
+  * Changes the biography of the user on the server.
+  * @param bio the new bio that the user wants.
+  */
+  public changeBio$( bio: string ) {
+    console.debug(`Saving new biography to the server.`);
+
+    return this.auth.readyAuthentication$.pipe(
+      flatMap((options) => this.http.put(
+        `${this.URL}/bio`, {bio: bio}, options
+      )),
+      catchError( this.handleBadAuth() ),
+      pluck("message")
+    );
+  }
+
+  /**
+  * Changes the password of the user on the server.
+  * @param old_password The password of the user before changing it.
+  * @param new_password The new password of the user after changing it.
+  */
+  public changePassword$( old_password: string, new_password: string ) {
+    console.debug(`Saving new password to the server.`);
+
+    return this.auth.readyAuthentication$.pipe(
+      flatMap((options) => this.http.post<ServerMessage>(
+        `${this.URL}/change_password`, {old_password: old_password, new_password: new_password}, options
+      )),
+      catchError( this.handleBadAuth() ),
+      pluck("message")
     );
   }
 }
