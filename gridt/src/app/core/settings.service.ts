@@ -103,7 +103,7 @@ export class SettingsService {
     flatMap(() => this.secStore.get$("identity").pipe(
       catchError( () => throwError(this.error_codes.GETIDFAIL + ": " + this.error_codes.SECSTOREUNAVAILABLE))
     )),
-    flatMap( (id) => of<Identity>(id))
+    flatMap( (id) => of<Identity>(JSON.parse(id)))
   );
 
   /**
@@ -115,7 +115,7 @@ export class SettingsService {
       catchError( () => throwError(this.error_codes.SETIDFAIL + ": " + this.error_codes.NOTLOGGEDIN)),
       take(1), // Makes sure the observable completes
       tap( () => console.debug('Storing Identity in Localstorage')),
-      flatMap( () => this.secStore.set$("identity", identity).pipe(
+      flatMap( () => this.secStore.set$("identity", JSON.stringify(identity)).pipe(
           catchError(()=> throwError(this.error_codes.SETIDFAIL + ": " + this.error_codes.SECSTOREUNAVAILABLE))
       ))
     );
