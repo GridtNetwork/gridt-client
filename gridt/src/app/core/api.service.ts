@@ -242,7 +242,7 @@ export class ApiService {
       catchError( this.handleBadAuth())
     );
   };
-  
+
   /**
   * Changes the biography of the user on the server.
   * @param bio the new bio that the user wants.
@@ -269,7 +269,7 @@ export class ApiService {
 
     return this.auth.readyAuthentication$.pipe(
       flatMap((options) => this.http.post<ServerMessage>(
-        `${this.URL}/change_password`, {old_password: old_password, new_password: new_password}, options
+        `${this.URL}/user/change_password`, {old_password: old_password, new_password: new_password}, options
       )),
       catchError( this.handleBadAuth() ),
       pluck("message")
