@@ -41,7 +41,7 @@ export class SettingsPage implements OnInit  {
     // this.isDisabled$ = this.SetService.isDisabled$;
 
     this.identity$.subscribe(set => this.gravatar = "https://www.gravatar.com/avatar/" + set.avatar);
-    console.log(`gravatar is ${JSON.stringify(this.gravatar)}`)
+    // console.log(`gravatar is ${JSON.stringify(this.gravatar)}`)
 
     // Raise warning toast when isDisabled$ becomes true
     // this.isDisabled$.pipe(
