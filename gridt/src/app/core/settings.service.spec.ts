@@ -99,7 +99,7 @@ describe("SettingsService when authentication fails", () => {
 
   it("should return an empty identity", () => {
     // spyOn(api, 'userIdentity$').and.returnValue(of(mock_id[0]));
-    apiStub.userIdentity$.and.returnValue( of(mock_id[0]) );
+    apiStub.userIdentity$.and.returnValue(of(mock_id[0]));
     service.updateIdentity();
     expect(service.userIdentity$).toBeObservable(
       cold('a', {a: service.empty_identity})
@@ -123,14 +123,16 @@ describe("SettingsService when authentication fails", () => {
 
 describe("SettingsService when authentication is succesful", () => {
   beforeEach( () => {
+    jasmine.clock().install();
+
     apiStub = jasmine.createSpyObj('api', {'userIdentity$': mock_id[0]});
 
     secStoreStub = jasmine.createSpyObj(
       'secStore', {
-        'get$': of(JSON.stringify(mock_id[0])),
-        'set$': of(true),
-        'clear$': of(true),
-        'remove$': of(true)
+        'get$'    : of(JSON.stringify(mock_id[0])),
+        'set$'    : of(true),
+        'clear$'  : of(true),
+        'remove$' : of(true)
       }
     );
 
@@ -151,14 +153,11 @@ describe("SettingsService when authentication is succesful", () => {
     service = TestBed.get(SettingsService as Type<SettingsService>);
     api = TestBed.get(ApiService as Type<ApiService>);
 
-    let tick: (milliseconds: number) => void;
-    let fakeNow = 0;
-    tick = milliseconds => {
-      fakeNow += milliseconds;
-      tick(milliseconds);
-    };
-    asyncScheduler.now = () => fakeNow;
   });
+
+  afterEach( () => {
+    jasmine.clock().uninstall();
+  })
 
   it("should be created", () => {
     expect(service).toBeTruthy();
@@ -166,14 +165,14 @@ describe("SettingsService when authentication is succesful", () => {
 
   it("should return the local id when server id is unavailable", () => {
     // When there is no internet, the identity must remain available.
-    apiStub.userIdentity$.and.returnValue( throwError("server unavailable") );
+    apiStub.userIdentity$.and.returnValue(throwError("server unavailable"));
     service.updateIdentity();
     expect(service.userIdentity$).toBeObservable(cold('a',{a:mock_id[0]}));
   });
 
   it("should overwrite local id when server id differs", () => {
     // Make sure any updates of the ID are reflected in the local storage.
-    apiStub.userIdentity$.and.returnValue( of(mock_id[1]) );
+    apiStub.userIdentity$.and.returnValue(of(mock_id[1]));
     service.updateIdentity();
     expect(secStoreStub.set$).toHaveBeenCalledWith(
       "identity", JSON.stringify(mock_id[1])
@@ -182,7 +181,7 @@ describe("SettingsService when authentication is succesful", () => {
 
   it("should not overwrite local id when local and server id are equal", () => {
     // Reduces number of calls
-    apiStub.userIdentity$.and.returnValue( of(mock_id[0]) );
+    apiStub.userIdentity$.and.returnValue(of(mock_id[0]));
     service.updateIdentity();
     expect(secStoreStub.set$).not.toHaveBeenCalled();
   });
@@ -190,7 +189,7 @@ describe("SettingsService when authentication is succesful", () => {
   it("should set local id with server id when local id is unavailable", () => {
     // This happens for new users, because their localstorage has not been set yet.
     secStoreStub.get$.and.returnValue(throwError("Oops, localstore not set yet"));
-    apiStub.userIdentity$.and.returnValue( of(mock_id[3]));
+    apiStub.userIdentity$.and.returnValue(of(mock_id[3]));
     service.updateIdentity();
     expect(secStoreStub.set$).toHaveBeenCalledWith(
       "identity", JSON.stringify(mock_id[3])
@@ -200,7 +199,7 @@ describe("SettingsService when authentication is succesful", () => {
   it("should return empty identity when local and server are unavailable", () => {
     // Safety feature to make sure it doesn't prevent a page from loading.
     secStoreStub.get$.and.returnValue(throwError("Oops, localstore not set yet"));
-    apiStub.userIdentity$.and.returnValue( throwError("Server not available"));
+    apiStub.userIdentity$.and.returnValue(throwError("Server not available"));
     service.updateIdentity();
     expect(service.userIdentity$).toBeObservable(
       cold('a',{a:service.empty_identity})
@@ -210,7 +209,7 @@ describe("SettingsService when authentication is succesful", () => {
   it("should return local id when server and local id are equal", () => {
     //  Standard behaviour
     secStoreStub.get$.and.returnValue(of(JSON.stringify(mock_id[0])));
-    apiStub.userIdentity$.and.returnValue( of(mock_id[0]) );
+    apiStub.userIdentity$.and.returnValue(of(mock_id[0]));
     service.updateIdentity();
     expect(service.userIdentity$).toBeObservable(cold('a',{a: mock_id[0]}));
   });
@@ -243,11 +242,11 @@ describe("SettingsService when authentication is succesful", () => {
     let userIDUpdates       = cold('q-qqq-qq---q', {q: true});
 
     // Let server and local response be erronous at first
-    apiStub.userIdentity$.and.returnValue( throwError("Server not available") );
-    secStoreStub.get$.and.returnValue( throwError("Local storage not available"));
+    apiStub.userIdentity$.and.returnValue(throwError("Server not available"));
+    secStoreStub.get$.and.returnValue(throwError("Local storage not available"));
 
     serverID.subscribe( (id) => {
-      apiStub.userIdentity$.and.returnValue( of(id) );
+      apiStub.userIdentity$.and.returnValue(of(id));
     });
 
     setLocalID.subscribe( (id) => secStoreStub.get$.and.returnValue(
@@ -256,7 +255,7 @@ describe("SettingsService when authentication is succesful", () => {
 
     // When secStore is set, make sure it now returns right value upon get.
     secStoreStub.set$.and.callFake( (key: string, value: any) => {
-      secStoreStub.get$.and.returnValue( of( value) );
+      secStoreStub.get$.and.returnValue(of(value));
       return of(true);
     });
 
@@ -266,6 +265,10 @@ describe("SettingsService when authentication is succesful", () => {
   });
 
   it("should wait for the server to respond", fakeAsync(() => {
+    // let fake_now = new Date();
+    // fake_now.setUTCHours(1,0,0,0);
+    // jasmine.clock().mockDate(fake_now);
+
     apiStub.userIdentity$.and.returnValue(
       timer(30).pipe(
         take(1),
@@ -275,7 +278,7 @@ describe("SettingsService when authentication is succesful", () => {
 
     // When secStore is set, make sure it now returns right value upon get.
     secStoreStub.set$.and.callFake( (key: string, value: any) => {
-      secStoreStub.get$.and.returnValue( of(value) );
+      secStoreStub.get$.and.returnValue(of(value));
       return of(true);
     });
 
