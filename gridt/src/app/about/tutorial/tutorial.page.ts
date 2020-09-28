@@ -12,9 +12,14 @@ export class TutorialPage implements OnInit {
   constructor(private router: Router,
               public modalController: ModalController) { }
 
+
   finish() {
-    if(this.router.url === "/about") this.modalController.dismiss();
-    this.router.navigateByUrl('/movements');
+    if(this.router.url === "/about"){
+      this.modalController.dismiss()
+    }
+    else {
+      this.router.navigateByUrl('/movements')
+    }
   }
 
   ngOnInit() {
