@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild  } from '@angular/core';
 import { AlertController, LoadingController, ModalController, PopoverController, ToastController } from '@ionic/angular';
-import { ChangeEmailPage } from './change-email/change-email.page';
 import { ChangePasswordPage } from './change-password/change-password.page';
 import { ChangeBioPage } from './change-bio/change-bio.page';
 import { Observable, timer } from 'rxjs';
@@ -36,7 +35,7 @@ export class SettingsPage implements OnInit  {
   ) { }
 
   ngOnInit() {
-    this.identity$ = this.SetService.identity$;
+    this.identity$ = this.SetService.userIdentity$;
     this.SetService.updateIdentity();
 
     // this.isDisabled$ = this.SetService.isDisabled$;
@@ -81,14 +80,6 @@ export class SettingsPage implements OnInit  {
   /*
    * Show the change Email modal
    */
-  async changeEmail() {
-    const emailPopover = await this.popoverCntrl.create({
-      cssClass: 'pop-class',
-      component: ChangeEmailPage
-    });
-    return await emailPopover.present();
-  }
-
   async changePassword() {
     const passwordPopover = await this.popoverCntrl.create({
       component: ChangePasswordPage

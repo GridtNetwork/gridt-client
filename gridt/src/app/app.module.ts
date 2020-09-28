@@ -14,7 +14,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 
-import { ChangeEmailPageModule } from './settings/change-email/change-email.module';
 import { ChangePasswordPageModule } from './settings/change-password/change-password.module';
 import { ChangeBioPageModule } from './settings/change-bio/change-bio.module';
 
@@ -28,7 +27,6 @@ import { ChangeBioPageModule } from './settings/change-bio/change-bio.module';
     HttpClientModule,
     CoreModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
-    ChangeEmailPageModule,
     ChangePasswordPageModule,
     ChangeBioPageModule,
   ],
