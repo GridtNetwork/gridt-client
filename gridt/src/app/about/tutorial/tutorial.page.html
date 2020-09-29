@@ -1,15 +1,21 @@
 <ion-content>
   <ion-grid>
-    <ion-row *ngIf="router.url === '/about'">
-      <ion-col>
+    <!-- <ion-row *ngIf="router.url === '/about'" class="ion-float-right">
+      <ion-col  class="ion-float-right">
         <ion-button (click)="finish()">
           <ion-icon name="close" slot="icon-only"></ion-icon>
         </ion-button>
       </ion-col>
-    </ion-row>
+    </ion-row> -->
 
     <ion-row>
       <ion-col>
+        <ion-buttons *ngIf="router.url === '/about'">
+          <ion-button (click)="finish()">
+            <ion-icon name="close" slot="icon-only"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+
         <ion-slides pager="true">
           <ion-slide class="step-one">
             <ion-img class="intro-logo" src="/assets/gridt_logo.png" ></ion-img>

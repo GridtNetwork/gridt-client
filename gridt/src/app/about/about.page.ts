@@ -30,4 +30,8 @@ export class AboutPage {
     return await modal.present();
   }
 
+  ngOnDestroy() {
+    this.modalController.dismiss();
+  }
+
 }
