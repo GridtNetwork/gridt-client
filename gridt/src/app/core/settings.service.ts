@@ -69,10 +69,16 @@ export class SettingsService {
     catchError( err => {console.warn(err); return of<boolean>(false);})
   );
 
-  public updateIdentity(): void {
+  public updateIdentity(disabler$?: ReplaySubject<boolean>): void {
     // Combine server and local id. Catch errors to make sure pipe runs.
     forkJoin({
-      server: this.api.userIdentity$().pipe( this.mapErrorToEmptyID ),
+      server: this.api.userIdentity$().pipe(
+        catchError( (err) => {
+          disabler$.next( true );
+          return throwError(err);
+        }),
+        this.mapErrorToEmptyID
+      ),
       local: this.localIdentity$.pipe( this.mapErrorToEmptyID )
     }).pipe(
       // Update local id when server id is different.

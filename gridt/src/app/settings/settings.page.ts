@@ -1,14 +1,10 @@
-import { Component, OnInit, OnDestroy, ViewChild  } from '@angular/core';
-import { AlertController, LoadingController, ModalController, PopoverController, ToastController } from '@ionic/angular';
+import { Component, OnInit  } from '@angular/core';
+import { AlertController, ModalController, PopoverController, ToastController } from '@ionic/angular';
 import { ChangePasswordPage } from './change-password/change-password.page';
 import { ChangeBioPage } from './change-bio/change-bio.page';
-import { Observable, timer, Subscription, of } from 'rxjs';
-import { timeout, tap, filter, take, flatMap, catchError } from 'rxjs/operators';
-// import { Subscription } from 'rxjs/Subscription';
+import { Observable, Subscription, of, ReplaySubject } from 'rxjs';
+import { take, flatMap, catchError, filter } from 'rxjs/operators';
 
-import { NgForm } from '@angular/forms';
-
-import { ApiService } from '../core/api.service'
 import { SettingsService} from '../core/settings.service'
 import { Identity } from '../core/models/identity.model';
 
@@ -22,31 +18,38 @@ export class SettingsPage implements OnInit  {
   isDisabled$: Observable<boolean> = of(true);
   gravatar: string;
 
+  private serverWarn$ = new ReplaySubject<boolean>(1);
   private subscriptions: Array<Subscription> = [];
 
   constructor(
     private SetService: SettingsService,
     private alertCtrl: AlertController,
-    private loadingCtrl: LoadingController,
     public modalCtrl: ModalController,
     public popoverCntrl: PopoverController,
     public toastCntrl: ToastController,
-    private api: ApiService
   ) { }
 
   ngOnInit() {
     this.identity$ = this.SetService.userIdentity$;
-    this.SetService.updateIdentity();
 
     this.identity$.pipe(take(1)).subscribe(set => this.gravatar = "https://www.gravatar.com/avatar/" + set.avatar);
 
     this.subscriptions.push( this.identity$.pipe(
-      flatMap( () => of(false) ),
+      flatMap( () => of(false)),
       catchError( () => {
         this.serverWarning();
-        return of(true); 
-      })
-    ).subscribe( (val) => {this.isDisabled$ = of(val);}) );
+        return of(true);
+      }),
+    ).subscribe( (val) => {this.isDisabled$ = of(val);}));
+
+    this.SetService.updateIdentity(this.serverWarn$);
+
+    this.serverWarn$.asObservable().pipe(
+      filter( val => val == true)
+    ).subscribe( () => {
+      this.serverWarning();
+      this.isDisabled$ = of(true);
+    });
   }
 
   ngOnDestroy(): void {
@@ -55,8 +58,8 @@ export class SettingsPage implements OnInit  {
     });
   }
 
-  public refreshPage(event?) {
-    this.SetService.updateIdentity();
+  public refreshPage(event?: any) {
+    this.SetService.updateIdentity(this.serverWarn$);
     if (event) { event.target.complete(); }
   }
 
