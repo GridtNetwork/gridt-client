@@ -9,7 +9,7 @@ import { AuthService } from "./auth.service";
 import { Movement } from "./models/movement.model";
 import { User } from "./models/user.model";
 import { ServerMessage } from "./models/server-responses.model";
-import { Identity } from './models/identity.model';
+import { Identity } from "./models/identity.model";
 
 @Injectable({
   providedIn: "root"
