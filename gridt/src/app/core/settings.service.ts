@@ -48,7 +48,7 @@ export class SettingsService {
   /**
   * This function updates the user identity.
   * - If both server and local identity are unavailable, emit empty ID.
-  * - When server ID is retreived, but local ID has not been set yet, store
+  * - When server ID is retrieved, but local ID has not been set yet, store
   *   server ID in local and emit local ID.
   * - When the server ID is different from local ID, overwrite local ID with
   *   the server ID. Then emit local ID.
@@ -78,7 +78,10 @@ export class SettingsService {
       // Update local id when server id is different.
       tap( (ids) => console.debug(`recieved server id = ${JSON.stringify(ids.server)} \n received local id = ${JSON.stringify(ids.local)}`)),
       flatMap( (ids) => iif(
-        () => ((JSON.stringify(ids.server)==JSON.stringify(ids.local)) || (JSON.stringify(ids.server) == JSON.stringify(this.empty_identity))), // && ids[0].id == ids[1].id
+        () => (
+          (JSON.stringify(ids.server)===JSON.stringify(ids.local))
+          || (JSON.stringify(ids.server) == JSON.stringify(this.empty_identity))
+        ),
         of(true),
         this.setLocalIdentity$(ids.server)
       )),
@@ -87,7 +90,7 @@ export class SettingsService {
       this.mapErrorToFalse,
       // Emit local identity
       flatMap( () => this.localIdentity$ ),
-      // If local identity unvailable emit empty ID.
+      // If local identity unavailable emit empty ID.
       this.mapErrorToEmptyID,
       // make sure subscription completes and gives only one update.
       take(1)
@@ -116,7 +119,7 @@ export class SettingsService {
       take(1), // Makes sure the observable completes
       tap( () => console.debug('Storing Identity in Localstorage')),
       flatMap( () => this.secStore.set$("identity", JSON.stringify(identity)).pipe(
-          catchError(()=> throwError(this.error_codes.SETIDFAIL + ": " + this.error_codes.SECSTOREUNAVAILABLE))
+          catchError( ()=> throwError(this.error_codes.SETIDFAIL + ": " + this.error_codes.SECSTOREUNAVAILABLE))
       ))
     );
   }

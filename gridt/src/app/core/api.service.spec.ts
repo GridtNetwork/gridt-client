@@ -1,7 +1,6 @@
 import { Type } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 
 import { cold } from 'jasmine-marbles';
 import { of, throwError } from "rxjs";
@@ -81,10 +80,7 @@ const default_headers = {
 };
 
 let service: ApiService;
-let auth: AuthService;
-let httpMock: HttpTestingController;
 let httpClientStub: jasmine.SpyObj<HttpClient>;
-let authServiceStub: jasmine.SpyObj<AuthService>;
 
 class authServiceStub_succes {
   isLoggedIn$ = of(true);
@@ -128,14 +124,14 @@ describe("ApiService when authentication fails", () => {
   });
 
   it('should fail to read identity from server when not logged in', () => {
-    expect(
-      service.userIdentity$()
-    ).toBeObservable(cold("#", {}, "Can't authenticate: no credentials"));
+    expect(service.userIdentity$())
+    .toBeObservable(cold("#", {}, "Can't authenticate: no credentials"));
   });
 
   it('should fail to update bio when not logged in', () => {
     let mock_bio = "My very first bio."
-    expect(service.changeBio$( mock_bio )).toBeObservable( cold('#', null, "Can't authenticate: no credentials"));
+    expect(service.changeBio$( mock_bio ))
+    .toBeObservable( cold('#', null, "Can't authenticate: no credentials"));
   });
 
   it('should fail to update password when not logged in', () => {

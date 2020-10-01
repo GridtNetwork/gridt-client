@@ -1,10 +1,10 @@
 import { Type } from "@angular/core";
 import { TestBed, fakeAsync, tick } from "@angular/core/testing";
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { cold } from 'jasmine-marbles';
-import { of, throwError, timer, asyncScheduler } from "rxjs";
-import { take, flatMap } from "rxjs/operators"
+import { of, throwError, timer } from "rxjs";
+import { take, flatMap } from "rxjs/operators";
 
 import { AuthService } from './auth.service';
 import { ApiService } from './api.service';
@@ -14,10 +14,6 @@ import { SecureStorageService } from './secure-storage.service';
 import { Identity } from "./models/identity.model";
 
 let service: SettingsService;
-let auth: AuthService;
-let api: ApiService;
-let secStore: SecureStorageService;
-let authServiceStub: jasmine.SpyObj<AuthService>;
 let apiStub: jasmine.SpyObj<ApiService>;
 let secStoreStub: jasmine.SpyObj<SecureStorageService>;
 let httpClientStub: jasmine.SpyObj<HttpClient>;
@@ -67,7 +63,7 @@ describe("SettingsService when authentication fails", () => {
     apiStub = jasmine.createSpyObj('ApiService', ['userIdentity$']);
 
     secStoreStub = jasmine.createSpyObj(
-      'secStore', {
+      'SecureStorageService', {
         'get$': of(JSON.stringify(mock_id[0])),
         'set$': of(true),
         'clear$': of(true),
@@ -90,7 +86,6 @@ describe("SettingsService when authentication fails", () => {
     });
 
     service = TestBed.get(SettingsService as Type<SettingsService>);
-    api = TestBed.get(ApiService as Type<ApiService>);
   });
 
   it("should be created", () => {
@@ -101,16 +96,13 @@ describe("SettingsService when authentication fails", () => {
     // spyOn(api, 'userIdentity$').and.returnValue(of(mock_id[0]));
     apiStub.userIdentity$.and.returnValue(of(mock_id[0]));
     service.updateIdentity();
-    expect(service.userIdentity$).toBeObservable(
-      cold('a', {a: service.empty_identity})
-    );
+    expect(service.userIdentity$)
+    .toBeObservable(cold('a', {a: service.empty_identity}));
   });
 
   it("should fail to set local identity when not logged in", () => {
     let error = service.error_codes.SETIDFAIL + ": " + service.error_codes.NOTLOGGEDIN;
-    expect(service.setLocalIdentity$(mock_id[0])).toBeObservable(
-      cold('#', null, error)
-    );
+    expect(service.setLocalIdentity$(mock_id[0])).toBeObservable(cold('#', null, error));
     expect(secStoreStub.set$).not.toHaveBeenCalled();
   });
 
@@ -128,7 +120,7 @@ describe("SettingsService when authentication is succesful", () => {
     apiStub = jasmine.createSpyObj('api', {'userIdentity$': mock_id[0]});
 
     secStoreStub = jasmine.createSpyObj(
-      'secStore', {
+      'SecureStorageService', {
         'get$'    : of(JSON.stringify(mock_id[0])),
         'set$'    : of(true),
         'clear$'  : of(true),
@@ -151,8 +143,6 @@ describe("SettingsService when authentication is succesful", () => {
     });
 
     service = TestBed.get(SettingsService as Type<SettingsService>);
-    api = TestBed.get(ApiService as Type<ApiService>);
-
   });
 
   afterEach( () => {
@@ -191,6 +181,7 @@ describe("SettingsService when authentication is succesful", () => {
     secStoreStub.get$.and.returnValue(throwError("Oops, localstore not set yet"));
     apiStub.userIdentity$.and.returnValue(of(mock_id[3]));
     service.updateIdentity();
+
     expect(secStoreStub.set$).toHaveBeenCalledWith(
       "identity", JSON.stringify(mock_id[3])
     );
@@ -198,7 +189,8 @@ describe("SettingsService when authentication is succesful", () => {
 
   it("should return empty identity when local and server are unavailable", () => {
     // Safety feature to make sure it doesn't prevent a page from loading.
-    secStoreStub.get$.and.returnValue(throwError("Oops, localstore not set yet"));
+    secStoreStub.get$
+    .and.returnValue(throwError("Oops, localstore not set yet"));
     apiStub.userIdentity$.and.returnValue(throwError("Server not available"));
     service.updateIdentity();
     expect(service.userIdentity$).toBeObservable(
@@ -243,7 +235,8 @@ describe("SettingsService when authentication is succesful", () => {
 
     // Let server and local response be erronous at first
     apiStub.userIdentity$.and.returnValue(throwError("Server not available"));
-    secStoreStub.get$.and.returnValue(throwError("Local storage not available"));
+    secStoreStub.get$
+    .and.returnValue(throwError("Local storage not available"));
 
     serverID.subscribe( (id) => {
       apiStub.userIdentity$.and.returnValue(of(id));
@@ -265,10 +258,6 @@ describe("SettingsService when authentication is succesful", () => {
   });
 
   it("should wait for the server to respond", fakeAsync(() => {
-    // let fake_now = new Date();
-    // fake_now.setUTCHours(1,0,0,0);
-    // jasmine.clock().mockDate(fake_now);
-
     apiStub.userIdentity$.and.returnValue(
       timer(30).pipe(
         take(1),
