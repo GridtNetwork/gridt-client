@@ -6,6 +6,7 @@ import { FormsModule } from "@angular/forms";
 import { IonicModule, AlertController } from "@ionic/angular";
 
 import { RegisterPage } from "./register.page";
+import { of } from 'rxjs';
 
 describe("RegisterPage", () => {
   let component: RegisterPage;
@@ -55,5 +56,11 @@ describe("RegisterPage", () => {
   it("should dismiss the alert when leaving the page", () => {
     component.ngOnDestroy();
     expect(alertSpy.dismiss).toHaveBeenCalled();
+  });
+
+  it("should unsubscribe all subscriptions when leaving the page", () => {
+    component['registerSubscription'] = of(true).subscribe();
+    component.ngOnDestroy();
+    expect(component['registerSubscription'].closed).toBeTruthy();
   });
 });

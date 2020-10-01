@@ -4,17 +4,20 @@ import { HttpClient } from "@angular/common/http";
 import { Observable, BehaviorSubject, throwError } from "rxjs";
 import { map, tap, pluck, catchError, flatMap } from "rxjs/operators";
 
-import { AuthService } from './auth.service';
+import { AuthService } from "./auth.service";
 
 import { Movement } from "./models/movement.model";
-import { User } from './models/user.model';
-import { Identity } from './models/identity.model';
-import { ServerMessage } from './models/server-responses.model';
+import { User } from "./models/user.model";
+import { ServerMessage } from "./models/server-responses.model";
+import { Identity } from "./models/identity.model";
 
 @Injectable({
   providedIn: "root"
 })
+
 export class ApiService {
+
+  constructor (private http: HttpClient, private auth: AuthService) { }
   public username: string;
 
   /*
@@ -26,6 +29,7 @@ export class ApiService {
    * Reuse a policy: Rll movements that have been previously obtained.
    */
   private _allMovements$ = new BehaviorSubject<Movement[]>([]);
+
   get allMovements$ (): Observable<Movement[]> {
     return this._allMovements$.asObservable();
   }
@@ -34,11 +38,21 @@ export class ApiService {
    * Reuse all subscriptions that have been previously obtained.
    */
   private _subscriptions$ = new BehaviorSubject<Movement[]>([]);
+
   get subscriptions$ (): Observable<Movement[]> {
     return this._subscriptions$.asObservable();
   }
 
-  constructor (private http: HttpClient, private auth: AuthService) { }
+  /**
+  * Observable to obtain identity from server.
+  */
+  public userIdentity$: Observable<Identity> = this.auth.readyAuthentication$.pipe(
+    flatMap((options) => this.http.get<Identity>(
+      `${this.URL}/identity`,
+      options
+    )),
+    catchError( this.handleBadAuth() )
+  );
 
   /*
    * Catch any error that is generated from the user not having a valid token.
@@ -83,9 +97,9 @@ export class ApiService {
    * @param movement The new version of the movement.
    */
   private replace_movement_in_bsubject(bsubject: BehaviorSubject<Movement[]>, movement: Movement) {
-    let all_movements = bsubject.getValue();
-    const index = all_movements.findIndex(m => m.name == movement.name);
-    if (index != -1) {
+    const all_movements = bsubject.getValue();
+    const index = all_movements.findIndex(m => m.name === movement.name);
+    if (index !== -1) {
       all_movements[index] = movement;
     } else {
       all_movements.push(movement);
@@ -110,7 +124,7 @@ export class ApiService {
         this.replace_movement_in_bsubject(this._subscriptions$, movement);
         this.replace_movement_in_bsubject(this._allMovements$, movement);
       })
-    )
+    );
   }
 
   /**
@@ -127,7 +141,9 @@ export class ApiService {
       catchError( this.handleBadAuth() ),
       tap((movements) => this._allMovements$.next(movements)),
       map( () => true)
-    ).subscribe();
+    ).subscribe({
+        error: e => console.log(e)
+    });
   }
 
   /**
@@ -136,14 +152,16 @@ export class ApiService {
   public getSubscriptions(): void {
     console.debug("Getting all movements that the user is subscribed to.");
 
-    this.auth.readyAuthentication$.pipe(
+      this.auth.readyAuthentication$.pipe(
       flatMap((options) => this.http.get<Movement[]>(
         `${this.URL}/movements/subscriptions`,
         options
       )),
       tap( (movements) => this._subscriptions$.next(movements)),
       catchError( this.handleBadAuth() )
-    ).subscribe();
+    ).subscribe({
+        error: e => console.log(e)
+    });
   }
 
   /**
@@ -186,7 +204,7 @@ export class ApiService {
    * movement identified with a number or string.
    */
   public swapLeader$(movement: Movement, user: User): Observable<User> {
-    console.debug(`Swapping leader "@${user.username}#${user.id}" in movement "%${movement.name}#${movement.id}".`)
+    console.debug(`Swapping leader "@${user.username}#${user.id}" in movement "%${movement.name}#${movement.id}".`);
 
     return this.auth.readyAuthentication$.pipe(
       flatMap( options => this.http.post<User | ServerMessage>(
@@ -202,7 +220,7 @@ export class ApiService {
         return response as User;
       }),
       tap( new_user => {
-        movement.leaders = movement.leaders.filter(u => u.username != user.username);
+        movement.leaders = movement.leaders.filter(u => u.username !== user.username);
         movement.leaders.push(new_user);
         this.replace_movement_in_bsubject(this._allMovements$, movement);
         this.replace_movement_in_bsubject(this._subscriptions$, movement);
@@ -215,7 +233,7 @@ export class ApiService {
    * Notify the server that the user has performed the movement related action.
    */
   public sendSignal$(movement: Movement, message: string): Observable<string> {
-    console.debug(`Sending signal to movement "${movement.name}"`)
+    console.debug(`Sending signal to movement "${movement.name}"`);
 
     const body = message ?  { message } : message;
 
@@ -229,17 +247,6 @@ export class ApiService {
       catchError( this.handleBadAuth() )
     );
   }
-
-  /**
-  * Observable to obtain identity from server.
-  */
-  public userIdentity$: Observable<Identity> = this.auth.readyAuthentication$.pipe(
-    flatMap((options) => this.http.get<Identity>(
-      `${this.URL}/identity`,
-      options
-    )),
-    catchError( this.handleBadAuth())
-  );
 
   /**
   * Changes the biography of the user on the server.

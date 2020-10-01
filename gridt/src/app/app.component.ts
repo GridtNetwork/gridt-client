@@ -4,14 +4,14 @@ import { Router, NavigationStart } from '@angular/router';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { Plugins, AppState, Capacitor } from '@capacitor/core';
 import { AuthService } from './core/auth.service';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { filter, flatMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html'
 })
-export class AppComponent implements OnInit, OnDestroy{
+export class AppComponent implements OnInit {
   public isLoggedIn$: Observable<boolean>;
 
   public appPages = [
@@ -63,11 +63,6 @@ export class AppComponent implements OnInit, OnDestroy{
       this.checkAuthOnResume.bind(this)
     );
   }
-
-  onLogout() {
-  }
-
-  ngOnDestroy() { }
 
   private checkAuthOnResume(state: AppState) {
     this.zone.run( () => {

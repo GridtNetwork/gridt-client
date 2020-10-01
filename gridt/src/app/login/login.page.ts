@@ -1,38 +1,42 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { AuthService } from '../core/auth.service';
+import { SubscriptionHolder } from '../core/models/subscription-holder.model';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
-export class LoginPage implements OnInit {
+export class LoginPage extends SubscriptionHolder implements OnDestroy {
 
   constructor(
     private router: Router,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
     private auth: AuthService
-    ) { }
+    ) {
+    super();
+  }
 
-  ngOnInit() { 
+  ngOnDestroy() {
+    this.cancelAllSubscriptions();
   }
 
   /*
    * Log user in with api and handle loading popup
    */
   public async authenticate(email: string, password: string) {
-    const el = await this.loadingCtrl.create({ 
-      keyboardClose: true, 
-      message: 'Logging in...' 
+    const el = await this.loadingCtrl.create({
+      keyboardClose: true,
+      message: 'Logging in...'
     });
 
     el.present();
 
-    this.auth.login$(email, password).subscribe(
+    this.subscriptions.push(this.auth.login$(email, password).subscribe(
       loggedIn => {
         if (!loggedIn) {
           el.dismiss();
@@ -45,7 +49,7 @@ export class LoginPage implements OnInit {
         el.dismiss();
         this.showAlert(error);
       }
-    );
+    ));
   }
 
   /*

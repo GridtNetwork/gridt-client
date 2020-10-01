@@ -3,21 +3,23 @@ import { Router } from '@angular/router';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../../core/auth.service';
+import { SubscriptionHolder } from 'src/app/core/models/subscription-holder.model';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
   styleUrls: ['./register.page.scss'],
 })
-export class RegisterPage implements OnInit, OnDestroy {
-
+export class RegisterPage extends SubscriptionHolder implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
     private auth: AuthService,
-    ) { }
+    ) {
+    super();
+  }
 
   ngOnInit() {
     this.showSafetyAlert();
@@ -25,7 +27,9 @@ export class RegisterPage implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.alertCtrl.dismiss();
+    this.cancelAllSubscriptions();
   }
+
   /*
   * Creates warning for unique password
   */
@@ -44,13 +48,13 @@ export class RegisterPage implements OnInit, OnDestroy {
   /*
    * Do API call and handle loading element.
    */
-  public async register (username:string, email: string, password: string ) {
-    const el = await this.loadingCtrl.create({ 
+  public async register (username: string, email: string, password: string ) {
+    const el = await this.loadingCtrl.create({
       keyboardClose: true,
-      message: 'Signing you up...' 
+      message: 'Signing you up...'
     });
 
-    this.auth.register$(username, email, password).subscribe(
+    this.subscriptions.push(this.auth.register$(username, email, password).subscribe(
       () => {
         this.router.navigateByUrl('/login');
         el.dismiss();
@@ -58,12 +62,12 @@ export class RegisterPage implements OnInit, OnDestroy {
       (error) => {
           this.showAlert(error);
           el.dismiss();
-      }
-    )
+      },
+    ));
     el.present();
   }
 
-  //Submits the registration info
+  // Submits the registration info
   onSubmit(form: NgForm) {
     if (!form.valid) {
       return;

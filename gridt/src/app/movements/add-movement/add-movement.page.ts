@@ -4,13 +4,15 @@ import { LoadingController, AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { ApiService } from '../../core/api.service';
 import { Movement } from '../../core/models/movement.model';
+import { SubscriptionHolder } from 'src/app/core/models/subscription-holder.model';
 
 @Component({
   selector: 'app-add-movement',
   templateUrl: './add-movement.page.html',
   styleUrls: ['./add-movement.page.scss'],
 })
-export class AddMovementPage implements OnInit, OnDestroy {
+export class AddMovementPage extends SubscriptionHolder implements OnInit, OnDestroy {
+
   form: FormGroup;
   intervalTypes: string[] = [
     'daily',
@@ -23,7 +25,9 @@ export class AddMovementPage implements OnInit, OnDestroy {
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController,
     private api: ApiService,
-  ) { }
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this.form = new FormGroup({
@@ -51,7 +55,10 @@ export class AddMovementPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.alertCtrl.dismiss();
+    if (this.alertCtrl) {
+      this.alertCtrl.dismiss();
+    }
+    this.cancelAllSubscriptions();
   }
 
   async createMovement() {
@@ -65,17 +72,22 @@ export class AddMovementPage implements OnInit, OnDestroy {
 
     await el.present();
 
-    this.api.createMovement$(this.form.value as Movement).subscribe(
+    this.subscriptions.push(this.api.createMovement$(this.form.value as Movement).subscribe(
       (message) => {
         el.dismiss();
         this.showMessage(message);
-        this.api.getMovement$(this.form.value.name).subscribe();
+        this.subscriptions.push(this.api.getMovement$(this.form.value.name).subscribe({
+        error(err) {
+          el.dismiss();
+          this.showError(err);
+        },
+      }));
       },
       (error) => {
         el.dismiss();
         this.showError(error);
       }
-    );
+    ));
   }
 
   async confirmCreation () {

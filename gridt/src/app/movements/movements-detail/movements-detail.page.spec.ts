@@ -54,4 +54,12 @@ describe("MovementsDetailPage", () => {
     component.ngOnDestroy();
     expect(alertSpy.dismiss).toHaveBeenCalled();
   });
+
+  it("should unsubscribe all subscriptions when leaving the page", () => {
+    component['movSubSubscription'] = of(true).subscribe();
+    component['movUnsubSubscription'] = of(true).subscribe();
+    component.ngOnDestroy();
+    expect(component['movSubSubscription'].closed).toBeTruthy();
+    expect(component['movUnsubSubscription'].closed).toBeTruthy();
+  });
 });

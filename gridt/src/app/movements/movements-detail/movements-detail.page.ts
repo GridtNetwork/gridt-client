@@ -7,13 +7,14 @@ import { map, flatMap, take } from 'rxjs/operators';
 
 import { ApiService } from '../../core/api.service';
 import { Movement } from '../../core/models/movement.model';
+import { SubscriptionHolder } from 'src/app/core/models/subscription-holder.model';
 
 @Component({
   selector: 'app-movements-detail',
   templateUrl: './movements-detail.page.html',
   styleUrls: ['./movements-detail.page.scss'],
 })
-export class MovementsDetailPage implements OnInit, OnDestroy {
+export class MovementsDetailPage extends SubscriptionHolder implements OnInit, OnDestroy {
 
   movement$: Observable<Movement>;
 
@@ -22,7 +23,9 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
     private loadingCtrl: LoadingController,
     private route: ActivatedRoute,
     private api: ApiService
-  ) { }
+  ) {
+    super();
+  }
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('movementId');
@@ -32,7 +35,10 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.alertCtrl.dismiss();
+    if (this.alertCtrl) {
+      this.alertCtrl.dismiss();
+    }
+    this.cancelAllSubscriptions();
   }
 
   onSubscribe(): void {
@@ -57,7 +63,7 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
     });
   }
 
-  onUnsubscribe():void {
+  onUnsubscribe(): void {
     this.alertCtrl.create({
       header: 'Are you sure?',
       message: 'You are about to leave this movement.',
@@ -86,7 +92,7 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
 
     el.present();
 
-    this.movement$.pipe(
+    this.subscriptions.push(this.movement$.pipe(
       take(1),
       flatMap( (movement) => this.api.subscribeToMovement$(movement.name)),
       flatMap( () => this.movement$), // We need the movement name again to reload the movement.
@@ -98,7 +104,7 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
         el.dismiss();
         this.showError(error);
       }
-    );
+    ));
   }
 
   async showError(error: string) {
@@ -116,7 +122,7 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
 
     el.present();
 
-    this.movement$.pipe(
+    this.subscriptions.push(this.movement$.pipe(
       take(1),
       flatMap( movement => this.api.unsubscribeFromMovement$(movement.name) ),
       flatMap( () => this.movement$ ),
@@ -128,6 +134,6 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
         el.dismiss();
         this.showError(error);
       }
-    )
+    ));
   }
 }

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 import { ApiService } from '../core/api.service';
 import { Movement } from '../core/models/movement.model';
+import { SubscriptionHolder } from '../core/models/subscription-holder.model';
 import { User } from '../core/models/user.model';
 import { SwapService } from '../core/swap.service';
 
@@ -12,14 +13,16 @@ import { SwapService } from '../core/swap.service';
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
 })
-export class HomePage implements OnInit, OnDestroy {
+export class HomePage extends SubscriptionHolder implements OnInit, OnDestroy {
   movements$ = new Observable<Movement[]>();
 
   constructor(
     private api: ApiService,
     private alertCtrl: AlertController,
     private swapService: SwapService
-  ) { }
+  ) {
+    super();
+  }
 
   ngOnInit() {
     this.movements$ = this.api.subscriptions$;
@@ -28,6 +31,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.alertCtrl.dismiss();
+    this.cancelAllSubscriptions();
   }
 
   /**
@@ -136,7 +140,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   swapLeader(movement: Movement, leader: User): void {
     this.swapService.addSwapEvent(movement, leader);
-    this.api.swapLeader$(movement, leader).subscribe(
+    this.subscriptions.push(this.api.swapLeader$(movement, leader).subscribe(
       async user => {
         const el = await this.alertCtrl.create({
           header: "Found new leader",
@@ -155,7 +159,7 @@ export class HomePage implements OnInit, OnDestroy {
 
         el.present();
       }
-    );
+    ));
   }
 
   readyToSignal (movement: Movement): boolean {
@@ -214,9 +218,12 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   async signal(movement: Movement, message?: string) {
-    this.api.sendSignal$(movement, message).subscribe(
+    this.subscriptions.push(this.api.sendSignal$(movement, message).subscribe(
       () => {
-        this.api.getMovement$(movement.id).subscribe();
+        this.subscriptions.push(this.api.getMovement$(movement.id).subscribe({
+          error(error) {console.log(error);
+          }
+        }));
       },
       (error) => {
         this.alertCtrl.create({
@@ -224,8 +231,8 @@ export class HomePage implements OnInit, OnDestroy {
             message: error,
             buttons: ['Okay']
         })
-        .then(alertEl => alertEl.present())
+        .then(alertEl => alertEl.present());
       }
-    );
+    ));
   }
 }

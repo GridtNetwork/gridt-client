@@ -12,6 +12,7 @@ import { ServerMessage, AccessToken } from './models/server-responses.model';
 })
 export class AuthService {
 
+
   constructor(private http: HttpClient, private secStore: SecureStorageService) {}
 
   public error_codes = {
@@ -22,7 +23,7 @@ export class AuthService {
   }
 
   /**
-   * Check if the experiation date in the JWT token is expired.
+   * Check if the expiration date in the JWT token is expired.
    * @param token Token to be evaluated
    */
   private isTokenExpired(accessToken: AccessToken): boolean {
@@ -93,8 +94,14 @@ export class AuthService {
    * @param credentials Credentials to be stored.
    */
   private storeCredentials(credentials: Credentials): void {
-    this.secStore.set$("email", credentials.username).subscribe();
-    this.secStore.set$("password", credentials.password).subscribe();
+    this.secStore.set$("email", credentials.username).subscribe({
+      error(error) {console.log(error);
+      }
+    });
+    this.secStore.set$("password", credentials.password).subscribe({
+      error(error) {console.log(error);
+      }
+    });
   }
 
   /**
@@ -102,7 +109,10 @@ export class AuthService {
    * @param token Token to be stored
    */
   private storeToken(token: AccessToken) {
-    this.secStore.set$("token", token.access_token).subscribe();
+    this.secStore.set$("token", token.access_token).subscribe({
+      error(error) {console.log(error);
+      }
+    });
   }
 
   /**
@@ -149,7 +159,7 @@ export class AuthService {
    * Log the user in on the server, obtaining a token.
    * @param email Email used for logging.
    * @param password Password for identification.
-   * @returns Observable that will true if the login was succesful and be false if unsuccesful.
+   * @returns Observable that will true if the login was successful and be false if unsuccessful.
    */
   public login$(email: string, password: string): Observable<boolean> {
     const credentials: Credentials = {username: email, password};
@@ -159,7 +169,10 @@ export class AuthService {
       tap( this.storeToken.bind(this) ),
       mapTo(true),
       catchError( () => {
-        this.secStore.clear$().subscribe();
+        this.secStore.clear$().subscribe({
+          error(error) {console.log(error);
+          }
+        });
         return of(false); // Not sure if this is better, or just leave the error.
       })
     );
@@ -174,6 +187,7 @@ export class AuthService {
   public register$(username: string, email: string, password: string): Observable<string> {
     console.debug(`Registering user ${username}.`);
 
+
     return this.http.post<ServerMessage>("https://api.gridt.org/register", {username, email, password}).pipe(
       pluck("message"),
       catchError( (error) => throwError(error.error.message) )
@@ -184,6 +198,9 @@ export class AuthService {
    * Clear all information stored in the secure storage concerning previous logins.
    */
   public logout(): void {
-    this.secStore.clear$().subscribe();
+    this.secStore.clear$().subscribe({
+      error(error) {console.log(error);
+      }
+    });
   }
 }
