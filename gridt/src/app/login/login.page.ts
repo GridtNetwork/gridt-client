@@ -1,17 +1,16 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { AuthService } from '../core/auth.service';
-import { Subscription } from 'rxjs';
-import { Subscriptions } from '../core/models/subscriptions.model';
+import { SubscriptionHolder } from '../core/models/subscription-holder.model';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
 })
-export class LoginPage extends Subscriptions implements OnDestroy {
+export class LoginPage extends SubscriptionHolder implements OnDestroy {
 
   constructor(
     private router: Router,
@@ -31,8 +30,8 @@ export class LoginPage extends Subscriptions implements OnDestroy {
    */
   public async authenticate(email: string, password: string) {
     const el = await this.loadingCtrl.create({
-      keyboardClose: true, 
-      message: 'Logging in...' 
+      keyboardClose: true,
+      message: 'Logging in...'
     });
 
     el.present();

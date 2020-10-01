@@ -8,24 +8,16 @@ import { AuthService } from "./auth.service";
 
 import { Movement } from "./models/movement.model";
 import { User } from "./models/user.model";
-import { Identity } from "./models/identity.model";
 import { ServerMessage } from "./models/server-responses.model";
 
 @Injectable({
   providedIn: "root"
 })
+
 export class ApiService {
-  get allMovements$ (): Observable<Movement[]> {
-    return this._allMovements$.asObservable();
-  }
-  get subscriptions$ (): Observable<Movement[]> {
-    return this._subscriptions$.asObservable();
-  }
 
   constructor (private http: HttpClient, private auth: AuthService) { }
   public username: string;
-
-
 
   /*
    * Subscribe to this observable to ready the API.
@@ -37,21 +29,18 @@ export class ApiService {
    */
   private _allMovements$ = new BehaviorSubject<Movement[]>([]);
 
+  get allMovements$ (): Observable<Movement[]> {
+    return this._allMovements$.asObservable();
+  }
+
   /**
    * Reuse all subscriptions that have been previously obtained.
    */
   private _subscriptions$ = new BehaviorSubject<Movement[]>([]);
 
-  /**
-  * Observable to obtain identity from server.
-  */
-  public userIdentity$: Observable<Identity> = this.auth.readyAuthentication$.pipe(
-    flatMap((options) => this.http.get<Identity>(
-      `${this.URL}/identity`,
-      options
-    )),
-    catchError( this.handleBadAuth())
-  );
+  get subscriptions$ (): Observable<Movement[]> {
+    return this._subscriptions$.asObservable();
+  }
 
   /*
    * Catch any error that is generated from the user not having a valid token.
@@ -96,9 +85,9 @@ export class ApiService {
    * @param movement The new version of the movement.
    */
   private replace_movement_in_bsubject(bsubject: BehaviorSubject<Movement[]>, movement: Movement) {
-    let all_movements = bsubject.getValue();
+    const all_movements = bsubject.getValue();
     const index = all_movements.findIndex(m => m.name === movement.name);
-    if (index != -1) {
+    if (index !== -1) {
       all_movements[index] = movement;
     } else {
       all_movements.push(movement);
@@ -141,8 +130,7 @@ export class ApiService {
       tap((movements) => this._allMovements$.next(movements)),
       map( () => true)
     ).subscribe({
-      error(error) {console.log(error);
-      }
+        error: e => console.log(e)
     });
   }
 
@@ -160,8 +148,7 @@ export class ApiService {
       tap( (movements) => this._subscriptions$.next(movements)),
       catchError( this.handleBadAuth() )
     ).subscribe({
-      error(error) {console.log(error);
-      }
+        error: e => console.log(e)
     });
   }
 
@@ -205,7 +192,7 @@ export class ApiService {
    * movement identified with a number or string.
    */
   public swapLeader$(movement: Movement, user: User): Observable<User> {
-    console.debug(`Swapping leader "@${user.username}#${user.id}" in movement "%${movement.name}#${movement.id}".`)
+    console.debug(`Swapping leader "@${user.username}#${user.id}" in movement "%${movement.name}#${movement.id}".`);
 
     return this.auth.readyAuthentication$.pipe(
       flatMap( options => this.http.post<User | ServerMessage>(
@@ -234,7 +221,7 @@ export class ApiService {
    * Notify the server that the user has performed the movement related action.
    */
   public sendSignal$(movement: Movement, message: string): Observable<string> {
-    console.debug(`Sending signal to movement "${movement.name}"`)
+    console.debug(`Sending signal to movement "${movement.name}"`);
 
     const body = message ?  { message } : message;
 

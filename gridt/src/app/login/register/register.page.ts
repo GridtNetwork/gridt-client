@@ -3,15 +3,14 @@ import { Router } from '@angular/router';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../../core/auth.service';
-import { Subscription } from 'rxjs';
-import { Subscriptions } from 'src/app/core/models/subscriptions.model';
+import { SubscriptionHolder } from 'src/app/core/models/subscription-holder.model';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
   styleUrls: ['./register.page.scss'],
 })
-export class RegisterPage extends Subscriptions implements OnInit, OnDestroy {
+export class RegisterPage extends SubscriptionHolder implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
@@ -68,7 +67,9 @@ export class RegisterPage extends Subscriptions implements OnInit, OnDestroy {
     el.present();
   }
 
-  //Submits the registration info
+  /*
+  * Submits the registration info
+  */
   onSubmit(form: NgForm) {
     if (!form.valid) {
       return;

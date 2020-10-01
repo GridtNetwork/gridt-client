@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AlertController } from '@ionic/angular';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { ApiService } from '../core/api.service';
 import { Movement } from '../core/models/movement.model';
-import { Subscriptions } from '../core/models/subscriptions.model';
+import { SubscriptionHolder } from '../core/models/subscription-holder.model';
 import { User } from '../core/models/user.model';
 import { SwapService } from '../core/swap.service';
 
@@ -13,7 +13,7 @@ import { SwapService } from '../core/swap.service';
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
 })
-export class HomePage extends Subscriptions implements OnInit, OnDestroy{
+export class HomePage extends SubscriptionHolder implements OnInit, OnDestroy {
   movements$ = new Observable<Movement[]>();
 
   constructor(
@@ -33,7 +33,7 @@ export class HomePage extends Subscriptions implements OnInit, OnDestroy{
     this.alertCtrl.dismiss();
     this.cancelAllSubscriptions();
   }
-
+ech
   /**
    * Extract the timezone of a date string.
    * @param date_string ISO Date string
