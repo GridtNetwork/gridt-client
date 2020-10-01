@@ -33,7 +33,7 @@ export class HomePage extends SubscriptionHolder implements OnInit, OnDestroy {
     this.alertCtrl.dismiss();
     this.cancelAllSubscriptions();
   }
-ech
+
   /**
    * Extract the timezone of a date string.
    * @param date_string ISO Date string
