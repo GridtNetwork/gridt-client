@@ -2,19 +2,19 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AlertController, LoadingController } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
 
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map, flatMap, take } from 'rxjs/operators';
 
 import { ApiService } from '../../core/api.service';
 import { Movement } from '../../core/models/movement.model';
-import { Subscriptions } from 'src/app/core/models/subscriptions.model';
+import { SubscriptionHolder } from 'src/app/core/models/subscription-holder.model';
 
 @Component({
   selector: 'app-movements-detail',
   templateUrl: './movements-detail.page.html',
   styleUrls: ['./movements-detail.page.scss'],
 })
-export class MovementsDetailPage extends Subscriptions implements OnInit, OnDestroy {
+export class MovementsDetailPage extends SubscriptionHolder implements OnInit, OnDestroy {
 
   movement$: Observable<Movement>;
 

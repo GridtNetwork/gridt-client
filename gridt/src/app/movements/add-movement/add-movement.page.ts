@@ -4,16 +4,15 @@ import { LoadingController, AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { ApiService } from '../../core/api.service';
 import { Movement } from '../../core/models/movement.model';
-import { Subscription } from 'rxjs';
-import { Subscriptions } from 'src/app/core/models/subscriptions.model';
+import { SubscriptionHolder } from 'src/app/core/models/subscription-holder.model';
 
 @Component({
   selector: 'app-add-movement',
   templateUrl: './add-movement.page.html',
   styleUrls: ['./add-movement.page.scss'],
 })
-export class AddMovementPage extends Subscriptions implements OnInit, OnDestroy {
-  
+export class AddMovementPage extends SubscriptionHolder implements OnInit, OnDestroy {
+
   form: FormGroup;
   intervalTypes: string[] = [
     'daily',

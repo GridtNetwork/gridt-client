@@ -15,17 +15,9 @@ import { ServerMessage } from "./models/server-responses.model";
   providedIn: "root"
 })
 export class ApiService {
-  get allMovements$ (): Observable<Movement[]> {
-    return this._allMovements$.asObservable();
-  }
-  get subscriptions$ (): Observable<Movement[]> {
-    return this._subscriptions$.asObservable();
-  }
 
   constructor (private http: HttpClient, private auth: AuthService) { }
   public username: string;
-
-
 
   /*
    * Subscribe to this observable to ready the API.
@@ -37,10 +29,18 @@ export class ApiService {
    */
   private _allMovements$ = new BehaviorSubject<Movement[]>([]);
 
+  get allMovements$ (): Observable<Movement[]> {
+    return this._allMovements$.asObservable();
+  }
+
   /**
    * Reuse all subscriptions that have been previously obtained.
    */
   private _subscriptions$ = new BehaviorSubject<Movement[]>([]);
+
+  get subscriptions$ (): Observable<Movement[]> {
+    return this._subscriptions$.asObservable();
+  }
 
   /**
   * Observable to obtain identity from server.
@@ -141,8 +141,7 @@ export class ApiService {
       tap((movements) => this._allMovements$.next(movements)),
       map( () => true)
     ).subscribe({
-      error(error) {console.log(error);
-      }
+        error: e => console.log(e)
     });
   }
 
@@ -160,8 +159,7 @@ export class ApiService {
       tap( (movements) => this._subscriptions$.next(movements)),
       catchError( this.handleBadAuth() )
     ).subscribe({
-      error(error) {console.log(error);
-      }
+        error: e => console.log(e)
     });
   }
 

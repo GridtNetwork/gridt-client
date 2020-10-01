@@ -3,15 +3,14 @@ import { Router } from '@angular/router';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../../core/auth.service';
-import { Subscription } from 'rxjs';
-import { Subscriptions } from 'src/app/core/models/subscriptions.model';
+import { SubscriptionHolder } from 'src/app/core/models/subscription-holder.model';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
   styleUrls: ['./register.page.scss'],
 })
-export class RegisterPage extends Subscriptions implements OnInit, OnDestroy {
+export class RegisterPage extends SubscriptionHolder implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
@@ -52,7 +51,7 @@ export class RegisterPage extends Subscriptions implements OnInit, OnDestroy {
   public async register (username: string, email: string, password: string ) {
     const el = await this.loadingCtrl.create({
       keyboardClose: true,
-      message: 'Signing you up...' 
+      message: 'Signing you up...'
     });
 
     this.subscriptions.push(this.auth.register$(username, email, password).subscribe(
@@ -68,7 +67,7 @@ export class RegisterPage extends Subscriptions implements OnInit, OnDestroy {
     el.present();
   }
 
-  //Submits the registration info
+  // Submits the registration info
   onSubmit(form: NgForm) {
     if (!form.valid) {
       return;
