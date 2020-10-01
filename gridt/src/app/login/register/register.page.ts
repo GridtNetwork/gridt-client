@@ -51,7 +51,7 @@ export class RegisterPage extends SubscriptionHolder implements OnInit, OnDestro
   public async register (username: string, email: string, password: string ) {
     const el = await this.loadingCtrl.create({
       keyboardClose: true,
-      message: 'Signing you up...' 
+      message: 'Signing you up...'
     });
 
     this.subscriptions.push(this.auth.register$(username, email, password).subscribe(
@@ -67,9 +67,7 @@ export class RegisterPage extends SubscriptionHolder implements OnInit, OnDestro
     el.present();
   }
 
-  /*
-  * Submits the registration info
-  */
+  // Submits the registration info
   onSubmit(form: NgForm) {
     if (!form.valid) {
       return;

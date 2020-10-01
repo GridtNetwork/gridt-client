@@ -9,6 +9,7 @@ import { AuthService } from "./auth.service";
 import { Movement } from "./models/movement.model";
 import { User } from "./models/user.model";
 import { ServerMessage } from "./models/server-responses.model";
+import { Identity } from './models/identity.model';
 
 @Injectable({
   providedIn: "root"
@@ -41,6 +42,17 @@ export class ApiService {
   get subscriptions$ (): Observable<Movement[]> {
     return this._subscriptions$.asObservable();
   }
+
+  /**
+  * Observable to obtain identity from server.
+  */
+  public userIdentity$: Observable<Identity> = this.auth.readyAuthentication$.pipe(
+    flatMap((options) => this.http.get<Identity>(
+      `${this.URL}/identity`,
+      options
+    )),
+    catchError( this.handleBadAuth())
+  );
 
   /*
    * Catch any error that is generated from the user not having a valid token.
@@ -208,7 +220,7 @@ export class ApiService {
         return response as User;
       }),
       tap( new_user => {
-        movement.leaders = movement.leaders.filter(u => u.username != user.username);
+        movement.leaders = movement.leaders.filter(u => u.username !== user.username);
         movement.leaders.push(new_user);
         this.replace_movement_in_bsubject(this._allMovements$, movement);
         this.replace_movement_in_bsubject(this._subscriptions$, movement);
