@@ -28,9 +28,9 @@ export class SettingsService {
    * If secure storage is empty, this returns an unavailable error
    */
   public localIdentity$: Observable<Identity> = this.auth.readyAuthentication$.pipe(
-    catchError( () => throwError(this.error_codes.GETIDFAIL + ": " + this.error_codes.NOTLOGGEDIN)),
+    catchError( () => throwError(this.error_codes.GETIDFAIL + ": " + this.error_codes.NOTLOGGEDIN) ),
     flatMap(() => this.secStore.get$("identity").pipe(
-      catchError( () => throwError(this.error_codes.GETIDFAIL + ": " + this.error_codes.SECSTOREUNAVAILABLE))
+      catchError( () => throwError(this.error_codes.GETIDFAIL + ": " + this.error_codes.SECSTOREUNAVAILABLE) )
     ))
   );
 
@@ -40,10 +40,10 @@ export class SettingsService {
    */
   public setLocalIdentity$(identity: Identity): Observable<boolean> {
     return this.auth.readyAuthentication$.pipe(
-      catchError( () => throwError(this.error_codes.SETIDFAIL + ": " + this.error_codes.NOTLOGGEDIN)),
+      catchError( () => throwError(this.error_codes.SETIDFAIL + ": " + this.error_codes.NOTLOGGEDIN) ),
       take(1), // Makes sure the observable completes
       flatMap( () => this.secStore.set$("identity", identity).pipe(
-          catchError(() => throwError(this.error_codes.SETIDFAIL + ": " + this.error_codes.SECSTOREUNAVAILABLE))
+          catchError( () => throwError(this.error_codes.SETIDFAIL + ": " + this.error_codes.SECSTOREUNAVAILABLE) )
       ))
     );
   }
