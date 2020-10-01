@@ -4,6 +4,6 @@ export class SubscriptionHolder {
     protected subscriptions: Subscription[] = [];
 
     cancelAllSubscriptions () {
-        this.subscriptions.map( subscription => subscription.unsubscribe());
+        this.subscriptions.map( subscription => subscription.unsubscribe() );
     }
 }
