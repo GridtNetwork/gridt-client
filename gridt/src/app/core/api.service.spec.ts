@@ -347,7 +347,7 @@ describe("ApiService when authentication is succesful", () => {
       cold("(a|)", {a: "Succesfully replaced password."})
     );
     expect(httpClientStub.post).toHaveBeenCalledWith(
-      `${service.URL}/change_password`, {old_password: old_password, new_password: new_password}, default_headers
+      `${service.URL}/user/change_password`, {old_password: old_password, new_password: new_password}, default_headers
     );
   });
 });
