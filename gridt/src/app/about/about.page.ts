@@ -10,9 +10,7 @@ import { TutorialPage } from './tutorial/tutorial.page';
 })
 export class AboutPage {
 
-  constructor(public modalController: ModalController) { 
-
-  }
+  constructor(public modalController: ModalController) { }
 
   async presentCredits() {
     const modal = await this.modalController.create({

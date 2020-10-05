@@ -9,16 +9,15 @@ import { ModalController } from '@ionic/angular';
 })
 export class TutorialPage implements OnInit {
 
-  constructor(private router: Router,
+  constructor(public router: Router,
               public modalController: ModalController) { }
 
-
-  finish() {
-    if(this.router.url === "/about"){
-      this.modalController.dismiss()
+  finishTutorial() {
+    if ( this.router.url === "/home" ) {
+      this.router.navigateByUrl('/movements');
     }
     else {
-      this.router.navigateByUrl('/movements')
+      this.modalController.dismiss();
     }
   }
 

@@ -41,7 +41,7 @@ describe('AboutPage', () => {
 
   // If the page is changed, the modal should close
   it('should close any modal upon navigating away', () => {
-    component.ngOnDestroy;
+    component.ngOnDestroy();
     expect(modalSpy.dismiss).toHaveBeenCalled();
   });
 });
