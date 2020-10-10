@@ -129,7 +129,7 @@ describe("ApiService when authentication fails", () => {
 
   it('should fail to read identity from server when not logged in', () => {
     expect(
-      service.userIdentity$
+      service.userIdentity$()
     ).toBeObservable(cold("#", {}, "Can't authenticate: no credentials"));
   });
 
@@ -312,8 +312,8 @@ describe("ApiService when authentication is succesful", () => {
 
   it('should be able to retreive identity', () => {
     httpClientStub.get.and.returnValue(of(mock_identity[0]));
-    
-    expect(service.userIdentity$).toBeObservable(cold('(a|)', {a: mock_identity[0]}));
+
+    expect(service.userIdentity$()).toBeObservable(cold('(a|)', {a: mock_identity[0]}));
     expect(httpClientStub.get).toHaveBeenCalledWith(
       `${service.URL}/identity`,
       default_headers
@@ -347,7 +347,7 @@ describe("ApiService when authentication is succesful", () => {
       cold("(a|)", {a: "Succesfully replaced password."})
     );
     expect(httpClientStub.post).toHaveBeenCalledWith(
-      `${service.URL}/change_password`, {old_password: old_password, new_password: new_password}, default_headers
+      `${service.URL}/user/change_password`, {old_password: old_password, new_password: new_password}, default_headers
     );
   });
 });

@@ -233,13 +233,15 @@ export class ApiService {
   /**
   * Observable to obtain identity from server.
   */
-  public userIdentity$: Observable<Identity> = this.auth.readyAuthentication$.pipe(
-    flatMap((options) => this.http.get<Identity>(
-      `${this.URL}/identity`,
-      options
-    )),
-    catchError( this.handleBadAuth())
-  );
+  public userIdentity$(): Observable<Identity> {
+    return this.auth.readyAuthentication$.pipe(
+      flatMap((options) => this.http.get<Identity>(
+        `${this.URL}/identity`,
+        options
+      )),
+      catchError( this.handleBadAuth())
+    );
+  };
 
   /**
   * Changes the biography of the user on the server.
@@ -267,7 +269,7 @@ export class ApiService {
 
     return this.auth.readyAuthentication$.pipe(
       flatMap((options) => this.http.post<ServerMessage>(
-        `${this.URL}/change_password`, {old_password: old_password, new_password: new_password}, options
+        `${this.URL}/user/change_password`, {old_password: old_password, new_password: new_password}, options
       )),
       catchError( this.handleBadAuth() ),
       pluck("message")

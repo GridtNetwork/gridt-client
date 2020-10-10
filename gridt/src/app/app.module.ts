@@ -14,6 +14,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 
+import { ChangePasswordPageModule } from './settings/change-password/change-password.module';
+import { ChangeBioPageModule } from './settings/change-bio/change-bio.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -25,6 +27,8 @@ import { environment } from '../environments/environment';
     HttpClientModule,
     CoreModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    ChangePasswordPageModule,
+    ChangeBioPageModule,
   ],
   providers: [
     StatusBar,
