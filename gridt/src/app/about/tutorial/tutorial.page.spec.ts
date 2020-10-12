@@ -9,6 +9,7 @@ import { routes } from '../../app-routing.module';
 import { HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { AuthService } from 'src/app/core/auth.service';
 import { of } from 'rxjs';
+import { MovementsPage } from 'src/app/movements/movements.page';
 
 // Mocking authentication is apparently needed to make the router function properly
 const default_headers = {
@@ -47,7 +48,8 @@ describe('TutorialPage', () => {
       ],
       providers: [
         { provide: AuthService, useClass: authServiceStub_succes},
-        { provide: ModalController, useValue: modalSpy }
+        { provide: ModalController, useValue: modalSpy },
+        { provide: Router, useValue: routerSpy}
       ]
     }).compileComponents();
 
@@ -65,10 +67,9 @@ describe('TutorialPage', () => {
 
   //It should navigate to movements if finish is clicked on homepage
   it('should navigate to movements if finish is called on home page', fakeAsync(() => {
-    router.navigate(['/home']); // should set the router url to '/home'
-    tick();  // wait till navigation is comple
-    component.finishTutorial(); // Call the finishTutorial function, which should direct the user to /movements
-    expect(routerSpy.navigateByUrl).toHaveBeenCalledWith('/movements'); // Check if navigation to /movements has been called
+    component.url = "/home";
+    component.finishTutorial();
+    expect(routerSpy.navigateByUrl).toHaveBeenCalledWith('/movements');
   }));
 
   //It sould dismiss if finish is clicked on the about page

@@ -8,15 +8,16 @@ import { ModalController } from '@ionic/angular';
   styleUrls: ['./tutorial.page.scss'],
 })
 export class TutorialPage implements OnInit {
-
+  url = "";
   constructor(public router: Router,
-              public modalController: ModalController) { }
-
+              public modalController: ModalController) {
+                this.url = this.router.url;
+              }
   finishTutorial() {
-    if ( this.router.url === "/home" ) {
+    console.log(this.url);
+    if ( this.url === "/home" ) {
       this.router.navigateByUrl('/movements');
-    }
-    else {
+    } else {
       this.modalController.dismiss();
     }
   }
