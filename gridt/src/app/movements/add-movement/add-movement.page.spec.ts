@@ -23,8 +23,7 @@ class AuthServiceStub {
 describe("AddMovementPage", () => {
   let component: AddMovementPage;
   let fixture: ComponentFixture<AddMovementPage>;
-  let authSpy: AuthService;
-  const alertSpy: AlertController = jasmine.createSpyObj("alertSpy", ["create", "dismiss"]);
+  let alertSpy: AlertController = jasmine.createSpyObj("alertSpy", ["create", "dismiss"]);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -117,7 +116,7 @@ describe("AddMovementPage", () => {
       location: "Groningen"
     });
     fixture.detectChanges();
-    expect(submitEl.disabled).toBeTruthy();
+    expect(submitEl.disabled).toBe(true);
   });
 
   it("should disable the confirm button when the short description is missing", () => {
@@ -131,7 +130,7 @@ describe("AddMovementPage", () => {
       location: "Groningen"
     });
     fixture.detectChanges();
-    expect(submitEl.disabled).toBeTruthy();
+    expect(submitEl.disabled).toBe(true);
   });
 
   it("should disable the confirm button when the interval is filled in incorrectly", () => {
@@ -145,7 +144,7 @@ describe("AddMovementPage", () => {
       location: "Groningen"
     });
     fixture.detectChanges();
-    expect(submitEl.disabled).toBeTruthy();
+    expect(submitEl.disabled).toBe(true);
   });
 
   it("should disable the confirm button when the category is filled in incorrectly", () => {
@@ -159,7 +158,7 @@ describe("AddMovementPage", () => {
       location: "Groningen"
     });
     fixture.detectChanges();
-    expect(submitEl.disabled).toBeTruthy();
+    expect(submitEl.disabled).toBe(true);
   });
 
   it("should disable the confirm button when the location is filled in incorrectly", () => {
@@ -173,6 +172,6 @@ describe("AddMovementPage", () => {
       category: "Community",
     });
     fixture.detectChanges();
-    expect(submitEl.disabled).toBeTruthy();
+    expect(submitEl.disabled).toBe(true);
   });
 });
