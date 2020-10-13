@@ -62,7 +62,7 @@ describe("AddMovementPage", () => {
     compiled.form.patchValue({
       name: "test",
       short_description: "this is a short description",
-      description: "this is a longer description that the short description to be able to tell the difference",
+      description: "this is a longer description than the short description to be able to tell the difference",
       interval: "daily",
       category: "Community",
       location: "Groningen"
@@ -95,7 +95,7 @@ describe("AddMovementPage", () => {
     const compiled = fixture.componentInstance;
     compiled.form.patchValue({
       short_description: "this is a short description",
-      description: "this is a longer description that the short description to be able to tell the difference",
+      description: "this is a longer description than the short description to be able to tell the difference",
       interval: "daily",
       category: "Community",
       location: "Groningen"
@@ -110,7 +110,7 @@ describe("AddMovementPage", () => {
     compiled.form.patchValue({
       name: "test",
       short_description: "short",
-      description: "this is a longer description that the short description to be able to tell the difference",
+      description: "this is a longer description than the short description to be able to tell the difference",
       interval: "daily",
       category: "Community",
       location: "Groningen"
@@ -124,7 +124,7 @@ describe("AddMovementPage", () => {
     const compiled = fixture.componentInstance;
     compiled.form.patchValue({
       name: "test",
-      description: "this is a longer description that the short description to be able to tell the difference",
+      description: "this is a longer description than the short description to be able to tell the difference",
       interval: "daily",
       category: "Community",
       location: "Groningen"
@@ -139,7 +139,7 @@ describe("AddMovementPage", () => {
     compiled.form.patchValue({
       name: "test",
       short_description: "this is a short description",
-      description: "this is a longer description that the short description to be able to tell the difference",
+      description: "this is a longer description than the short description to be able to tell the difference",
       category: "Community",
       location: "Groningen"
     });
@@ -153,7 +153,7 @@ describe("AddMovementPage", () => {
     compiled.form.patchValue({
       name: "test",
       short_description: "this is a short description",
-      description: "this is a longer description that the short description to be able to tell the difference",
+      description: "this is a longer description than the short description to be able to tell the difference",
       interval: "daily",
       location: "Groningen"
     });
@@ -167,7 +167,7 @@ describe("AddMovementPage", () => {
     compiled.form.patchValue({
       name: "test",
       short_description: "this is a short description",
-      description: "this is a longer description that the short description to be able to tell the difference",
+      description: "this is a longer description than the short description to be able to tell the difference",
       interval: "daily",
       category: "Community",
     });
