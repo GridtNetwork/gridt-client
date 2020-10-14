@@ -51,7 +51,7 @@ export class ApiService {
       `${this.URL}/identity`,
       options
     )),
-    catchError( this.handleBadAuth())
+    catchError( this.handleBadAuth() )
   );
 
   /*
