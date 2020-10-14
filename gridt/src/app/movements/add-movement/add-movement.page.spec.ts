@@ -68,7 +68,7 @@ describe("AddMovementPage", () => {
       location: "Groningen"
     });
     fixture.detectChanges();
-    expect(submitEl.disabled).not.toBeTruthy();
+    expect(submitEl.disabled).not.toBe(true);
   });
 
   it("should not disable the confirm button when only the description is missing", () => {
@@ -82,12 +82,12 @@ describe("AddMovementPage", () => {
       location: "Groningen"
     });
     fixture.detectChanges();
-    expect(submitEl.disabled).not.toBeTruthy();
+    expect(submitEl.disabled).not.toBe(true);
   });
 
   it("should disable the confirm button when the form is empty", () => {
     const submitEl = fixture.debugElement.nativeElement.querySelector("#confirmCreation");
-    expect(submitEl.disabled).toBeTruthy();
+    expect(submitEl.disabled).toBe(true);
   });
 
   it("should disable the confirm button when the name is filled in incorrectly", () => {
@@ -101,7 +101,7 @@ describe("AddMovementPage", () => {
       location: "Groningen"
     });
     fixture.detectChanges();
-    expect(submitEl.disabled).toBeTruthy();
+    expect(submitEl.disabled).toBe(true);
   });
 
   it("should disable the confirm button when the short description is filled in incorrectly", () => {
