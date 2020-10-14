@@ -6,6 +6,7 @@ import { MovementsDetailPage } from "./movements-detail.page";
 import { AuthService } from "src/app/core/auth.service";
 import { of } from "rxjs";
 import { AlertController } from "@ionic/angular";
+import { SubscriptionHolder } from 'src/app/core/models/subscription-holder.model';
 
 const default_headers = {
   headers: new HttpHeaders({
@@ -56,10 +57,8 @@ describe("MovementsDetailPage", () => {
   });
 
   it("should unsubscribe all subscriptions when leaving the page", () => {
-    component['movSubSubscription'] = of(true).subscribe();
-    component['movUnsubSubscription'] = of(true).subscribe();
+    spyOn( SubscriptionHolder.prototype, 'cancelAllSubscriptions');
     component.ngOnDestroy();
-    expect(component['movSubSubscription'].closed).toBeTruthy();
-    expect(component['movUnsubSubscription'].closed).toBeTruthy();
+    expect(SubscriptionHolder.prototype.cancelAllSubscriptions).toHaveBeenCalled();
   });
 });

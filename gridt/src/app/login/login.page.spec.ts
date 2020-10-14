@@ -4,9 +4,9 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
+import { SubscriptionHolder } from 'src/app/core/models/subscription-holder.model';
 
 import { LoginPage } from './login.page';
-import { of } from 'rxjs';
 
 describe('LoginPage', () => {
   let component: LoginPage;
@@ -21,7 +21,7 @@ describe('LoginPage', () => {
         RouterTestingModule.withRoutes([]),
         FormsModule,
         IonicModule,
-      ],
+      ]
     })
     .compileComponents();
   }));
@@ -37,8 +37,8 @@ describe('LoginPage', () => {
   });
 
   it("should unsubscribe all subscriptions when leaving the page", () => {
-    component['loginSubscription'] = of(true).subscribe();
+    spyOn( SubscriptionHolder.prototype, 'cancelAllSubscriptions');
     component.ngOnDestroy();
-    expect(component['loginSubscription'].closed).toBeTruthy();
+    expect(SubscriptionHolder.prototype.cancelAllSubscriptions).toHaveBeenCalled();
   });
 });

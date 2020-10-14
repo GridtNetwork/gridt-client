@@ -6,7 +6,7 @@ import { FormsModule } from "@angular/forms";
 import { IonicModule, AlertController } from "@ionic/angular";
 
 import { RegisterPage } from "./register.page";
-import { of } from 'rxjs';
+import { SubscriptionHolder } from 'src/app/core/models/subscription-holder.model';
 
 describe("RegisterPage", () => {
   let component: RegisterPage;
@@ -59,8 +59,8 @@ describe("RegisterPage", () => {
   });
 
   it("should unsubscribe all subscriptions when leaving the page", () => {
-    component['registerSubscription'] = of(true).subscribe();
+    spyOn( SubscriptionHolder.prototype, 'cancelAllSubscriptions');
     component.ngOnDestroy();
-    expect(component['registerSubscription'].closed).toBeTruthy();
+    expect(SubscriptionHolder.prototype.cancelAllSubscriptions).toHaveBeenCalled();
   });
 });

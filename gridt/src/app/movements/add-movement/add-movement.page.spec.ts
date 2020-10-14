@@ -8,6 +8,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AddMovementPage } from './add-movement.page';
 import { AuthService } from 'src/app/core/auth.service';
 import { AlertController } from '@ionic/angular';
+import { SubscriptionHolder } from 'src/app/core/models/subscription-holder.model';
 
 const default_headers = {
   headers: new HttpHeaders({
@@ -58,10 +59,8 @@ describe('AddMovementPage', () => {
   });
 
   it("should unsubscribe all subscriptions when leaving the page", () => {
-    component['createMovementSubscription'] = of(true).subscribe();
-    component['getMovementSubscription'] = of(true).subscribe();
+    spyOn( SubscriptionHolder.prototype, 'cancelAllSubscriptions');
     component.ngOnDestroy();
-    expect(component['getMovementSubscription'].closed).toBeTruthy();
-    expect(component['createMovementSubscription'].closed).toBeTruthy();
+    expect(SubscriptionHolder.prototype.cancelAllSubscriptions).toHaveBeenCalled();
   });
 });
