@@ -41,7 +41,7 @@ let mock_movements: Movement[] = [
     id: 112312983,
     name: "Flossing",
     short_description: "Floss every day",
-    description: "We floss every day because it is good for our theeth.",
+    description: "We floss every day because it is good for our teeth.",
     subscribed: true,
     interval: "daily"
   }
@@ -243,7 +243,7 @@ describe("ApiService when authentication is succesful", () => {
     const flossing_movement = {
       name: "Flossing",
       short_description: "Floss every day",
-      description: "We floss every day because it is good for our theeth.",
+      description: "We floss every day because it is good for our teeth.",
       subscribed: true,
       interval: "daily"
     } as Movement;
