@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../../core/auth.service';
-import { SubscriptionHolder } from 'src/app/core/models/subscription-holder.model';
+import { SubscriptionHolder } from 'src/app/core/subscription-holder.extendableClass';
 
 @Component({
   selector: 'app-register',

@@ -7,7 +7,7 @@ import { map, flatMap, take } from 'rxjs/operators';
 
 import { ApiService } from '../../core/api.service';
 import { Movement } from '../../core/models/movement.model';
-import { SubscriptionHolder } from 'src/app/core/models/subscription-holder.model';
+import { SubscriptionHolder } from 'src/app/core/subscription-holder.extendableClass';
 
 @Component({
   selector: 'app-movements-detail',

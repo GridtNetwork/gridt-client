@@ -8,7 +8,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AddMovementPage } from './add-movement.page';
 import { AuthService } from 'src/app/core/auth.service';
 import { AlertController } from '@ionic/angular';
-import { SubscriptionHolder } from 'src/app/core/models/subscription-holder.model';
+import { SubscriptionHolder } from 'src/app/core/subscription-holder.extendableClass';
 
 const default_headers = {
   headers: new HttpHeaders({

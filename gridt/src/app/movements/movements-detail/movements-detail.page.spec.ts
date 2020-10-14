@@ -6,7 +6,7 @@ import { MovementsDetailPage } from "./movements-detail.page";
 import { AuthService } from "src/app/core/auth.service";
 import { of } from "rxjs";
 import { AlertController } from "@ionic/angular";
-import { SubscriptionHolder } from 'src/app/core/models/subscription-holder.model';
+import { SubscriptionHolder } from 'src/app/core/subscription-holder.extendableClass';
 
 const default_headers = {
   headers: new HttpHeaders({

@@ -6,7 +6,7 @@ import { FormsModule } from "@angular/forms";
 import { IonicModule, AlertController } from "@ionic/angular";
 
 import { RegisterPage } from "./register.page";
-import { SubscriptionHolder } from 'src/app/core/models/subscription-holder.model';
+import { SubscriptionHolder } from 'src/app/core/subscription-holder.extendableClass';
 
 describe("RegisterPage", () => {
   let component: RegisterPage;

@@ -4,7 +4,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
-import { SubscriptionHolder } from 'src/app/core/models/subscription-holder.model';
+import { SubscriptionHolder } from 'src/app/core/subscription-holder.extendableClass';
 
 import { LoginPage } from './login.page';
 
@@ -36,9 +36,15 @@ describe('LoginPage', () => {
     expect(component).toBeTruthy();
   });
 
+  it("should store all subscriptions in the subscriptionHolder", () => {
+    spyOn( SubscriptionHolder.prototype, 'getAllSubscriptions');
+    expect(component.getAllSubscriptions.length).toBeGreaterThanOrEqual(1);
+  });
+
   it("should unsubscribe all subscriptions when leaving the page", () => {
     spyOn( SubscriptionHolder.prototype, 'cancelAllSubscriptions');
     component.ngOnDestroy();
     expect(SubscriptionHolder.prototype.cancelAllSubscriptions).toHaveBeenCalled();
+    expect(SubscriptionHolder.prototype.getAllSubscriptions.length).toBe(0);
   });
 });

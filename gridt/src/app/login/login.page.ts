@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { LoadingController, AlertController } from '@ionic/angular';
 import { AuthService } from '../core/auth.service';
-import { SubscriptionHolder } from '../core/models/subscription-holder.model';
+import { SubscriptionHolder } from '../core/subscription-holder.extendableClass';
 
 @Component({
   selector: 'app-login',

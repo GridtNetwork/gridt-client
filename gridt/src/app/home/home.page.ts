@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 import { ApiService } from '../core/api.service';
 import { Movement } from '../core/models/movement.model';
-import { SubscriptionHolder } from '../core/models/subscription-holder.model';
+import { SubscriptionHolder } from '../core/subscription-holder.extendableClass';
 import { User } from '../core/models/user.model';
 import { SwapService } from '../core/swap.service';
 
