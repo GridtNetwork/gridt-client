@@ -7,7 +7,14 @@
     justify-content: space-between;
 }
 
-.movement-card{
+.movement-card {
     margin: 5px;
     margin-bottom: 10px;
+}
+
+.floating-icon {
+    vertical-align: top;
+    align-self: start;
+    align-items: flex-start;
+    align-content: flex-start;
 }
