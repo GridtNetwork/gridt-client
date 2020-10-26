@@ -17,6 +17,27 @@ export class AddMovementPage implements OnInit, OnDestroy {
     'twice daily',
     'weekly'
   ];
+  locations: string[] = [
+    'Groningen',
+    'Friesland',
+    'Drenthe',
+    'Overijssel',
+    'Flevoland',
+    'Noord-Holland',
+    'Zuid-Holland',
+    'Gelderland',
+    'Utrecht',
+    'Limburg',
+    'Noord-Brabant',
+    'Zeeland'
+  ];
+  categories: string[] = [
+    'Health & Fitness',
+    'Mind & Learning',
+    'Community',
+    "Sustainable Planet",
+    "Miscellaneous"
+  ];
 
   constructor(
     private router: Router,
@@ -46,7 +67,9 @@ export class AddMovementPage implements OnInit, OnDestroy {
           Validators.maxLength(100)
         ]
       }),
-      interval: new FormControl("", [Validators.required])
+      interval: new FormControl("", [Validators.required]),
+      category: new FormControl("", [Validators.required]),
+      location: new FormControl("", [Validators.required])
     });
   }
 
