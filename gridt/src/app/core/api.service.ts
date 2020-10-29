@@ -84,8 +84,8 @@ export class ApiService {
    */
   private replace_movement_in_bsubject(bsubject: BehaviorSubject<Movement[]>, movement: Movement) {
     let all_movements = bsubject.getValue();
-    const index = all_movements.findIndex(m => m.name == movement.name);
-    if (index != -1) {
+    const index = all_movements.findIndex(m => m.name === movement.name);
+    if (index !== -1) {
       all_movements[index] = movement;
     } else {
       all_movements.push(movement);
@@ -110,7 +110,7 @@ export class ApiService {
         this.replace_movement_in_bsubject(this._subscriptions$, movement);
         this.replace_movement_in_bsubject(this._allMovements$, movement);
       })
-    )
+    );
   }
 
   /**
