@@ -1,16 +1,16 @@
 import { Type } from "@angular/core";
 import { TestBed } from "@angular/core/testing";
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from "@angular/common/http";
 
-import { cold } from 'jasmine-marbles';
+import { cold } from "jasmine-marbles";
 import { of, throwError } from "rxjs";
 
-import { AuthService } from './auth.service';
+import { AuthService } from "./auth.service";
 import { ApiService } from "./api.service";
 
 import { Movement } from "./models/movement.model";
 import { Identity } from "./models/identity.model";
-import { User } from './models/user.model';
+import { User } from "./models/user.model";
 
 let mock_movements: Movement[] = [
   {
@@ -95,7 +95,7 @@ class authServiceStub_failed {
 describe("ApiService when authentication fails", () => {
   beforeEach(() => {
     httpClientStub = jasmine.createSpyObj(
-      'httpClient', ['get', 'post', 'put']
+      "httpClient", ["get", "post", "put"]
     );
 
     TestBed.configureTestingModule({
@@ -120,32 +120,32 @@ describe("ApiService when authentication fails", () => {
       name: "Flossing",
       short_description: "Floss once a day",
       interval: "daily"
-    })).toBeObservable(cold("#", null, "Can't authenticate: no credentials"));
+    })).toBeObservable( cold("#", null, "Can't authenticate: no credentials") );
   });
 
-  it('should fail to read identity from server when not logged in', () => {
+  it("should fail to read identity from server when not logged in", () => {
     expect(service.userIdentity$())
-    .toBeObservable(cold("#", {}, "Can't authenticate: no credentials"));
+    .toBeObservable( cold("#", {}, "Can't authenticate: no credentials") );
   });
 
-  it('should fail to update bio when not logged in', () => {
-    let mock_bio = "My very first bio."
+  it("should fail to update bio when not logged in", () => {
+    let mock_bio = "My very first bio.";
     expect(service.changeBio$( mock_bio ))
-    .toBeObservable( cold('#', null, "Can't authenticate: no credentials"));
+    .toBeObservable( cold("#", null, "Can't authenticate: no credentials") );
   });
 
-  it('should fail to update password when not logged in', () => {
+  it("should fail to update password when not logged in", () => {
     let old_password = "ABCDEF";
     let new_password = "abcdef";
-    expect(service.changePassword$( old_password, new_password )).toBeObservable( cold('#', null, "Can't authenticate: no credentials"));
+    expect(service.changePassword$( old_password, new_password )).toBeObservable( cold("#", null, "Can't authenticate: no credentials") );
   });
 });
 
-describe("ApiService when authentication is succesful", () => {
+describe("ApiService when authentication is successful", () => {
 
   beforeEach(() => {
     httpClientStub = jasmine.createSpyObj(
-      'httpClient', ['get', 'post', 'put']
+      "httpClient", ["get", "post", "put"]
     );
 
     TestBed.configureTestingModule({
@@ -165,7 +165,7 @@ describe("ApiService when authentication is succesful", () => {
     expect(service).toBeTruthy();
   });
 
-  it("should be able to create movements", () => {
+  it("should be able to create movements without optional options", () => {
     httpClientStub.post.and.returnValue(of(
       { "message": "Successfully created movement." }
     ));
@@ -189,13 +189,41 @@ describe("ApiService when authentication is succesful", () => {
     );
   });
 
+  it("should be able to create movements with optional options", () => {
+    httpClientStub.post.and.returnValue(of(
+      { "message": "Successfully created movement." }
+    ));
+
+    expect(service.createMovement$({
+      name: "Flossing",
+      short_description: "Floss once a day",
+      interval: "daily",
+      location: "Groningen",
+      category: ["Community"]
+    })).toBeObservable(
+      cold("(s|)", {s: "Successfully created movement."})
+    );
+
+    expect(httpClientStub.post).toHaveBeenCalledWith(
+      `${service.URL}/movements`,
+      {
+        name: "Flossing",
+        short_description: "Floss once a day",
+        interval: "daily",
+        location: "Groningen",
+        category: ["Community"]
+      },
+      default_headers
+    );
+  });
+
   it("should be able to request movements", () => {
     httpClientStub.get.and.returnValue(of(mock_movements));
 
     service.getAllMovements();
 
     expect(service.allMovements$).toBeObservable(
-      cold('(m)', {e: [], m: mock_movements})
+      cold("(m)", {e: [], m: mock_movements})
     );
 
     expect(httpClientStub.get).toHaveBeenCalledWith(
@@ -230,7 +258,7 @@ describe("ApiService when authentication is succesful", () => {
     service.getSubscriptions();
 
     expect(service.subscriptions$).toBeObservable(
-      cold('m', {m: mock_subscriptions})
+      cold("m", {m: mock_subscriptions})
     );
 
     expect(httpClientStub.get).toHaveBeenCalledWith(
@@ -262,19 +290,19 @@ describe("ApiService when authentication is succesful", () => {
     mock_movements.push(flossing_movement);
 
     expect(service.allMovements$).toBeObservable(
-      cold('m', {
+      cold("m", {
         m: mock_movements
       })
     );
 
     expect(service.subscriptions$).toBeObservable(
-      cold('m', {
+      cold("m", {
         m: mock_movements.filter(m => m.subscribed)
       })
     );
   });
 
-  it('should be able to swap a leader.', () => {
+  it("should be able to swap a leader.", () => {
     const idiot_user = { id: 1, username: "idiot" } as User;
     mock_subscriptions[1].leaders = [idiot_user];
     const old_subscriptions = [...mock_subscriptions];
@@ -306,17 +334,17 @@ describe("ApiService when authentication is succesful", () => {
     );
   });
 
-  it('should be able to retreive identity', () => {
+  it("should be able to retreive identity", () => {
     httpClientStub.get.and.returnValue(of(mock_identity[0]));
 
-    expect(service.userIdentity$()).toBeObservable(cold('(a|)', {a: mock_identity[0]}));
+    expect(service.userIdentity$()).toBeObservable(cold("(a|)", {a: mock_identity[0]}));
     expect(httpClientStub.get).toHaveBeenCalledWith(
       `${service.URL}/identity`,
       default_headers
     );
   });
 
-  it('should be able to update the user bio', () => {
+  it("should be able to update the user bio", () => {
     httpClientStub.put.and.returnValue(of(
       { "message": "Succesfully updated bio." }
     ));
@@ -331,7 +359,7 @@ describe("ApiService when authentication is succesful", () => {
     );
   });
 
-  it('should be able to update the user password', () => {
+  it("should be able to update the user password", () => {
     httpClientStub.post.and.returnValue(of(
       { "message": "Succesfully replaced password." }
     ));

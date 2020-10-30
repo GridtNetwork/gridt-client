@@ -38,5 +38,15 @@ export interface Movement {
    */
   description?: string;
 
+    /**
+   * A location where the movement is active.
+   */
+  location?: string;
+
+    /**
+   * A number of categories between 1-5 to help sort the movements.
+   */
+  category?: Array<string>;
+
   interval: "daily" | "twice daily" | "weekly";
 }
