@@ -44,7 +44,7 @@ export interface Movement {
   location?: string;
 
     /**
-   * A number of catagories between 1-5 to help sort the movements.
+   * A number of categories between 1-5 to help sort the movements.
    */
   category?: Array<string>;
 
