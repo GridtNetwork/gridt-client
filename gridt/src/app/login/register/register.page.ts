@@ -45,7 +45,7 @@ export class RegisterPage implements OnInit, OnDestroy {
    * Do API call and handle loading element.
    */
   public async register (username:string, email: string, password: string ) {
-    const el = await this.loadingCtrl.create({ 
+    const el = await this.loadingCtrl.create({
       keyboardClose: true,
       message: 'Signing you up...' 
     });
