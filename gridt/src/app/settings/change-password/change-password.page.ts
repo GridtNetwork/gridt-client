@@ -18,7 +18,6 @@ export class ChangePasswordPage {
   edit_password$: boolean = true;
 
   constructor(
-    private SetService: SettingsService,
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController,
     public popoverCntrl: PopoverController,
@@ -46,7 +45,7 @@ export class ChangePasswordPage {
 
     el.present();
 
-    this.api.changePassword$(form.value.old_password, form.value.new_password).pipe(timeout(2500)).subscribe(
+    this.api.changePassword$(form.value.old_password, form.value.new_password).subscribe(
       () => {
         el.dismiss();
         this.closePopover();

@@ -22,7 +22,7 @@ export class SettingsPage implements OnInit  {
   private subscriptions: Array<Subscription> = [];
 
   constructor(
-    private SetService: SettingsService,
+    private setService: SettingsService,
     private alertCtrl: AlertController,
     public modalCtrl: ModalController,
     public popoverCntrl: PopoverController,
@@ -30,9 +30,9 @@ export class SettingsPage implements OnInit  {
   ) { }
 
   ngOnInit() {
-    this.identity$ = this.SetService.userIdentity$;
+    this.identity$ = this.setService.userIdentity$;
 
-    this.identity$.pipe(take(1)).subscribe(set => this.gravatar = "https://www.gravatar.com/avatar/" + set.avatar);
+    this.identity$.pipe(take(1)).subscribe(set => this.gravatar = `https://www.gravatar.com/avatar/${set.avatar}`);
 
     this.subscriptions.push( this.identity$.pipe(
       flatMap( () => of(false)),
@@ -42,7 +42,7 @@ export class SettingsPage implements OnInit  {
       }),
     ).subscribe( (val) => {this.isDisabled$ = of(val);}));
 
-    this.SetService.updateIdentity(this.serverWarn$);
+    this.setService.updateIdentity(this.serverWarn$);
 
     this.serverWarn$.asObservable().pipe(
       filter( val => val == true)
@@ -59,7 +59,7 @@ export class SettingsPage implements OnInit  {
   }
 
   public refreshPage(event?: any) {
-    this.SetService.updateIdentity(this.serverWarn$);
+    this.setService.updateIdentity(this.serverWarn$);
     if (event) { event.target.complete(); }
   }
 

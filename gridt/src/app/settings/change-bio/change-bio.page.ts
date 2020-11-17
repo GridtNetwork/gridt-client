@@ -18,7 +18,7 @@ export class ChangeBioPage{
   edit_bio$: boolean = true;
 
   constructor(
-    private SetService: SettingsService,
+    private setService: SettingsService,
     private alertCtrl: AlertController,
     private loadingCtrl: LoadingController,
     public popoverCntrl: PopoverController,
@@ -49,6 +49,7 @@ export class ChangeBioPage{
     this.api.changeBio$(form.value.bio).subscribe(
       () => {
         el.dismiss();
+        this.setService.updateIdentity();
         this.closePopover();
       },
       (error) => {
@@ -56,8 +57,6 @@ export class ChangeBioPage{
         this.showError(error);
       }
     );
-
-    this.SetService.updateIdentity();
   }
 
   async showError(error:string) {
