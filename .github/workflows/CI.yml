@@ -39,4 +39,4 @@ jobs:
         echo Testing the project
         echo ng test headless
         cd gridt
-        npm run test
+        npm run test-headless

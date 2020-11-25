@@ -18,7 +18,8 @@ export class SecureStorageService {
             observer.error(`Key "${key}" does not exist in the secure storage.`);
             return;
           } else {
-            observer.next(value);
+            const data = JSON.parse(value);
+            observer.next(data);
             observer.complete();
           }
         }
@@ -28,7 +29,8 @@ export class SecureStorageService {
 
   set$ (key: string, value: any): Observable<boolean> {
     return new Observable ( (observer) => {
-      SecureStoragePlugin.set({key, value}).then( (succesObj) => {
+      const data = JSON.stringify(value);
+      SecureStoragePlugin.set({key, value: data}).then( (succesObj) => {
         if (succesObj.value) {
           observer.next(true);
         } else {
@@ -53,7 +55,7 @@ export class SecureStorageService {
 
   remove$ (key: string): Observable<boolean> {
     return new Observable ( (observer) => {
-      SecureStoragePlugin.remove().then( (succesObj) => {
+      SecureStoragePlugin.remove({key}).then( (succesObj) => {
         if (succesObj.value) {
           observer.next(true);
           observer.complete();

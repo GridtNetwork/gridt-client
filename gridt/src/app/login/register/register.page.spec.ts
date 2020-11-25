@@ -8,11 +8,18 @@ import { IonicModule, AlertController } from "@ionic/angular";
 import { RegisterPage } from "./register.page";
 
 describe("RegisterPage", () => {
-  //testing suite, (de pagina te testen)
   let component: RegisterPage;
   let fixture: ComponentFixture<RegisterPage>;
-  let alertSpy: AlertController = jasmine.createSpyObj("alertSpy", ["create", "dismiss"]);
-//worden elke test opnieuw geladen
+  let alertSpy: AlertController = jasmine.createSpyObj("alertSpy", {
+    "create": {
+      "present": function() {
+        return true
+      }},
+    "dismiss": function() {
+      return true
+    }}
+  );
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ RegisterPage ],
