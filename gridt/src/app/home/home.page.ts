@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Observable } from 'rxjs';
+import { groupBy } from 'rxjs/operators';
 
 import { ApiService } from '../core/api.service';
 import { Movement } from '../core/models/movement.model';
@@ -14,6 +15,7 @@ import { SwapService } from '../core/swap.service';
 })
 export class HomePage implements OnInit, OnDestroy {
   movements$ = new Observable<Movement[]>();
+  iconName = "grid-outline";
 
   constructor(
     private api: ApiService,
@@ -228,4 +230,14 @@ export class HomePage implements OnInit, OnDestroy {
       }
     );
   }
+
+  changeGrid() {
+    if (this.iconName === "grid-outline") {
+      this.iconName = "list-outline";
+    } else {
+      this.iconName = "grid-outline";
+    }
+  }
+
+
 }

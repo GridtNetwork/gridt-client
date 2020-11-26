@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { HomePageRoutingModule } from './home-routing.module';
+import { HomeMovementsComponent } from "./home-movements/home-movements.component";
 
 import { HomePage } from './home.page';
 
@@ -15,6 +16,6 @@ import { HomePage } from './home.page';
     IonicModule,
     HomePageRoutingModule
   ],
-  declarations: [HomePage]
+  declarations: [HomePage, HomeMovementsComponent]
 })
 export class HomePageModule {}

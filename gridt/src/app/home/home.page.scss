@@ -10,4 +10,33 @@
 .movement-card{
     margin: 5px;
     margin-bottom: 10px;
+    border-radius: 9pt;
 }
+
+.icon{
+    font-size: 40px;
+    float: left;
+}
+.movement-title{
+    text-align: center;
+    font-size: 120px;
+    font-weight: bold;
+}
+
+.small-text{
+    font-size: small;
+}
+
+.checkmark{
+    float: right;
+    font-size: 40px;
+}
+
+.accept-button {
+    font-size: 20px;
+    float: right;
+    --padding-end: 0px;
+    --padding-start: 0px;
+    color: var(--ion-color-dark);
+  }
+  

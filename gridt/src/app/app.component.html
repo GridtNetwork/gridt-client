@@ -1,14 +1,14 @@
 <ion-app>
-  <ion-menu contentId="main" side="start" menuId="first" *ngIf="isLoggedIn$ | async">
+  <ion-menu contentId="main" side="start" menuId="first" *ngIf="isLoggedIn$ | async" class="ion-no-padding">
     <ion-header>
-      <ion-toolbar>
+      <ion-toolbar color="primary">
         <ion-title>Menu</ion-title>
       </ion-toolbar>
     </ion-header>
-    <ion-content>
-      <ion-list>
+    <ion-content color="light" class="ion-no-padding">
+      <ion-list class="ion-no-padding">
         <ion-menu-toggle auto-hide="true" *ngFor="let p of appPages">
-          <ion-item [routerDirection]="'root'" [routerLink]="[p.url]">
+          <ion-item [routerDirection]="'root'" [routerLink]="[p.url]" color="light">
             <ion-icon slot="start" [name]="p.icon"></ion-icon>
             <ion-label>
               {{p.title}}
@@ -17,9 +17,9 @@
         </ion-menu-toggle>
       </ion-list>
     </ion-content>
-    <ion-footer>
-      <ion-button color="dark" expand="full" (click)="auth.logout()" href="/">
-        <ion-icon class="ion-padding-end" name="exit-outline"></ion-icon>
+    <ion-footer color="light">
+      <ion-button class="ion-no-padding, ion-no-margin" color="dark" expand="full" (click)="auth.logout()" href="/">
+        <ion-icon name="exit-outline"></ion-icon>
         Logout
       </ion-button>
     </ion-footer>
