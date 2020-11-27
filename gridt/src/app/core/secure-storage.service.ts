@@ -62,7 +62,7 @@ export class SecureStorageService {
         } else {
           observer.error(`Could not remove ${key} from the secure storage.`);
         }
-      })
+      });
     });
   }
 }

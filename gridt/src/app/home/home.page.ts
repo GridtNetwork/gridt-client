@@ -1,11 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Observable } from 'rxjs';
-import { groupBy } from 'rxjs/operators';
+import { catchError, groupBy, take } from 'rxjs/operators';
 
 import { ApiService } from '../core/api.service';
 import { Movement } from '../core/models/movement.model';
 import { User } from '../core/models/user.model';
+import { SecureStorageService } from '../core/secure-storage.service';
 import { SwapService } from '../core/swap.service';
 
 @Component({
@@ -20,12 +21,18 @@ export class HomePage implements OnInit, OnDestroy {
   constructor(
     private api: ApiService,
     private alertCtrl: AlertController,
-    private swapService: SwapService
+    private swapService: SwapService,
+    private secStorage: SecureStorageService
   ) { }
 
   ngOnInit() {
     this.movements$ = this.api.subscriptions$;
     this.api.getSubscriptions();
+    console.log(this.iconName);
+    this.secStorage.get$("iconName").pipe(take(1)).subscribe(
+      (name: string) => this.iconName = name
+    );
+    console.log(this.iconName);
   }
 
   ngOnDestroy() {
@@ -69,6 +76,14 @@ export class HomePage implements OnInit, OnDestroy {
     }
 
     return date;
+  }
+
+  setIconName(iconName: string){
+    this.secStorage.set$("iconName", iconName).subscribe(
+      () => this.secStorage.get$("iconName").pipe(take(1)).subscribe(
+        (name: string) => this.iconName = name
+      )
+    );
   }
 
   /**
@@ -226,18 +241,18 @@ export class HomePage implements OnInit, OnDestroy {
             message: error,
             buttons: ['Okay']
         })
-        .then(alertEl => alertEl.present())
+        .then(alertEl => alertEl.present());
       }
     );
   }
-
+showMenu(){
+  this.secStorage.remove$("iconName").subscribe();
+}
   changeGrid() {
     if (this.iconName === "grid-outline") {
-      this.iconName = "list-outline";
+      this.setIconName("list-outline");
     } else {
-      this.iconName = "grid-outline";
+      this.setIconName("grid-outline");
     }
   }
-
-
 }

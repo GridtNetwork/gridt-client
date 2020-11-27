@@ -27,12 +27,12 @@
 
   <!-- Can be rewritten as an if/else statement together with previous if-->
   <ion-grid *ngIf="movements$ && (movements$ | async).length > 0">
-    <ion-row>
-      <ion-col>
-        <ion-button class="ion-float-left" color="dark">
+    <ion-row class="ion-justify-content-center">
+      <ion-col offset-lg="auto">
+        <ion-button (click)="showMenu()" class="filter" color="dark">
           <ion-icon name="filter-outline"></ion-icon>
         </ion-button>
-        <ion-button (click)="changeGrid()" class="ion-float-right" color="dark">
+        <ion-button (click)="changeGrid()" class="grid" color="dark">
           <ion-icon [name]="iconName"></ion-icon>
         </ion-button>
       </ion-col>

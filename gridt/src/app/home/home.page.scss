@@ -39,4 +39,13 @@
     --padding-start: 0px;
     color: var(--ion-color-dark);
   }
+
+  .filter{
+      float: left;
+      margin-inline-start: 5%;
+  }
   
+  .grid{
+      float: right;
+      margin-inline-end: 5%;
+  }
