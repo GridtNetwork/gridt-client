@@ -219,11 +219,9 @@ export class HomePage implements OnInit, OnDestroy {
     el.present();
   }
 
-  async getRandomCompliment() {
-
+  getRandomCompliment() {
     let username: string;
     this.settingsService.userIdentity$.pipe(take(1)).subscribe(identity => username = identity.username);
-
 
     let compliments = [
       "Awesome, " + username + "!",

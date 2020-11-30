@@ -9,18 +9,21 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { of } from 'rxjs';
 import { AuthService } from './core/auth.service';
+import { SettingsService } from './core/settings.service';
 
 class AuthServiceStub {
   isLoggedIn$ = of(true);
 }
 
 describe('AppComponent', () => {
+  let setSpy: SettingsService;
   let splashScreenSpy, platformReadySpy, platformSpy, fixture, app, appElement;
 
   beforeEach(async(() => {
     splashScreenSpy = jasmine.createSpyObj('SplashScreen', ['hide']);
     platformReadySpy = Promise.resolve(1);
     platformSpy = jasmine.createSpyObj('Platform', { ready: platformReadySpy });
+    setSpy = jasmine.createSpyObj('SettingsService', ['updateIdentity']);
 
     TestBed.configureTestingModule({
       declarations: [AppComponent],
@@ -28,6 +31,7 @@ describe('AppComponent', () => {
       providers: [
         { provide: SplashScreen, useValue: splashScreenSpy },
         { provide: Platform, useValue: platformSpy },
+        { provide: SettingsService, useValue: setSpy},
         { provide: AuthService, useClass: AuthServiceStub }
       ],
       imports: [ RouterTestingModule.withRoutes([]), HttpClientModule ],

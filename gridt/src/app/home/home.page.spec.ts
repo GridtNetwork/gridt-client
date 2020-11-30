@@ -9,6 +9,7 @@ import { HomePage } from './home.page';
 import { AuthService } from '../core/auth.service';
 import { ApiService } from '../core/api.service';
 import { Movement } from '../core/models/movement.model';
+import { SettingsService } from '../core/settings.service';
 
 class AuthServiceStub {
   isLoggedIn$ = of(true);
@@ -18,6 +19,7 @@ describe('HomePage', () => {
   let component: HomePage;
   let fixture: ComponentFixture<HomePage>;
   let apiSpy: ApiService;
+  let setSpy: SettingsService;
   let alertSpy: AlertController = jasmine.createSpyObj("alertSpy", ["create", "dismiss"]);
 
 
@@ -46,6 +48,7 @@ describe('HomePage', () => {
       providers: [
         { provide: ApiService, useValue: apiSpy },
         { provide: AlertController, useValue: alertSpy },
+        { provide: SettingsService, useValue: setSpy},
         { provide: AuthService, useClass: AuthServiceStub }
       ]
     }).compileComponents();
