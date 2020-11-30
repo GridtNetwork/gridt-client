@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AlertController } from '@ionic/angular';
+import { error } from 'protractor';
 import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 
@@ -17,7 +18,7 @@ import { SwapService } from '../core/swap.service';
 })
 export class HomePage implements OnInit, OnDestroy {
   movements$ = new Observable<Movement[]>();
-  iconName = "grid-outline";
+  iconName: string;
   avatar: string;
 
   constructor(
@@ -31,13 +32,12 @@ export class HomePage implements OnInit, OnDestroy {
   ngOnInit() {
     this.movements$ = this.api.subscriptions$;
     this.api.getSubscriptions();
-    console.log(this.iconName);
-    this.secStorage.get$("iconName").pipe(take(1)).subscribe(
-      (name: string) => this.iconName = name
-    );
+    this.iconName = "grid-outline"
+    this.secStorage.get$("iconName").pipe(take(1)).subscribe({
+      next(name: string) { this.iconName = name; },
+      error() {this.iconName = "grid-outline"; }
+    });
 
-    this.settingsService.userIdentity$.pipe(take(1)).subscribe(identity => this.avatar = identity.avatar);
-    console.log(this.iconName);
   }
 
   ngOnDestroy() {
@@ -250,7 +250,7 @@ export class HomePage implements OnInit, OnDestroy {
       }
     );
   }
-showMenu(){
+showMenu() {
   this.secStorage.remove$("iconName").subscribe();
 }
   changeGrid() {

@@ -1,14 +1,16 @@
-import { of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { AlertController } from '@ionic/angular';
-
 import { User } from '../core/models/user.model';
 import { HomePage } from './home.page';
 import { AuthService } from '../core/auth.service';
 import { ApiService } from '../core/api.service';
 import { Movement } from '../core/models/movement.model';
+import { SettingsService } from '../core/settings.service';
+import { Identity } from '../core/models/identity.model';
+
 
 class AuthServiceStub {
   isLoggedIn$ = of(true);
@@ -18,12 +20,11 @@ describe('HomePage', () => {
   let component: HomePage;
   let fixture: ComponentFixture<HomePage>;
   let apiSpy: ApiService;
+  let setSpy: SettingsService;
   let alertSpy: AlertController = jasmine.createSpyObj("alertSpy", ["create", "dismiss"]);
-
 
   beforeEach(() => {
     jasmine.clock().install();
-
     apiSpy = jasmine.createSpyObj('ApiService',
       {
         getSubscriptions: () => {},
@@ -37,7 +38,33 @@ describe('HomePage', () => {
         } as User)
       }
     );
-
+    let mock_id: Identity[] = [
+      {
+        id: 1,
+        username: "ALittleOne",
+        bio: "Less then one foot tall.",
+        email: "a_little@one.com",
+        avatar: "arandomstring"
+      },
+      {
+        id: 2,
+        username: "JoeFlosser",
+        bio: "Clean as ever.",
+        email: "joe@flosser.com",
+        avatar: "arandomstring"
+      },
+      {
+        id: 3,
+        username: "YoMamma",
+        bio: "When I walk by, you experience a solar eclipse.",
+        email: "YoMamma@isfat.com",
+        avatar: "arandomstring"
+      }
+    ];
+    setSpy = jasmine.createSpyObj('SettingsService',
+    {
+      userIdentity$: of(mock_id[1]),
+    });
 
     TestBed.configureTestingModule({
       declarations: [ HomePage ],
@@ -46,6 +73,7 @@ describe('HomePage', () => {
       providers: [
         { provide: ApiService, useValue: apiSpy },
         { provide: AlertController, useValue: alertSpy },
+        { provide: SettingsService, useValue: setSpy },
         { provide: AuthService, useClass: AuthServiceStub }
       ]
     }).compileComponents();
