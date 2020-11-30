@@ -14,7 +14,7 @@
   <!-- First an explicit search bar -->
   <ion-row>
     <ion-col size-md="6" offset-md="3">
-      <ion-toolbar>
+      <ion-toolbar color="light">
         <ion-searchbar 
           showCancelButton="focus" 
           [(ngModel)]="searchText"
@@ -40,7 +40,7 @@
   -->
       <ion-row>
         <ion-col size-md="6" offset-md="3">
-          <ion-item *ngFor="let movement of movements$ | async | movementFilter: searchText"
+          <ion-item class="health-content" *ngFor="let movement of movements$ | async | movementFilter: searchText"
             [routerLink]="['/', 'movements', movement.name]" 
             detail button
           >
@@ -68,7 +68,7 @@
 </ion-content>
 
 <ion-fab vertical="bottom" horizontal="end" slot="fixed" style="padding-right: 0.5rem;">
-  <ion-fab-button color="primary" routerLink="/add">
+  <ion-fab-button color="dark" routerLink="/add">
     <ion-icon name="add"></ion-icon>
   </ion-fab-button>
 </ion-fab> 

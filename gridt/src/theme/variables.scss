@@ -72,6 +72,11 @@
   --ion-color-light-contrast-rgb: 0,0,0;
   --ion-color-light-shade: #d3e0d3;
   --ion-color-light-tint: #f2fff2;
+
+  --ion-item-background: var(--ion-color-light);
+  --ion-toolbar-background: #064e2d;
+  
+
 }
 
 .confirmSignal-alert{
@@ -119,7 +124,7 @@
 }
 
 .sustain-content {
-  --background: var(--ion-color-primary-tint, #30BD30);
+  --background: var(--ion-color-primary-tint,#C5FFA3);
   --color:var(--ion-color-dark,#020461);
 }
 

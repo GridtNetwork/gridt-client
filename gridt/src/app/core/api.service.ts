@@ -242,7 +242,7 @@ export class ApiService {
       catchError( this.handleBadAuth())
     );
   };
-  
+
   /**
   * Changes the biography of the user on the server.
   * @param bio the new bio that the user wants.
