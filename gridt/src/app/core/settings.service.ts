@@ -127,7 +127,7 @@ export class SettingsService {
       take(1), // Makes sure the observable completes
       tap( () => console.debug('Storing Identity in Localstorage') ),
       flatMap( () => this.secStore.set$("identity", identity).pipe(
-          catchError( ()=> throwError(this.error_codes.SETIDFAIL + ": " + this.error_codes.SECSTOREUNAVAILABLE) )
+          catchError( () => throwError(this.error_codes.SETIDFAIL + ": " + this.error_codes.SECSTOREUNAVAILABLE) )
       ))
     );
   }

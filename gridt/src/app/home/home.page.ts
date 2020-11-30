@@ -8,6 +8,8 @@ import { Movement } from "../core/models/movement.model";
 import { User } from "../core/models/user.model";
 import { SecureStorageService } from '../core/secure-storage.service';
 import { SwapService } from "../core/swap.service";
+import { SettingsService } from "../core/settings.service";
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: "app-home",
@@ -21,7 +23,8 @@ export class HomePage implements OnInit, OnDestroy {
     private api: ApiService,
     private alertCtrl: AlertController,
     private swapService: SwapService,
-    private secStore: SecureStorageService
+    private secStore: SecureStorageService,
+    private settingsService: SettingsService
   ) { }
 
   ngOnInit() {
@@ -217,7 +220,11 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   async getRandomCompliment() {
-    let username = "Replacement";
+
+    let username: string;
+    this.settingsService.userIdentity$.pipe(take(1)).subscribe(identity => username = identity.username);
+
+
     let compliments = [
       "Awesome, " + username + "!",
       "Good job, " + username + "!",
@@ -239,16 +246,6 @@ export class HomePage implements OnInit, OnDestroy {
     let index = Math.floor(Math.random() * compliments.length);
     return compliments[index];
   }
-
-//   service.set$("test_key", "test_value").subscribe(
-//     () => service.get$("test_key").subscribe( 
-//       (value: string) => expect(value).toEqual("test_value"),
-//       fail,
-//       done
-//     ),
-//     fail
-//   )        
-// });
 
   async signal(movement: Movement, message?: string) {
     this.api.sendSignal$(movement, message).subscribe(
