@@ -1,12 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Observable } from 'rxjs';
-import { catchError, groupBy, take } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 
 import { ApiService } from '../core/api.service';
 import { Movement } from '../core/models/movement.model';
 import { User } from '../core/models/user.model';
 import { SecureStorageService } from '../core/secure-storage.service';
+import { SettingsService } from '../core/settings.service';
 import { SwapService } from '../core/swap.service';
 
 @Component({
@@ -17,12 +18,14 @@ import { SwapService } from '../core/swap.service';
 export class HomePage implements OnInit, OnDestroy {
   movements$ = new Observable<Movement[]>();
   iconName = "grid-outline";
+  avatar: string;
 
   constructor(
     private api: ApiService,
     private alertCtrl: AlertController,
     private swapService: SwapService,
-    private secStorage: SecureStorageService
+    private secStorage: SecureStorageService,
+    private settingsService: SettingsService
   ) { }
 
   ngOnInit() {
@@ -32,6 +35,8 @@ export class HomePage implements OnInit, OnDestroy {
     this.secStorage.get$("iconName").pipe(take(1)).subscribe(
       (name: string) => this.iconName = name
     );
+
+    this.settingsService.userIdentity$.pipe(take(1)).subscribe(identity => this.avatar = identity.avatar);
     console.log(this.iconName);
   }
 

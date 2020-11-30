@@ -6,6 +6,7 @@ import { Plugins, AppState, Capacitor } from '@capacitor/core';
 import { AuthService } from './core/auth.service';
 import { Observable } from 'rxjs';
 import { filter, flatMap } from 'rxjs/operators';
+import { SettingsService } from './core/settings.service';
 
 @Component({
   selector: 'app-root',
@@ -37,7 +38,8 @@ export class AppComponent implements OnInit, OnDestroy{
     private router: Router,
     private splashScreen: SplashScreen,
     private zone: NgZone,
-    private auth: AuthService
+    private auth: AuthService,
+    private settingsService: SettingsService
   ) {
     this.initializeApp();
   }
@@ -58,6 +60,7 @@ export class AppComponent implements OnInit, OnDestroy{
       filter(event => event instanceof NavigationStart),
       flatMap(() => this.auth.isLoggedIn$)
     );
+    this.settingsService.updateIdentity();
     Plugins.App.addListener(
       'appStateChange',
       this.checkAuthOnResume.bind(this)

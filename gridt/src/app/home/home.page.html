@@ -4,6 +4,11 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>Home</ion-title>
+    <ion-buttons slot="end">
+      <ion-button>
+        <img class="avatar" src="https://gravatar.com/avatar/{{ avatar }}">
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -28,11 +33,12 @@
   <!-- Can be rewritten as an if/else statement together with previous if-->
   <ion-grid *ngIf="movements$ && (movements$ | async).length > 0">
     <ion-row class="ion-justify-content-center">
-      <ion-col offset-lg="auto">
+      <ion-col offset-lg="auto" size-sm="12" size-md="6" size-lg="4">
         <ion-button (click)="showMenu()" class="filter" color="dark">
           <ion-icon name="filter-outline"></ion-icon>
         </ion-button>
-        <p></p>
+      </ion-col>
+      <ion-col>
         <ion-button (click)="changeGrid()" class="grid" color="dark">
           <ion-icon [name]="iconName"></ion-icon>
         </ion-button>
