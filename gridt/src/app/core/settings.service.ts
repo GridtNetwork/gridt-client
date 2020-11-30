@@ -101,7 +101,7 @@ export class SettingsService {
       // make sure subscription completes and gives only one update.
       take(1)
     ).subscribe( (id) => this._user_identity$.next(id) );
-  };
+  }
 
   /**
    * Observable to obtain identity from secure storage

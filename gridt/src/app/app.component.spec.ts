@@ -23,7 +23,7 @@ describe('AppComponent', () => {
     splashScreenSpy = jasmine.createSpyObj('SplashScreen', ['hide']);
     platformReadySpy = Promise.resolve(1);
     platformSpy = jasmine.createSpyObj('Platform', { ready: platformReadySpy });
-    setSpy = jasmine.createSpyObj('SettingsService', ['updateIdentity']);
+    setSpy = jasmine.createSpyObj('SetSpy', ['updateIdentity']);
 
     TestBed.configureTestingModule({
       declarations: [AppComponent],
@@ -68,5 +68,13 @@ describe('AppComponent', () => {
     await fixture.detectChanges();
     const menuItems = appElement.querySelectorAll('ion-item');
     expect(menuItems.length).toEqual(3);
+  });
+
+  it('should refresh the userIdentity', async () => {
+    // Note: first is necessary for calling ngOnInit which sets isLoggedIn$
+    await fixture.detectChanges();
+    app.isLoggedIn$ = of(true);
+    await fixture.detectChanges();
+    expect(setSpy.updateIdentity).toHaveBeenCalled();
   });
 });
