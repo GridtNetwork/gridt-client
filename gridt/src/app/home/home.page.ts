@@ -240,6 +240,15 @@ export class HomePage implements OnInit, OnDestroy {
     return compliments[index];
   }
 
+//   service.set$("test_key", "test_value").subscribe(
+//     () => service.get$("test_key").subscribe( 
+//       (value: string) => expect(value).toEqual("test_value"),
+//       fail,
+//       done
+//     ),
+//     fail
+//   )        
+// });
 
   async signal(movement: Movement, message?: string) {
     this.api.sendSignal$(movement, message).subscribe(
