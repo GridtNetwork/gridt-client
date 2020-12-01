@@ -1,11 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
+import { send } from 'process';
 import { Observable } from 'rxjs';
 
 import { ApiService } from '../core/api.service';
 import { Movement } from '../core/models/movement.model';
 import { User } from '../core/models/user.model';
 import { SwapService } from '../core/swap.service';
+import { SignalPage } from '../home/signal/signal.page';
 
 @Component({
   selector: 'app-home',
@@ -18,7 +20,8 @@ export class HomePage implements OnInit, OnDestroy {
   constructor(
     private api: ApiService,
     private alertCtrl: AlertController,
-    private swapService: SwapService
+    private swapService: SwapService,
+    private modalController: ModalController
   ) { }
 
   ngOnInit() {
@@ -171,46 +174,23 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   async confirmSignal (movement: Movement) {
-    const el = await this.alertCtrl.create({
-      header: "Want to send a message with your signal?",
-      message: '',
-      cssClass: "confirmSignal-alert", // makes message text go red
-      inputs: [
-        {
-          name: "message",
-          placeholder: "message",
-          type: "text",
-        }
-      ],
-      buttons: [
-        {
-          text: "Cancel",
-          role: 'cancel',
-        },
-        {
-          text: "Send!",
-          handler: (data) => {
-            if ( data.message !== null && data.message.length < 140){
-              this.signal(movement, data.message);
-            }
-            else if ( data.message == null ){
-              el.message = ('Your message is empty!');
-              return false;
-            }
-            else if ( data.message.length > 140 ){
-              el.message = ('Your message is longer than 140 characters!');
-              return false;
-            }
-            else {
-              el.message = ('Something went wrong, please try again.');
-              return false;
-            }
-          }
-        }
-      ]
+    const modal = await this.modalController.create({
+      component: SignalPage,
+      componentProps: {
+        'movement': movement
+      }
+    });
+    await modal.present();
+    await modal.onWillDismiss().then((data) => {
+      const returnedData = data['data'];
+      if (!returnedData.cancelled) {
+        console.log(returnedData.text);
+        console.log(returnedData.cancelled);
+        // this.signal(movement, returnedData.text);
+      }
+
     });
 
-    el.present();
   }
 
   async signal(movement: Movement, message?: string) {

@@ -7,7 +7,11 @@ const routes: Routes = [
   {
     path: '',
     component: HomePage
+  },  {
+    path: 'signal',
+    loadChildren: () => import('./signal/signal.module').then( m => m.SignalPageModule)
   }
+
 ];
 
 @NgModule({
