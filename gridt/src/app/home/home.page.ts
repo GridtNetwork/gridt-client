@@ -306,13 +306,18 @@ export class HomePage implements OnInit, OnDestroy {
       }
     });
     await modal.present();
-    const {data} = await modal.onDidDismiss();
-    console.log("sort: " + data);
-    if (data.sortingOption === "A-first") {
-      this.movements$ = this.movements$.pipe(map( results => results.sort(this.compare)));
-    } else {
-      this.movements$ = this.movements$.pipe(map( results => results.sort(this.compare2)));
-    }
+
+    await modal.onDidDismiss().then(({data}) => {
+      if (data != null) {
+        console.log("sort: " + data.option);
+        if (data.option === "A-first") {
+          this.movements$ = this.movements$.pipe(map( results => results.sort(this.compare)));
+        } else if (data.option === "A-last") {
+          this.movements$ = this.movements$.pipe(map( results => results.sort(this.compare2)));
+        }
+      }
+  });
+
   }
   clearStorage() {
     this.secStorage.remove$("iconName").subscribe();
