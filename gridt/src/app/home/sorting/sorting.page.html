@@ -5,19 +5,7 @@
 </ion-header>
 
 <ion-content>
-  <!-- <ion-list>
-    <ion-list-header>Single Selection</ion-list-header>
-    
-    <ion-item>
-    <ion-label>Gender</ion-label>
-    <ion-select [(ngModel)]="selected_value" (ionChange)="Getselected()" [ngModelOptions]="{standalone: true}">
-    <ion-select-option value="f">Female</ion-select-option>
-    <ion-select-option value="m">Male</ion-select-option>
-    </ion-select>
-    </ion-item>
-    
-    </ion-list> -->
-  <ion-select *ngIf="filterOption" [(ngModel)]="filterOption" placeholder="Filter" multiple>
+  <ion-select [(ngModel)]="filterOption" placeholder="Filter" multiple>
     <ion-select-option value="Done">Done</ion-select-option>
     <ion-select-option value="Misc">Misc</ion-select-option>
     <ion-select-option value="Health">Health</ion-select-option>
@@ -25,7 +13,7 @@
     <ion-select-option value="Community">Community</ion-select-option>
     <ion-select-option value="Sustain">Sustain</ion-select-option>
   </ion-select>
-  <ion-select *ngIf="sortingOption" [(ngModel)]="sortingOption" placeholder="Sort">
+  <ion-select [(ngModel)]="sortingOption" placeholder="Sort">
     <ion-select-option value="D-first">Done first</ion-select-option>
     <ion-select-option value="D-last">Done last</ion-select-option>
     <ion-select-option value="A-first">Alphabetical</ion-select-option>

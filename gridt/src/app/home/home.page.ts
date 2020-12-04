@@ -43,33 +43,80 @@ export class HomePage implements OnInit, OnDestroy {
     console.log("icon: " + this.iconName);
     console.log("sorting: " + this.sortingOption);
     this.api.getSubscriptions();
-    if (this.sortingOption === "A-first") {
-      this.movements$ = this.movements$.pipe(map( results => results.sort(this.compare)));
-    } else {
-      this.movements$ = this.movements$.pipe(map( results => results.sort(this.compare2)));
+    this.sortMovements(this.sortingOption);
+
+  }
+
+  sortMovements(option: string) {
+    switch (option) {
+      case "A-first":
+        this.movements$ = this.movements$.pipe(map( results => results.sort(this.ascendingAlphabet)));
+        break;
+      case "A-last":
+        this.movements$ = this.movements$.pipe(map( results => results.sort(this.descendingAlphabet)));
+        break;
+      case "D-first":
+        this.movements$ = this.movements$.pipe(map( results => results.sort(
+            (a, b) => this.ascendingDone(this.readyToSignal(a), this.readyToSignal(b))
+          )));
+        break;
+      case "D-last":
+        this.movements$ = this.movements$.pipe(map( results => results.sort(
+            (a, b) => this.descendingDone(this.readyToSignal(a), this.readyToSignal(b))
+          )));
+        break;
+      default:
+        this.movements$ = this.movements$.pipe(map( results => results.sort(this.ascendingAlphabet)));
+        break;
     }
   }
 
-  compare(a: Movement, b: Movement) {
-    if (a.name < b.name) {
+  ascendingAlphabet(a: Movement, b: Movement) {
+    const nameA = a.name.toUpperCase();
+    const nameB = b.name.toUpperCase();
+    if (nameA < nameB) {
       return -1;
     }
-    if (a.name > b.name) {
+    if (nameA > nameB) {
       return 1;
     }
     // a must be equal to b
     return 0;
   }
-  compare2(a: Movement, b: Movement) {
-    if (a.name > b.name) {
+
+  descendingAlphabet(a: Movement, b: Movement) {
+    const nameA = a.name.toUpperCase();
+    const nameB = b.name.toUpperCase();
+    if (nameA > nameB) {
       return -1;
     }
-    if (a.name < b.name) {
+    if (nameA < nameB) {
       return 1;
     }
     // a must be equal to b
     return 0;
   }
+
+  ascendingDone(a: boolean, b: boolean) {
+    if (a < b) {
+      return -1;
+    }
+    if (a > b) {
+      return 1;
+    }
+    return 0;
+  }
+
+  descendingDone(a: boolean, b: boolean) {
+    if (a > b) {
+      return -1;
+    }
+    if (a < b) {
+      return 1;
+    }
+    return 0;
+  }
+
   ngOnDestroy() {
     this.alertCtrl.dismiss();
   }
@@ -310,11 +357,7 @@ export class HomePage implements OnInit, OnDestroy {
     await modal.onDidDismiss().then(({data}) => {
       if (data != null) {
         console.log("sort: " + data.option);
-        if (data.option === "A-first") {
-          this.movements$ = this.movements$.pipe(map( results => results.sort(this.compare)));
-        } else if (data.option === "A-last") {
-          this.movements$ = this.movements$.pipe(map( results => results.sort(this.compare2)));
-        }
+        this.sortMovements(data.option);
       }
   });
 
