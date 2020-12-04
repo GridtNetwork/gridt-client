@@ -7,7 +7,11 @@ const routes: Routes = [
   {
     path: '',
     component: HomePage
+  },  {
+    path: 'sorting',
+    loadChildren: () => import('./sorting/sorting.module').then( m => m.SortingPageModule)
   }
+
 ];
 
 @NgModule({

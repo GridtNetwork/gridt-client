@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { AlertController, LoadingController, ModalController } from '@ionic/angular';
 import { error } from 'protractor';
-import { Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { Observable, timer } from 'rxjs';
+import { map, take } from 'rxjs/operators';
 
 import { ApiService } from '../core/api.service';
 import { Movement } from '../core/models/movement.model';
@@ -10,6 +10,7 @@ import { User } from '../core/models/user.model';
 import { SecureStorageService } from '../core/secure-storage.service';
 import { SettingsService } from '../core/settings.service';
 import { SwapService } from '../core/swap.service';
+import { SortingPage } from './sorting/sorting.page';
 
 @Component({
   selector: 'app-home',
@@ -20,26 +21,55 @@ export class HomePage implements OnInit, OnDestroy {
   movements$ = new Observable<Movement[]>();
   iconName: string;
   avatar: string;
+  sortingOption: string;
 
   constructor(
     private api: ApiService,
     private alertCtrl: AlertController,
     private swapService: SwapService,
     private secStorage: SecureStorageService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private modalController: ModalController,
+    private loadingController: LoadingController
   ) { }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.movements$ = this.api.subscriptions$;
+    await this.getSortingOption();
+    await this.getIconName();
+    if (this.iconName == null) {
+      this.iconName = "grid-outline";
+    }
+    console.log("icon: " + this.iconName);
+    console.log("sorting: " + this.sortingOption);
     this.api.getSubscriptions();
-    this.iconName = "grid-outline"
-    this.secStorage.get$("iconName").pipe(take(1)).subscribe({
-      next(name: string) { this.iconName = name; },
-      error() {this.iconName = "grid-outline"; }
-    });
-
+    if (this.sortingOption === "A-first") {
+      this.movements$ = this.movements$.pipe(map( results => results.sort(this.compare)));
+    } else {
+      this.movements$ = this.movements$.pipe(map( results => results.sort(this.compare2)));
+    }
   }
 
+  compare(a: Movement, b: Movement) {
+    if (a.name < b.name) {
+      return -1;
+    }
+    if (a.name > b.name) {
+      return 1;
+    }
+    // a must be equal to b
+    return 0;
+  }
+  compare2(a: Movement, b: Movement) {
+    if (a.name > b.name) {
+      return -1;
+    }
+    if (a.name < b.name) {
+      return 1;
+    }
+    // a must be equal to b
+    return 0;
+  }
   ngOnDestroy() {
     this.alertCtrl.dismiss();
   }
@@ -84,10 +114,25 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   setIconName(iconName: string){
-    this.secStorage.set$("iconName", iconName).subscribe(
+    this.secStorage.set$("iconName", iconName).pipe(take(1)).subscribe(
       () => this.secStorage.get$("iconName").pipe(take(1)).subscribe(
-        (name: string) => this.iconName = name
+        (name: string) => this.iconName = name,
+        (err) => console.log(err)
       )
+    );
+  }
+
+  async getIconName() {
+    await this.secStorage.get$("iconName").pipe(take(1)).subscribe(
+      (name: string) => this.iconName = name,
+      (err) => console.log(err)
+    );
+  }
+
+  async getSortingOption() {
+    await this.secStorage.get$("sortingOption").pipe(take(1)).subscribe(
+      (option) => this.sortingOption = option,
+      (err) => console.log(err)
     );
   }
 
@@ -250,14 +295,35 @@ export class HomePage implements OnInit, OnDestroy {
       }
     );
   }
-showMenu() {
-  this.secStorage.remove$("iconName").subscribe();
-}
+  async showMenu() {
+    const modal = await this.modalController.create({
+      component: SortingPage,
+      cssClass: 'Ion-modal',
+      componentProps: {
+        'firstName': 'Douglas',
+        'lastName': 'Adams',
+        'middleInitial': 'N'
+      }
+    });
+    await modal.present();
+    const {data} = await modal.onDidDismiss();
+    console.log("sort: " + data);
+    if (data.sortingOption === "A-first") {
+      this.movements$ = this.movements$.pipe(map( results => results.sort(this.compare)));
+    } else {
+      this.movements$ = this.movements$.pipe(map( results => results.sort(this.compare2)));
+    }
+  }
+  clearStorage() {
+    this.secStorage.remove$("iconName").subscribe();
+    this.secStorage.remove$("sortOption").subscribe();
+  }
   changeGrid() {
     if (this.iconName === "grid-outline") {
-      this.setIconName("list-outline");
+    this.setIconName("list-outline");
     } else {
       this.setIconName("grid-outline");
     }
   }
+
 }

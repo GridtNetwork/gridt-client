@@ -17,3 +17,10 @@ Ion-title{
 Ion-toolbar{
     min-height: 40px;
 }
+
+.Ion-modal{
+    --min-width: 50px;
+    --min-height: 50px;
+    --max-width: 50%;
+    --max-height: 50%;
+}

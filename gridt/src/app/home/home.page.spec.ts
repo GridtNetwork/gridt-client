@@ -2,7 +2,7 @@ import { Observable, of } from 'rxjs';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { User } from '../core/models/user.model';
 import { HomePage } from './home.page';
 import { AuthService } from '../core/auth.service';
@@ -21,6 +21,7 @@ describe('HomePage', () => {
   let fixture: ComponentFixture<HomePage>;
   let apiSpy: ApiService;
   let setSpy: SettingsService;
+  let modalSpy: ModalController;
   let alertSpy: AlertController = jasmine.createSpyObj("alertSpy", ["create", "dismiss"]);
 
   beforeEach(() => {
@@ -74,7 +75,8 @@ describe('HomePage', () => {
         { provide: ApiService, useValue: apiSpy },
         { provide: AlertController, useValue: alertSpy },
         { provide: SettingsService, useValue: setSpy },
-        { provide: AuthService, useClass: AuthServiceStub }
+        { provide: AuthService, useClass: AuthServiceStub },
+        { provide: ModalController, useValue: modalSpy }
       ]
     }).compileComponents();
 

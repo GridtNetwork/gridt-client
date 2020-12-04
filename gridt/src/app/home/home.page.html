@@ -15,7 +15,7 @@
 <!-- If the user is not enrolled for any movements yet, inform his/her about how to do so-->
 <ion-content paddinsearchTextg class="bg-style">
   <ion-grid *ngIf="movements$ && (movements$ | async).length === 0">
-    <ion-row>
+    <ion-row> 
       <ion-col size="12" size-sm="8" offset-sm="2" text-center>
         <p>
           You haven't subscribed to any movements yet, let's do so now!
@@ -37,6 +37,9 @@
         <ion-button (click)="showMenu()" class="filter" color="dark">
           <ion-icon name="filter-outline"></ion-icon>
         </ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-button (click)="clearStorage()">Clear</ion-button>
       </ion-col>
       <ion-col>
         <ion-button (click)="changeGrid()" class="grid" color="dark">

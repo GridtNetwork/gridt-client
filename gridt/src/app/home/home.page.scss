@@ -54,3 +54,8 @@
       height: 40px;
       width: 40px;
   }
+
+  .ion-content {
+    --max-width: 50%;
+    --min-width: 10px;
+}
