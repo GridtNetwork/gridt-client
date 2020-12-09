@@ -125,7 +125,7 @@ export class HomePage implements OnInit, OnDestroy {
    * Extract the timezone of a date string.
    * @param date_string ISO Date string
    */
-  private extract_timezone(date_string: string): number {
+  private extractTimezone(date_string: string): number {
     return parseInt(date_string.match(/\+(\d\d):\d\d/g)[0])
   }
 
@@ -196,7 +196,7 @@ export class HomePage implements OnInit, OnDestroy {
     let timezone: number;
     for (let leader of movement.leaders) {
       if (leader.last_signal) {
-        timezone = this.extract_timezone(leader.last_signal.time_stamp);
+        timezone = this.extractTimezone(leader.last_signal.time_stamp);
         break;
       }
     }
@@ -220,7 +220,7 @@ export class HomePage implements OnInit, OnDestroy {
     let last_signal: Date;
 
     if ( leader.last_signal ) {
-      server_timezone = this.extract_timezone(leader.last_signal.time_stamp);
+      server_timezone = this.extractTimezone(leader.last_signal.time_stamp);
       last_signal = new Date(Date.parse(leader.last_signal.time_stamp));
     } else {
       return false;
@@ -275,7 +275,7 @@ export class HomePage implements OnInit, OnDestroy {
   readyToSignal (movement: Movement): boolean {
     if ( movement.last_signal_sent ) {
       const time_stamp = movement.last_signal_sent.time_stamp;
-      const server_timezone = this.extract_timezone(time_stamp);
+      const server_timezone = this.extractTimezone(time_stamp);
       const last_reset = this.getLastOccurence(movement.interval, server_timezone);
       const last_signal = new Date(time_stamp);
       return last_reset > last_signal;
@@ -363,8 +363,9 @@ export class HomePage implements OnInit, OnDestroy {
 
   }
   clearStorage() {
-    this.secStorage.remove$("iconName").subscribe();
-    this.secStorage.remove$("sortOption").subscribe();
+    this.secStorage.remove$("iconName").pipe(take(1)).subscribe();
+    this.secStorage.remove$("sortingOption").pipe(take(1)).subscribe();
+    this.secStorage.remove$("filterOption").pipe(take(1)).subscribe();
   }
   changeGrid() {
     if (this.iconName === "grid-outline") {

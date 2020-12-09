@@ -9,7 +9,6 @@ import { SecureStorageService } from 'src/app/core/secure-storage.service';
   styleUrls: ['./sorting.page.scss'],
 })
 export class SortingPage implements OnInit {
-  selected_value;
   sortingOption: string = "";
   filterOption: string[] = [""];
   constructor(
