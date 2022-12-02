@@ -1,0 +1,93 @@
+{
+  "api": {
+    "name": "SecureStoragePluginPlugin",
+    "slug": "securestoragepluginplugin",
+    "docs": "",
+    "tags": [],
+    "methods": [
+      {
+        "name": "get",
+        "signature": "(options: { key: string; }) => Promise<{ value: string; }>",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "{ key: string; }"
+          }
+        ],
+        "returns": "Promise<{ value: string; }>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "get"
+      },
+      {
+        "name": "set",
+        "signature": "(options: { key: string; value: string; }) => Promise<{ value: boolean; }>",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "{ key: string; value: string; }"
+          }
+        ],
+        "returns": "Promise<{ value: boolean; }>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "set"
+      },
+      {
+        "name": "remove",
+        "signature": "(options: { key: string; }) => Promise<{ value: boolean; }>",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "{ key: string; }"
+          }
+        ],
+        "returns": "Promise<{ value: boolean; }>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "remove"
+      },
+      {
+        "name": "clear",
+        "signature": "() => Promise<{ value: boolean; }>",
+        "parameters": [],
+        "returns": "Promise<{ value: boolean; }>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "clear"
+      },
+      {
+        "name": "keys",
+        "signature": "() => Promise<{ value: string[]; }>",
+        "parameters": [],
+        "returns": "Promise<{ value: string[]; }>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "keys"
+      },
+      {
+        "name": "getPlatform",
+        "signature": "() => Promise<{ value: string; }>",
+        "parameters": [],
+        "returns": "Promise<{ value: string; }>",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "getplatform"
+      }
+    ],
+    "properties": []
+  },
+  "interfaces": [],
+  "enums": [],
+  "typeAliases": [],
+  "pluginConfigs": []
+}
