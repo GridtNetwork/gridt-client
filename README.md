@@ -31,8 +31,19 @@ Gridt-client is the frontend for the [Gridt](https://gridt.org) application. The
 This application is built with [Ionic](https://ionicframework.com/) which is a framework to build cross platform applications. It comes with regular Angular installations, which are installed using the following commands.
 
 ```
-apt-get install nodejs
-npm install -g @angular/cli
+sudo apt-get install nodejs
+sudo npm install -g @angular/cli
+sudo npm i @angular-devkit/build-angular
+sudo npm i @angular/core
+sudo npm i @angular/router
+sudo npm i @ionic/angular
+sudo npm i @ionic-native/splash-screen
+sudo npm i @capacitor/core
+sudo npm i @ionic-native/status-bar
+sudo npm i @angular/service-worker
+sudo npm i @ionic/pwa-elements
+sudo npm i capacitor-secure-storage-plugin
+sudo npm i @angular/platform-browser-dynamic
 ```
 
 ## Installation
