@@ -52,6 +52,7 @@ Clone the repository and move into it. If NodeJS and Angular are properly set up
 Run:
 ```
 cd gridt
+sudo npm install
 ionic serve
 ```
 
