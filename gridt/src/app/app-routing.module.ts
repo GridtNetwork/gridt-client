@@ -13,12 +13,12 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: './movements/movements.module#MovementsPageModule',
+        loadChildren: () => import('./movements/movements.module').then(x => x.MovementsPageModule),
         canLoad: [LoginGuard] 
       },
       {
         path: ':movementId',
-        loadChildren: './movements/movements-detail/movements-detail.module#MovementsDetailPageModule',
+        loadChildren: () => import('./movements/movements-detail/movements-detail.module').then(x => x.MovementsDetailPageModule),
         canLoad: [LoginGuard]
       },
    
@@ -26,7 +26,7 @@ const routes: Routes = [
   },   
   { 
     path: 'add',
-    loadChildren: './movements/add-movement/add-movement.module#AddMovementPageModule',
+    loadChildren: () => import('./movements/add-movement/add-movement.module').then(x => x.AddMovementPageModule),
     canLoad: [LoginGuard]
   },
   {
@@ -34,14 +34,14 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        loadChildren: './login/login.module#LoginPageModule'
+        loadChildren: () => import('./login/login.module').then(x => x.LoginPageModule)
       },
       {
         path: ':register',
         children:[
           {
             path:'',
-            loadChildren: './login/register/register.module#RegisterPageModule'
+            loadChildren: () => import('./login/register/register.module').then(x => x.RegisterPageModule)
           }
         ]
       }
