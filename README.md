@@ -28,31 +28,47 @@ Gridt-client is the frontend for the [Gridt](https://gridt.org) application. The
 </p>
 
 ## Prerequisites
-This application is built with [Ionic](https://ionicframework.com/) which is a framework to build cross platform applications. It comes with regular Angular installations, which are installed using the following commands.
+Note: if you are using ubuntu, some of the installation commands may need to be run with **sudo**.
+
+### Ionic
+This application is built with [Ionic](https://ionicframework.com/) which is a framework to build cross platform applications. It comes with regular Angular installations.
+
+
+### NodeJS
+You will need to use [Node.js](https://nodejs.org/en/) and npm to install the application dependencies. If you do not already have Node.js and npm installed, follow these steps:
 
 ```
-sudo apt-get install nodejs
-sudo npm install -g @angular/cli
-sudo npm i @angular-devkit/build-angular
-sudo npm i @angular/core
-sudo npm i @angular/router
-sudo npm i @ionic/angular
-sudo npm i @ionic-native/splash-screen
-sudo npm i @capacitor/core
-sudo npm i @ionic-native/status-bar
-sudo npm i @angular/service-worker
-sudo npm i @ionic/pwa-elements
-sudo npm i capacitor-secure-storage-plugin
-sudo npm i @angular/platform-browser-dynamic
+install curl
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+nvm ls-remote
+```
+The last command shows a list of Node.js versions. Choose the newest one. Install this latest version of Node.js, with NVM (Node Version Manager). As an example, this is how you install version v19.3.0:
+
+```
+nvm install 19.3.0
 ```
 
+You now have both Node.js and npm. To verify the installation and version numbers, run the following commands:
+
+```
+nvm version
+npm --version
+```
 ## Installation
-Clone the repository and move into it. If NodeJS and Angular are properly set up (see prerequisites) then Ionic is ready to serve.
+You will need to install all the dependencies. to do that: use the following commands:
 
-Run:
 ```
 cd gridt
-sudo npm install
+npm install --legacy-peer-deps
+```
+
+In the case that you run into issues with Phantom.js while installing the dependencies, consult these [steps](https://gist.github.com/julionc/7476620).
+
+## Running
+
+In the **gridt** folder, run:
+
+```
 ionic serve
 ```
 
