@@ -29,6 +29,9 @@ plugins/android.json
 plugins/ios.json
 $RECYCLE.BIN/
 dist/
+.angular
+.scannerwork/
+sonar-project.prperties
 
 .DS_Store
 Thumbs.db
