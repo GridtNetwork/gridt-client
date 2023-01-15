@@ -131,7 +131,7 @@ export class HomePage implements OnInit, OnDestroy {
       ]
     });
 
-    el.present();
+    el?.present();
   }
 
   swapLeader(movement: Movement, leader: User): void {
@@ -144,7 +144,7 @@ export class HomePage implements OnInit, OnDestroy {
           buttons: ["okay"]
         });
 
-        el.present();
+        el?.present();
       },
       error: async error => {
         const el = await this.alertCtrl.create({
@@ -153,7 +153,7 @@ export class HomePage implements OnInit, OnDestroy {
           buttons: ["okay..."]
         });
 
-        el.present();
+        el?.present();
       }
     });
   }
@@ -210,7 +210,7 @@ export class HomePage implements OnInit, OnDestroy {
       ]
     });
 
-    el.present();
+    el?.present();
   }
 
   async signal(movement: Movement, message?: string) {

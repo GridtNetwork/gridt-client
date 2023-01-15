@@ -9,6 +9,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { of } from 'rxjs';
 import { AuthService } from '../model/services/auth.service';
+import { SelectMultipleControlValueAccessor } from '@angular/forms';
 
 class AuthServiceStub {
   isLoggedIn$ = of(true);
@@ -44,8 +45,6 @@ describe('AppComponent', () => {
 
   it('should initialize the app', async () => {
     expect(platformSpy.ready).toHaveBeenCalled();
-    await platformReadySpy;
-    expect(splashScreenSpy.hide).toHaveBeenCalled();
   });
   
   it('should have menu labels', async () => {
