@@ -2,7 +2,7 @@ import { of } from 'rxjs';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { AddMovementPage } from './add-movement.page';
@@ -26,7 +26,7 @@ describe('AddMovementPage', () => {
   let authSpy: AuthService;
   let alertSpy: AlertController = jasmine.createSpyObj("alertSpy", ["create", "dismiss"]);
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ AddMovementPage ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],

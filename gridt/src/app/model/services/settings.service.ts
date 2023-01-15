@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Observable, pipe, throwError, of, iif, forkJoin, ReplaySubject } from "rxjs";
-import { flatMap, tap, catchError, take } from "rxjs/operators";
+import { mergeMap, tap, catchError, take } from "rxjs/operators";
 
 import { Identity } from '../interfaces/identity.model';
 import { AuthService } from './auth.service';
@@ -65,7 +65,7 @@ export class SettingsService {
       console.warn(err);
       return of<Identity>(this.empty_identity);
     }),
-    flatMap( (id) => of( <Identity>(id) ) )
+    mergeMap( (id) => of( <Identity>(id) ) )
   );
 
   private mapErrorToFalse = pipe(
@@ -83,7 +83,7 @@ export class SettingsService {
     }).pipe(
       // Update local id when server id is different.
       tap( (ids) => console.debug(`recieved server id = ${JSON.stringify(ids.server)} \n received local id = ${JSON.stringify(ids.local)}`) ),
-      flatMap( (ids) => iif(
+      mergeMap( (ids) => iif(
         () => (
           (JSON.stringify(ids.server)===JSON.stringify(ids.local))
           || (JSON.stringify(ids.server) == JSON.stringify(this.empty_identity))
@@ -95,7 +95,7 @@ export class SettingsService {
       // transformed into a warning and continue.
       this.mapErrorToFalse,
       // Emit local identity
-      flatMap( () => this.localIdentity$ ),
+      mergeMap( () => this.localIdentity$ ),
       // If local identity unavailable emit empty ID.
       this.mapErrorToEmptyID,
       // make sure subscription completes and gives only one update.
@@ -111,10 +111,10 @@ export class SettingsService {
     catchError( () => throwError(
       this.error_codes.GETIDFAIL + ": " + this.error_codes.NOTLOGGEDIN
     )),
-    flatMap( () => this.secStore.get$("identity").pipe(
+    mergeMap( () => this.secStore.get$("identity").pipe(
       catchError( () => throwError(this.error_codes.GETIDFAIL + ": " + this.error_codes.SECSTOREUNAVAILABLE) )
     )),
-    flatMap( (id) => of<Identity>(id) )
+    mergeMap( (id) => of<Identity>(id) )
   );
 
   /**
@@ -126,7 +126,7 @@ export class SettingsService {
       catchError( () => throwError(this.error_codes.SETIDFAIL + ": " + this.error_codes.NOTLOGGEDIN) ),
       take(1), // Makes sure the observable completes
       tap( () => console.debug('Storing Identity in Localstorage') ),
-      flatMap( () => this.secStore.set$("identity", identity).pipe(
+      mergeMap( () => this.secStore.set$("identity", identity).pipe(
           catchError( ()=> throwError(this.error_codes.SETIDFAIL + ": " + this.error_codes.SECSTOREUNAVAILABLE) )
       ))
     );

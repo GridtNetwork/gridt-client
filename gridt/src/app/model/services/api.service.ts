@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 
 import { Observable, BehaviorSubject, throwError } from "rxjs";
-import { map, tap, pluck, catchError, flatMap } from "rxjs/operators";
+import { map, tap, pluck, catchError, mergeMap } from "rxjs/operators";
 
 import { AuthService } from './auth.service';
 
@@ -68,7 +68,7 @@ export class ApiService {
     console.debug(`Creating movement "${movement.name}"`);
 
     return this.auth.readyAuthentication$.pipe(
-      flatMap((options) => this.http.post<ServerMessage>(
+      mergeMap((options) => this.http.post<ServerMessage>(
         `${this.URL}/movements`, movement, options
       )),
       catchError( this.handleBadAuth() ),
@@ -101,7 +101,7 @@ export class ApiService {
     console.debug(`Getting movement "${movement_id}" from server.`);
 
     return this.auth.readyAuthentication$.pipe(
-      flatMap((options) => this.http.get<Movement>(
+      mergeMap((options) => this.http.get<Movement>(
         `${this.URL}/movements/${movement_id}`,
         options
       ) as Observable<Movement>),
@@ -120,7 +120,7 @@ export class ApiService {
     console.debug("Getting all movements from the server");
 
     this.auth.readyAuthentication$.pipe(
-      flatMap((options) => this.http.get<Movement[]>(
+      mergeMap((options) => this.http.get<Movement[]>(
         `${this.URL}/movements`,
         options
       )),
@@ -137,7 +137,7 @@ export class ApiService {
     console.debug("Getting all movements that the user is subscribed to.");
 
     this.auth.readyAuthentication$.pipe(
-      flatMap((options) => this.http.get<Movement[]>(
+      mergeMap((options) => this.http.get<Movement[]>(
         `${this.URL}/movements/subscriptions`,
         options
       )),
@@ -154,7 +154,7 @@ export class ApiService {
     console.debug(`Subscribing to movement "${movement_id}".`);
 
     return this.auth.readyAuthentication$.pipe(
-      flatMap((options) => this.http.put(
+      mergeMap((options) => this.http.put(
         `${this.URL}/movements/${movement_id}/subscriber`,
         {}, // This request does not require input, but the function needs a body.
         options
@@ -172,7 +172,7 @@ export class ApiService {
     console.debug(`Unsubscribing from movement "${movement_id}".`);
 
     return this.auth.readyAuthentication$.pipe(
-      flatMap((options) => this.http.delete<ServerMessage>(
+      mergeMap((options) => this.http.delete<ServerMessage>(
         `${this.URL}/movements/${movement_id}/subscriber`,
         options
       )),
@@ -189,7 +189,7 @@ export class ApiService {
     console.debug(`Swapping leader "@${user.username}#${user.id}" in movement "%${movement.name}#${movement.id}".`)
 
     return this.auth.readyAuthentication$.pipe(
-      flatMap( options => this.http.post<User | ServerMessage>(
+      mergeMap( options => this.http.post<User | ServerMessage>(
         `${this.URL}/movements/${movement.id}/leader/${user.id}`,
         {},
         options
@@ -220,7 +220,7 @@ export class ApiService {
     const body = message ?  { message } : message;
 
     return this.auth.readyAuthentication$.pipe(
-      flatMap((options) => this.http.post<ServerMessage>(
+      mergeMap((options) => this.http.post<ServerMessage>(
         `${this.URL}/movements/${movement.id}/signal`,
         body,
         options
@@ -235,7 +235,7 @@ export class ApiService {
   */
   public userIdentity$(): Observable<Identity> {
     return this.auth.readyAuthentication$.pipe(
-      flatMap((options) => this.http.get<Identity>(
+      mergeMap((options) => this.http.get<Identity>(
         `${this.URL}/identity`,
         options
       )),
@@ -251,7 +251,7 @@ export class ApiService {
     console.debug(`Saving new biography to the server.`);
 
     return this.auth.readyAuthentication$.pipe(
-      flatMap((options) => this.http.put(
+      mergeMap((options) => this.http.put(
         `${this.URL}/bio`, {bio: bio}, options
       )),
       catchError( this.handleBadAuth() ),
@@ -268,7 +268,7 @@ export class ApiService {
     console.debug(`Saving new password to the server.`);
 
     return this.auth.readyAuthentication$.pipe(
-      flatMap((options) => this.http.post<ServerMessage>(
+      mergeMap((options) => this.http.post<ServerMessage>(
         `${this.URL}/change_password`, {old_password: old_password, new_password: new_password}, options
       )),
       catchError( this.handleBadAuth() ),

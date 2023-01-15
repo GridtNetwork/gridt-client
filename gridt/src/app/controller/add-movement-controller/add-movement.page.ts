@@ -66,17 +66,17 @@ export class AddMovementPage implements OnInit, OnDestroy {
 
     await el.present();
 
-    this.api.createMovement$(this.form.value as Movement).subscribe(
-      (message) => {
+    this.api.createMovement$(this.form.value as Movement).subscribe({
+      next: (message) => {
         el.dismiss();
         this.showMessage(message);
         this.api.getMovement$(this.form.value.name).subscribe();
       },
-      (error) => {
+      error: (error) => {
         el.dismiss();
         this.showError(error);
       }
-    );
+  });
   }
 
   async confirmCreation () {

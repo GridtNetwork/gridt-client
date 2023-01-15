@@ -1,6 +1,6 @@
 import { Observable, of, pipe, UnaryFunction, throwError, forkJoin } from 'rxjs';
 import { SecureStorageService } from './secure-storage.service';
-import { flatMap, tap, catchError, map, mapTo, pluck } from 'rxjs/operators';
+import { mergeMap, tap, catchError, map, mapTo, pluck } from 'rxjs/operators';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
@@ -44,7 +44,7 @@ export class AuthService {
   private authenticate (): UnaryFunction<Observable<Credentials>, Observable<AccessToken>> {
     return pipe(
       tap(() => console.debug("Performing authentiation API call.")),
-      flatMap(
+      mergeMap(
         (credentials: Credentials) => {
           return this.http.post<AccessToken>(
           'https://api.gridt.org/auth', credentials // TODO: Get rid of hardcoded URL
@@ -112,7 +112,7 @@ export class AuthService {
    */
   public readyAuthentication$: Observable<{headers: HttpHeaders}> = this.secStore.get$("token").pipe(
     map( (token_string: string) => ({ access_token: token_string }) ),
-    flatMap(
+    mergeMap(
       token => {
         if (this.isTokenExpired(token)) {
           return throwError(this.error_codes.TOKENEXPIRED);

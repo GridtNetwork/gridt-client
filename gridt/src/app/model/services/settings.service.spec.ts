@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { cold } from 'jasmine-marbles';
 import { of, throwError, timer } from "rxjs";
-import { take, flatMap } from "rxjs/operators";
+import { take, mergeMap } from "rxjs/operators";
 
 import { AuthService } from './auth.service';
 import { ApiService } from './api.service';
@@ -261,7 +261,7 @@ describe("SettingsService when authentication is succesful", () => {
     apiStub.userIdentity$.and.returnValue(
       timer(30).pipe(
         take(1),
-        flatMap( () => of(mock_id[1]))
+        mergeMap( () => of(mock_id[1]))
       )
     );
 

@@ -1,5 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
@@ -17,7 +17,7 @@ class AuthServiceStub {
 describe('AppComponent', () => {
   let splashScreenSpy, platformReadySpy, platformSpy, fixture, app, appElement;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     splashScreenSpy = jasmine.createSpyObj('SplashScreen', ['hide']);
     platformReadySpy = Promise.resolve(1);
     platformSpy = jasmine.createSpyObj('Platform', { ready: platformReadySpy });

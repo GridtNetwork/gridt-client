@@ -50,16 +50,16 @@ export class RegisterPage implements OnInit, OnDestroy {
       message: 'Signing you up...' 
     });
 
-    this.auth.register$(username, email, password).subscribe(
-      () => {
+    this.auth.register$(username, email, password).subscribe({
+      next: () => {
         this.router.navigateByUrl('/login');
         el.dismiss();
       },
-      (error) => {
+      error: (error) => {
           this.showAlert(error);
           el.dismiss();
       }
-    )
+    })
     el.present();
   }
 

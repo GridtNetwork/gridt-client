@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
 import { ApiService } from '../../model/services/api.service';
 
@@ -10,7 +10,7 @@ describe('ProfilePage', () => {
   let fixture: ComponentFixture<ProfilePage>;
   let ApiSpy: ApiService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     ApiSpy = jasmine.createSpyObj('ApiService', { 
       isLoggedIn$: new BehaviorSubject(true)
     });

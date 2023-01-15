@@ -32,8 +32,8 @@ export class LoginPage implements OnInit {
 
     el.present();
 
-    this.auth.login$(email, password).subscribe(
-      loggedIn => {
+    this.auth.login$(email, password).subscribe({
+      next: loggedIn => {
         if (!loggedIn) {
           el.dismiss();
           this.showAlert("Failed to login");
@@ -41,11 +41,11 @@ export class LoginPage implements OnInit {
         this.router.navigateByUrl('/home');
         el.dismiss();
       },
-      error => {
+      error: error => {
         el.dismiss();
         this.showAlert(error);
       }
-    );
+  });
   }
 
   /*

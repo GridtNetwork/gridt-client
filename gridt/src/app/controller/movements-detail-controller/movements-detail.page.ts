@@ -3,7 +3,7 @@ import { AlertController, LoadingController } from '@ionic/angular';
 import { ActivatedRoute } from '@angular/router';
 
 import { Observable } from 'rxjs';
-import { map, flatMap, take } from 'rxjs/operators';
+import { map, mergeMap, take } from 'rxjs/operators';
 
 import { ApiService } from '../../model/services/api.service';
 import { Movement } from '../../model/interfaces/movement.model';
@@ -89,17 +89,17 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
 
     this.movement$.pipe(
       take(1),
-      flatMap( (movement) => this.api.subscribeToMovement$(movement.name)),
-      flatMap( () => this.movement$), // We need the movement name again to reload the movement.
+      mergeMap( (movement) => this.api.subscribeToMovement$(movement.name)),
+      mergeMap( () => this.movement$), // We need the movement name again to reload the movement.
       take(1),
-      flatMap( (movement) => this.api.getMovement$(movement.name))
-    ).subscribe(
-      () => el.dismiss(),
-      (error) => {
+      mergeMap( (movement) => this.api.getMovement$(movement.name))
+    ).subscribe({
+      next: () => el.dismiss(),
+      error: (error) => {
         el.dismiss();
         this.showError(error);
       }
-    );
+  });
   }
 
   async showError(error: string) {
@@ -119,16 +119,16 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
 
     this.movement$.pipe(
       take(1),
-      flatMap( movement => this.api.unsubscribeFromMovement$(movement.name) ),
-      flatMap( () => this.movement$ ),
+      mergeMap( movement => this.api.unsubscribeFromMovement$(movement.name) ),
+      mergeMap( () => this.movement$ ),
       take(1),
-      flatMap( movement => this.api.getMovement$(movement.name) )
-    ).subscribe(
-      () => el.dismiss(),
-      (error) => {
+      mergeMap( movement => this.api.getMovement$(movement.name) )
+    ).subscribe({
+      next: () => el.dismiss(),
+      error: (error) => {
         el.dismiss();
         this.showError(error);
       }
-    )
+    })
   }
 }

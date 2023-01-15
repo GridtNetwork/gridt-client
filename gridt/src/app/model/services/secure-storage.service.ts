@@ -1,9 +1,7 @@
-import 'capacitor-secure-storage-plugin';
-import { Plugins } from '@capacitor/core';
+//import 'capacitor-secure-storage-plugin';
+import { SecureStoragePlugin } from 'capacitor-secure-storage-plugin';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-
-const { SecureStoragePlugin } = Plugins;
 
 @Injectable({
   providedIn: 'root'

@@ -2,11 +2,11 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { Router, NavigationStart } from '@angular/router';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { Plugins, Capacitor } from '@capacitor/core';
-import {AppState} from '@capacitor/app';
+import { Capacitor } from '@capacitor/core';
+import { App, AppState } from '@capacitor/app';
 import { AuthService } from '../model/services/auth.service';
 import { Observable } from 'rxjs';
-import { filter, flatMap } from 'rxjs/operators';
+import { filter, mergeMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -57,9 +57,9 @@ export class AppComponent implements OnInit, OnDestroy{
     // navigation events to track the change of this.auth.isLoggedIn$.
     this.isLoggedIn$ = this.router.events.pipe(
       filter(event => event instanceof NavigationStart),
-      flatMap(() => this.auth.isLoggedIn$)
+      mergeMap(() => this.auth.isLoggedIn$)
     );
-    Plugins.App.addListener(
+    App.addListener(
       'appStateChange',
       this.checkAuthOnResume.bind(this)
     );

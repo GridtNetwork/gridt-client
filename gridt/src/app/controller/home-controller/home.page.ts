@@ -136,8 +136,8 @@ export class HomePage implements OnInit, OnDestroy {
 
   swapLeader(movement: Movement, leader: User): void {
     this.swapService.addSwapEvent(movement, leader);
-    this.api.swapLeader$(movement, leader).subscribe(
-      async user => {
+    this.api.swapLeader$(movement, leader).subscribe({
+      next: async user => {
         const el = await this.alertCtrl.create({
           header: "Found new leader",
           message: `Your new leader is ${user.username}.`,
@@ -146,7 +146,7 @@ export class HomePage implements OnInit, OnDestroy {
 
         el.present();
       },
-      async error => {
+      error: async error => {
         const el = await this.alertCtrl.create({
           header: "No new leader found",
           message: `We tried to find you a new user but: ${error}`,
@@ -155,7 +155,7 @@ export class HomePage implements OnInit, OnDestroy {
 
         el.present();
       }
-    );
+    });
   }
 
   readyToSignal (movement: Movement): boolean {
@@ -214,11 +214,11 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   async signal(movement: Movement, message?: string) {
-    this.api.sendSignal$(movement, message).subscribe(
-      () => {
+    this.api.sendSignal$(movement, message).subscribe({
+      next: () => {
         this.api.getMovement$(movement.id).subscribe();
       },
-      (error) => {
+      error: (error) => {
         this.alertCtrl.create({
             header: 'Something went wrong while sending your signal.',
             message: error,
@@ -226,6 +226,6 @@ export class HomePage implements OnInit, OnDestroy {
         })
         .then(alertEl => alertEl.present())
       }
-    );
+  });
   }
 }
