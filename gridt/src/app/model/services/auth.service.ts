@@ -47,7 +47,7 @@ export class AuthService {
       mergeMap(
         (credentials: Credentials) => {
           return this.http.post<AccessToken>(
-          'https://api.gridt.org/auth', credentials // TODO: Get rid of hardcoded URL
+          'http://localhost/auth', credentials // TODO: Get rid of hardcoded URL
           );
         }
       ),
@@ -83,8 +83,7 @@ export class AuthService {
   private prepareOptions: UnaryFunction<Observable<AccessToken>, Observable<{headers: HttpHeaders}>> = pipe(
     map(accesToken => ({
       headers: new HttpHeaders({
-        Authorization: `JWT ${accesToken.access_token}`
-      })
+        Authorization: `JWT ${accesToken.access_token}`})
     })),
   );
 
@@ -174,7 +173,7 @@ export class AuthService {
   public register$(username: string, email: string, password: string): Observable<string> {
     console.debug(`Registering user ${username}.`);
 
-    return this.http.post<ServerMessage>("https://api.gridt.org/register", {username, email, password}).pipe(
+    return this.http.post<ServerMessage>("http://localhost/register", {username, email, password}).pipe(
       pluck("message"),
       catchError( (error) => throwError(error.error.message) )
     );

@@ -30,7 +30,7 @@
     {
       "name": "api-freshness",
       "urls": [
-        "https://api.gridt.org/**"
+        "http://localhost/**"
       ],
       "cacheConfig": {
         "strategy": "freshness",

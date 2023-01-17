@@ -83,7 +83,7 @@ describe("AuthService", () => {
     });
 
     httpClientStub.post.and.callFake((url: string, body: any) => {
-      expect(url).toEqual("https://api.gridt.org/auth")
+      expect(url).toEqual("http://localhost/auth")
       expect(body).toEqual({username: "mock_email", password: "mock_password"});
       return cold("(r|)", {r: token})
     });
