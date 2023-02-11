@@ -18,7 +18,7 @@
 
 ---
 
-We’re developing a non-profit, open source social application that inspires discipline, leadership and ‘grit’ in its users. The Gridt is designed as a new type of network that connects social movements.
+Gridt is an open source communication network that enables its users to organize collective action in swarms. It is designed as a tool to cultivate large-scale engagement and motivation for public behavior change campaigns.
 
 Gridt-client is the frontend for the [Gridt](https://gridt.org) application. The backend can be found on our [server repository](https://github.com/GridtNetwork/gridt-server).
 
@@ -28,19 +28,47 @@ Gridt-client is the frontend for the [Gridt](https://gridt.org) application. The
 </p>
 
 ## Prerequisites
-This application is built with [Ionic](https://ionicframework.com/) which is a framework to build cross platform applications. It comes with regular Angular installations, which are installed using the following commands.
+Note: if you are using ubuntu, some of the installation commands may need to be run with **sudo**.
+
+### Ionic
+This application is built with [Ionic](https://ionicframework.com/) which is a framework to build cross platform applications. It comes with regular Angular installations.
+
+
+### NodeJS
+You will need to use [Node.js](https://nodejs.org/en/) and npm to install the application dependencies. If you do not already have Node.js and npm installed, follow these steps:
 
 ```
-apt-get install nodejs
-npm install -g @angular/cli
+install curl
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+nvm ls-remote
+```
+The last command shows a list of Node.js versions. Choose the newest one. Install this latest version of Node.js, with NVM (Node Version Manager). As an example, this is how you install version v19.3.0:
+
+```
+nvm install 19.3.0
 ```
 
+You now have both Node.js and npm. To verify the installation and version numbers, run the following commands:
+
+```
+nvm version
+npm --version
+```
 ## Installation
-Clone the repository and move into it. If NodeJS and Angular are properly set up (see prerequisites) then Ionic is ready to serve.
+You will need to install all the dependencies. to do that: use the following commands:
 
-Run:
 ```
 cd gridt
+npm install --legacy-peer-deps
+```
+
+In the case that you run into issues with Phantom.js while installing the dependencies, consult these [steps](https://gist.github.com/julionc/7476620).
+
+## Running
+
+In the **gridt** folder, run:
+
+```
 ionic serve
 ```
 
