@@ -59,11 +59,12 @@
                         </h3>
                         <p>{{ isLeaderDone(leader, movement) ? 'Done!' : 'Pending...' }}</p>
                       </div>
-                      <small *ngIf="isLeaderDone(leader, movement) && leader.last_signal.message">
-                        {{ leader.last_signal.message }}
-                      </small>
+                      <div *ngIf="isLeaderDone(leader, movement) && leader.last_signal.message" id="expandable">
+                        <signal-message signalText={{leader.last_signal.message}}></signal-message>
+                      </div>
                     </ion-label>
                     <ion-button
+                        class="floating-icon"
                         size="small" fill="clear"
                         [attr.disabled]="!canSwap(movement) ? '' : null"
                         (click)="confirmSwapLeader(movement, leader)"

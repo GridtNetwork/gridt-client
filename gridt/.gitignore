@@ -31,7 +31,7 @@ $RECYCLE.BIN/
 dist/
 .angular
 .scannerwork/
-sonar-project.prperties
+sonar-project.properties
 
 .DS_Store
 Thumbs.db

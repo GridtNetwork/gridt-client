@@ -18,7 +18,7 @@
 
 ---
 
-We’re developing a non-profit, open source social application that inspires discipline, leadership and ‘grit’ in its users. The Gridt is designed as a new type of network that connects social movements.
+Gridt is an open source communication network that enables its users to organize collective action in swarms. It is designed as a tool to cultivate large-scale engagement and motivation for public behavior change campaigns.
 
 Gridt-client is the frontend for the [Gridt](https://gridt.org) application. The backend can be found on our [server repository](https://github.com/GridtNetwork/gridt-server).
 
