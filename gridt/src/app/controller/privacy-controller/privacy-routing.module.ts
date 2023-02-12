@@ -5,7 +5,7 @@ import { PrivacyPage } from './privacy.page';
 
 const routes: Routes = [
   {
-    path: 'privacy',
+    path: 'privacy-controller',
     component: PrivacyPage
   }
 ];

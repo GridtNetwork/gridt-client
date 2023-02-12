@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { ModalController } from '@ionic/angular';
-import { PrivacyPage } from './privacy/privacy.page';
+import { PrivacyPage } from 'src/app/controller/privacy-controller/privacy.page';
 
 @Component({
-  selector: 'app-about',
-  templateUrl: './about.page.html',
-  styleUrls: ['./about.page.scss'],
+  selector: 'about-controller',
+  templateUrl: '../../view/about-view/about.page.html',
+  styleUrls: ['../../view/about-view//about.page.scss'],
 })
 export class AboutPage {
 
@@ -17,7 +17,7 @@ export class AboutPage {
     const modal = await this.modalController.create({
       component: PrivacyPage
     });
-    console.log("present privacy policy");
+    console.log("present privacy-controller policy");
     return await modal.present();
   }
 }

@@ -3,8 +3,7 @@ import { Router } from '@angular/router';
 import { LoadingController, AlertController, ModalController } from '@ionic/angular';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../../model/services/auth.service';
-import { AuthService } from '../../core/auth.service';
-import { PrivacyPage } from 'src/app/about/privacy/privacy.page';
+import { PrivacyPage } from 'src/app/controller/privacy-controller/privacy.page';
 
 @Component({
   selector: 'app-register',
@@ -67,6 +66,7 @@ export class RegisterPage implements OnInit, OnDestroy {
   }
 
   //Submits the registration info
+  accept: any;
   onSubmit(form: NgForm) {
     if (!form.valid) {
       return;
@@ -92,7 +92,7 @@ export class RegisterPage implements OnInit, OnDestroy {
     const modal = await this.modalController.create({
       component: PrivacyPage
     });
-    console.debug("present privacy policy");
+    console.debug("present privacy-controller policy");
     return await modal.present();
   }
 

@@ -6,7 +6,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { RegisterPage } from './register.page';
-import { PrivacyPageModule } from 'src/app/about/privacy/privacy.module';
+import { PrivacyPageModule } from 'src/app/controller/privacy-controller/privacy.module';
 
 const routes: Routes = [
   {

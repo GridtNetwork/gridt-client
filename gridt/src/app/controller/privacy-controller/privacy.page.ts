@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 
 @Component({
-  selector: 'app-privacy',
-  templateUrl: './privacy.page.html',
-  styleUrls: ['./privacy.page.scss'],
+  selector: 'privacy-controller',
+  templateUrl: '../../view/privacy-view/privacy.page.html',
+  styleUrls: ['src/app/view/privacy-view/privacy.page.scss'],
 })
 export class PrivacyPage implements OnInit {
 

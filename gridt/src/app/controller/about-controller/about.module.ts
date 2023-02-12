@@ -6,7 +6,7 @@ import { IonicModule } from '@ionic/angular';
 import { AboutPageRoutingModule } from './about-routing.module';
 import { AboutPage } from './about.page';
 
-import { PrivacyPageModule } from './privacy/privacy.module';
+import { PrivacyPageModule } from 'src/app/controller/privacy-controller/privacy.module';
 
 @NgModule({
   imports: [

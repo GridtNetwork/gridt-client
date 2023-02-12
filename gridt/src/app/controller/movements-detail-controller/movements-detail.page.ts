@@ -39,7 +39,7 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
   onSubscribe(): void {
     this.alertCtrl.create({
       header: 'Are you sure?',
-      message: 'You are about to subscribe to this movement.',
+      message: 'You are about-controller to subscribe to this movement.',
       buttons: [
         {
           text: 'Cancel',
@@ -61,7 +61,7 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
   onUnsubscribe():void {
     this.alertCtrl.create({
       header: 'Are you sure?',
-      message: 'You are about to leave this movement.',
+      message: 'You are about-controller to leave this movement.',
       buttons: [
         {
           text: 'Cancel',
