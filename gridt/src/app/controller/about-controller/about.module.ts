@@ -8,6 +8,9 @@ import { AboutPage } from './about.page';
 
 import { PrivacyPageModule } from 'src/app/controller/privacy-controller/privacy.module';
 
+import { CreditsPageModule } from './credits/credits.module';
+import { TutorialPageModule } from './tutorial/tutorial.module';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -15,6 +18,8 @@ import { PrivacyPageModule } from 'src/app/controller/privacy-controller/privacy
     IonicModule,
     AboutPageRoutingModule,
     PrivacyPageModule,
+    CreditsPageModule,
+    TutorialPageModule
   ],
   declarations: [AboutPage]
 })

@@ -8,13 +8,15 @@ import { HomePageRoutingModule } from './home-routing.module';
 
 import { HomePage } from './home.page';
 import { SignalMessageComponent } from './signal-message-component/signal-message.component';
+import { TutorialPageModule } from '../about/tutorial/tutorial.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    HomePageRoutingModule
+    HomePageRoutingModule,
+    TutorialPageModule
   ],
   declarations: [HomePage, SignalMessageComponent]
 })
