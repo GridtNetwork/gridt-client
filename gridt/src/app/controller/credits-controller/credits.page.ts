@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 
 @Component({
-  selector: 'app-credits',
-  templateUrl: './credits.page.html',
-  styleUrls: ['./credits.page.scss'],
+  selector: 'app-credits-controller',
+  templateUrl: '../../view/credits-view/credits.page.html',
+  styleUrls: ['../../view/credits-view/credits.page.scss'],
 })
 export class CreditsPage implements OnInit {
 

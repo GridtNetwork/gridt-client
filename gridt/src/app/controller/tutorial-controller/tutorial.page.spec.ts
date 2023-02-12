@@ -1,15 +1,14 @@
-import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { async, ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { TutorialPage } from './tutorial.page';
 
 import { Router } from '@angular/router';
 import { Location } from "@angular/common"; 
-import { routes } from '../../app-routing.module';
+import { routes } from '../app-routing.module';
 import { HttpClientModule, HttpHeaders } from '@angular/common/http';
-import { AuthService } from 'src/app/core/auth.service';
+import { AuthService } from 'src/app/model/services/auth.service';
 import { of } from 'rxjs';
-import { MovementsPage } from 'src/app/movements/movements.page';
 
 // Mocking authentication is apparently needed to make the router function properly
 const default_headers = {
@@ -43,7 +42,7 @@ describe('TutorialPage', () => {
       declarations: [ TutorialPage ],
       imports: [
         IonicModule.forRoot(),
-        RouterTestingModule.withRoutes(routes, {initialNavigation: false}),
+        RouterTestingModule.withRoutes(routes, {initialNavigation: "disabled"}),
         HttpClientModule,
       ],
       providers: [

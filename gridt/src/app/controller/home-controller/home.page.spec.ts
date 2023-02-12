@@ -5,7 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AlertController } from '@ionic/angular';
 
 import { User } from '../../model/interfaces/user.model';
-import { HomePage } from '../../controller/home-controller/home.page';
+import { HomePage } from './home.page';
 import { AuthService } from '../../model/services/auth.service';
 import { ApiService } from '../../model/services/api.service';
 import { Movement } from '../../model/interfaces/movement.model';

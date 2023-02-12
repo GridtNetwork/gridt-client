@@ -13,12 +13,12 @@ const routes: Routes = [
     loadChildren: () => import('src/app/controller/privacy-controller/privacy.module').then(m => m.PrivacyPageModule)
   },
   {
-    path: 'tutorial',
-    loadChildren: () => import('./tutorial/tutorial.module').then( m => m.TutorialPageModule)
+    path: 'tutorial-controller',
+    loadChildren: () => import('src/app/controller/tutorial-controller/tutorial.module').then( m => m.TutorialPageModule)
   },
   {
-    path: 'credits',
-    loadChildren: () => import('./credits/credits.module').then( m => m.CreditsPageModule)
+    path: 'credits-controller',
+    loadChildren: () => import('src/app/controller/credits-controller/credits.module').then( m => m.CreditsPageModule)
   },
 ];
 

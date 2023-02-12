@@ -8,7 +8,7 @@ import { HomePageRoutingModule } from './home-routing.module';
 
 import { HomePage } from './home.page';
 import { SignalMessageComponent } from './signal-message-component/signal-message.component';
-import { TutorialPageModule } from '../about/tutorial/tutorial.module';
+import { TutorialPageModule } from '../tutorial-controller/tutorial.module';
 
 @NgModule({
   imports: [

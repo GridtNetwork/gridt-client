@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { CreditsPageRoutingModule } from './credits-routing.module';
+import { CreditsPageRoutingModule } from 'src/app/controller/credits-controller/credits-routing.module';
 
 import { CreditsPage } from './credits.page';
 

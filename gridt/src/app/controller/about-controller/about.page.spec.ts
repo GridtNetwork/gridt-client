@@ -27,14 +27,14 @@ describe('AboutPage', () => {
     expect(component).toBeTruthy();
   });
 
-  // If the tutorial is opened, should open modal
-  it('should open the tutorial modal', () => {
+  // If the tutorial-controller is opened, should open modal
+  it('should open the tutorial-controller modal', () => {
     component.presentTutorial();
     expect(modalSpy.create).toHaveBeenCalled();
   });
   
-  // If roll credits is opened, should open modal
-  it('should open the credits modal', () => {
+  // If roll credits-controller is opened, should open modal
+  it('should open the credits-controller modal', () => {
     component.presentCredits();
     expect(modalSpy.create).toHaveBeenCalled();
   });

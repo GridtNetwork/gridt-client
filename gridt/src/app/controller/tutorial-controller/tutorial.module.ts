@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { TutorialPageRoutingModule } from './tutorial-routing.module';
+import { TutorialPageRoutingModule } from 'src/app/controller/tutorial-controller/tutorial-routing.module';
 
 import { TutorialPage } from './tutorial.page';
 

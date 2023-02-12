@@ -7,7 +7,7 @@ import { Movement } from '../../model/interfaces/movement.model';
 import { User } from '../../model/interfaces/user.model';
 import { SwapService } from '../../model/services/swap.service';
 
-import { TutorialPage } from '../about/tutorial/tutorial.page'
+import { TutorialPage } from '../tutorial-controller/tutorial.page'
 
 @Component({
   selector: 'app-home',

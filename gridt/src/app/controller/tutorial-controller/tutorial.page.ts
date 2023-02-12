@@ -4,8 +4,8 @@ import { ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tutorial',
-  templateUrl: './tutorial.page.html',
-  styleUrls: ['./tutorial.page.scss'],
+  templateUrl: '../../view/tutorial-view/tutorial.page.html',
+  styleUrls: ['../../view/tutorial-view/tutorial.page.scss'],
 })
 export class TutorialPage implements OnInit {
   url = "";
