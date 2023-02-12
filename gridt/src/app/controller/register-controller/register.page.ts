@@ -1,8 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { LoadingController, AlertController } from '@ionic/angular';
+import { LoadingController, AlertController, ModalController } from '@ionic/angular';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../../model/services/auth.service';
+import { AuthService } from '../../core/auth.service';
+import { PrivacyPage } from 'src/app/about/privacy/privacy.page';
 
 @Component({
   selector: 'app-register',
@@ -17,6 +19,7 @@ export class RegisterPage implements OnInit, OnDestroy {
     private loadingCtrl: LoadingController,
     private alertCtrl: AlertController,
     private auth: AuthService,
+    public modalController: ModalController,
     ) { }
 
   ngOnInit() {
@@ -83,6 +86,14 @@ export class RegisterPage implements OnInit, OnDestroy {
         buttons: ['Okay']
       })
       .then(alertEl => alertEl.present());
+  }
+
+  async presentPrivacy() {
+    const modal = await this.modalController.create({
+      component: PrivacyPage
+    });
+    console.debug("present privacy policy");
+    return await modal.present();
   }
 
 }
