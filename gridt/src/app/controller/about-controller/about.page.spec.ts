@@ -1,5 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import { IonicModule, ModalController } from '@ionic/angular';
 
 import { AboutPage } from './about.page';
@@ -7,9 +6,17 @@ import { AboutPage } from './about.page';
 describe('AboutPage', () => {
   let component: AboutPage;
   let fixture: ComponentFixture<AboutPage>;
-  let modalSpy: ModalController = jasmine.createSpyObj("modalSpy", ['create', 'present', 'dismiss']);
+  let modalSpy: ModalController = jasmine.createSpyObj("modalSpy", {
+    "create": {
+      "present": function() {
+        return true
+      }},
+    "dismiss": function() {
+      return true
+    }}
+  );
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ AboutPage ],
       imports: [IonicModule.forRoot()],
@@ -36,6 +43,11 @@ describe('AboutPage', () => {
   // If roll credits-controller is opened, should open modal
   it('should open the credits-controller modal', () => {
     component.presentCredits();
+    expect(modalSpy.create).toHaveBeenCalled();
+  });
+
+    it('should open the privacy-controller modal', () => {
+    component.presentPrivacy();
     expect(modalSpy.create).toHaveBeenCalled();
   });
 

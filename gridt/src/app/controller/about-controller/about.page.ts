@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { PrivacyPage } from 'src/app/controller/privacy-controller/privacy.page';
 import {CreditsPage} from "../credits-controller/credits.page";
@@ -9,7 +9,7 @@ import {TutorialPage} from "../tutorial-controller/tutorial.page";
   templateUrl: '../../view/about-view/about.page.html',
   styleUrls: ['../../view/about-view/about.page.scss'],
 })
-export class AboutPage {
+export class AboutPage implements OnInit, OnDestroy{
 
   constructor(public modalController: ModalController) { 
 
@@ -41,5 +41,8 @@ export class AboutPage {
 
   ngOnDestroy() {
     this.modalController.dismiss();
+  }
+
+  ngOnInit(): void {
   }
 }

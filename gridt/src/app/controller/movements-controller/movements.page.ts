@@ -36,6 +36,6 @@ export class MovementsPage implements OnInit, OnDestroy {
       buttons: ["Okay"]
     });
 
-    el.present();
+    await el.present();
   }
 }
