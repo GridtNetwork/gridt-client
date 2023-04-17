@@ -2,7 +2,7 @@ import { of } from 'rxjs';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 
 import { User } from '../../model/interfaces/user.model';
 import { HomePage } from './home.page';
@@ -19,7 +19,10 @@ describe('HomePage', () => {
   let fixture: ComponentFixture<HomePage>;
   let apiSpy: ApiService;
   let alertSpy: AlertController = jasmine.createSpyObj("alertSpy", ["create", "dismiss"]);
-
+  let modalSpy: ModalController = jasmine.createSpyObj("modalSpy", {
+    "create": { "present": () => true },
+    "dismiss": () => true
+  });
 
   beforeEach(() => {
     jasmine.clock().install();
@@ -46,7 +49,8 @@ describe('HomePage', () => {
       providers: [
         { provide: ApiService, useValue: apiSpy },
         { provide: AlertController, useValue: alertSpy },
-        { provide: AuthService, useClass: AuthServiceStub }
+        { provide: AuthService, useClass: AuthServiceStub },
+        { provide: ModalController, useValue: modalSpy }
       ]
     }).compileComponents();
 
