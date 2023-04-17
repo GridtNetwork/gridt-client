@@ -205,4 +205,17 @@ describe('HomePage', () => {
     movement.last_signal_sent.time_stamp = '2020-04-09 10:00:00+01:00';
     expect(component.canSwap(movement)).toBeTruthy();
   });
+
+  it('should open the announcement modal', () => {
+      const movement : Movement = {
+        name: "Flossing",
+        short_description: "Flossing is good for you.",
+        interval: "daily",
+        last_signal_sent: {
+          time_stamp: "2020-04-01 14:00:00+02:00"
+        }
+      } as Movement;
+      component.presentAnnouncements(movement);
+      expect(modalSpy.create).toHaveBeenCalled();
+  });
 });
