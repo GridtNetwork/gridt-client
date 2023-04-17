@@ -24,10 +24,16 @@
             <ion-grid>
               <ion-row>
                 <ion-col>
-                  Have you done it yet?
+                  <div>
+                    <p>Have you done it yet?</p>
+                    <ion-button (click)="confirmSignal(movement)" [attr.disabled]="!readyToSignal(movement) ? '' : null">Yes!</ion-button>  
+                  </div>
                 </ion-col>
                 <ion-col>
-                  <ion-button (click)="confirmSignal(movement)" [attr.disabled]="!readyToSignal(movement) ? '' : null">Yes!</ion-button>
+                  <div>
+                    <p>Announcements</p>
+                    <ion-button (click)="presentAnnouncements(movement)"><b>🔔</b></ion-button>
+                  </div>
                 </ion-col>
               </ion-row>
               <ion-row>

@@ -10,6 +10,7 @@ import { Movement } from "../interfaces/movement.model";
 import { User } from '../interfaces/user.model';
 import { Identity } from '../interfaces/identity.model';
 import { ServerMessage } from '../interfaces/server-responses.model';
+import { Announcement } from "../interfaces/announcement.model";
 
 @Injectable({
   providedIn: "root"
@@ -36,6 +37,11 @@ export class ApiService {
   private _subscriptions$ = new BehaviorSubject<Movement[]>([]);
   get subscriptions$ (): Observable<Movement[]> {
     return this._subscriptions$.asObservable();
+  }
+
+  private _announcements$ = new BehaviorSubject<Announcement[]>([]);
+  get announcements$ (): Observable<Announcement[]> {
+    return this._announcements$.asObservable();
   }
 
   constructor (private http: HttpClient, private auth: AuthService) { }
@@ -274,5 +280,19 @@ export class ApiService {
       catchError( this.handleBadAuth() ),
       pluck("message")
     );
+  }
+
+  public getAnnouncements$( movement_id: number ) {
+    console.log(`Getting announcements for movement ${movement_id}`);
+
+    return this.auth.readyAuthentication$.pipe(
+      mergeMap((options) => this.http.get<Announcement[]>(
+        `${this.URL}/movements/${movement_id}/announcements`,
+        options
+      )),
+      catchError( this.handleBadAuth() ),
+      tap((announcement) => this._announcements$.next(announcement)),
+      map( () => true)
+    ).subscribe();
   }
 }

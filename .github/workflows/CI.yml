@@ -30,7 +30,7 @@ jobs:
 
         echo Installing the Gridt repo - npm install
         cd gridt
-        npm install
+        npm install --legacy-peer-deps
 
     # All test scripts are called with npm run test
     # We require a headless browser

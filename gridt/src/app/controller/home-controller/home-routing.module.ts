@@ -7,7 +7,11 @@ const routes: Routes = [
   {
     path: '',
     component: HomePage
-  }
+  },
+  {
+    path: 'announcement-controller',
+    loadChildren: () => import('src/app/controller/announcement-controller/announcement.module').then(m => m.AnnouncementPageModule)
+  },
 ];
 
 @NgModule({
