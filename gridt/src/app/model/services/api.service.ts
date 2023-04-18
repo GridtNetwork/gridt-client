@@ -323,4 +323,19 @@ export class ApiService {
       catchError(this.handleBadAuth())
     )
   }
+
+  public putAnnouncement$(
+    movement_id: number, announcement: Announcement, message: string
+  ): Observable<string> {
+    console.log(`Putting data to announcement #${announcement.id}`);
+    return this.auth.readyAuthentication$.pipe(
+      mergeMap((options) => this.http.put<ServerMessage>(
+        `${this.URL}/movements/${movement_id}/announcements/${announcement.id}`,
+        {message},
+        options
+      )),
+      pluck('message'),
+      catchError(this.handleBadAuth())
+    );
+  }
 }

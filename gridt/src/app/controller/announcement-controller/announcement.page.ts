@@ -102,7 +102,40 @@ export class AnnouncementPage implements OnInit {
     this.api.getAnnouncements$(this.movement.id);
   }
 
-  async clickUpdate() {
-    console.log('pressed update button');
+  async clickUpdate(announcement: Announcement) {
+    const alertElement = await this.alertCtrl.create({
+      header: "Update Announcement",
+      inputs: [{name: "message", placeholder: "updated text", type: "text"}],
+      buttons: [
+        {
+          text: "Cancel",
+          role: 'cancel',
+        },
+        {
+          text: "Update!",
+          handler: (data) => {
+            let message = data.message;
+            if (message === null || message.length === 0) {
+              alertElement.message = ('Your announcement is empty!');
+              return false;
+            }
+            if (10 > message.length || message.length > 140) {
+              alertElement.message = ('Your announcement is not between 10 and 140 characters!');
+              return false;
+            }
+            this.updateAnnouncement(announcement, message);
+            return true;
+          }
+        }
+      ]
+    });
+    alertElement?.present();
+  }
+
+  async updateAnnouncement(announcement: Announcement, message: string) {
+    await lastValueFrom(
+      this.api.putAnnouncement$(this.movement.id, announcement, message)
+    );
+    this.api.getAnnouncements$(this.movement.id);
   }
 }
