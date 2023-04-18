@@ -53,7 +53,7 @@ export class AnnouncementPage implements OnInit {
         {
           text: "Send!",
           handler: (data) => {
-            let message = data.message;
+            let message = data.message.trim();
             if (message === null || message.length === 0) {
               alertElement.message = ('Your announcement is empty!');
               return false;
@@ -114,7 +114,7 @@ export class AnnouncementPage implements OnInit {
         {
           text: "Update!",
           handler: (data) => {
-            let message = data.message;
+            let message = data.message.trim();
             if (message === null || message.length === 0) {
               alertElement.message = ('Your announcement is empty!');
               return false;
