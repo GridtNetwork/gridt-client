@@ -311,4 +311,16 @@ export class ApiService {
       catchError( this.handleBadAuth() )
     );
   }
+
+  public deleteAnnouncement$(movement_id: number, announcement: Announcement): Observable<string> {
+    console.log(`Removing annoucement #${announcement.id}`);
+    return this.auth.readyAuthentication$.pipe(
+      mergeMap((options) => this.http.delete<ServerMessage>(
+        `${this.URL}/movements/${movement_id}/announcements/${announcement.id}`,
+        options
+      )),
+      pluck("message"),
+      catchError(this.handleBadAuth())
+    )
+  }
 }

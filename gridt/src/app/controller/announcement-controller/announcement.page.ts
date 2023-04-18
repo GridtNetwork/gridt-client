@@ -62,7 +62,6 @@ export class AnnouncementPage implements OnInit {
               alertElement.message = ('Your announcement is not between 10 and 140 characters!');
               return false;
             }
-            console.log("POST https://api.gridt.org/movements/:id/announcements")
             this.newAnnouncement(message);
             return true;
           }
@@ -79,5 +78,31 @@ export class AnnouncementPage implements OnInit {
     );
     // Update the list of announcements
     this.api.getAnnouncements$(this.movement.id);
+  }
+
+  async clickRemove(announcement: Announcement) {
+    const alertElement = await this.alertCtrl.create({
+      header: "Delete Announcement",
+      message: "Are you sure you want to delete this announcement?",
+      buttons: [
+        {text: "No", role: "cancel"},
+        {text: "Yes, I am sure", handler: (_) => {
+          this.removeAnnouncement(announcement);
+          return true;
+        }}
+      ]
+    });
+    alertElement?.present();
+  }
+
+  async removeAnnouncement(announcement: Announcement){
+    await lastValueFrom(
+      this.api.deleteAnnouncement$(this.movement.id, announcement)
+    );
+    this.api.getAnnouncements$(this.movement.id);
+  }
+
+  async clickUpdate() {
+    console.log('pressed update button');
   }
 }

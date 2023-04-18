@@ -14,9 +14,6 @@
             </div>
             <br>
             <div  *ngFor="let announcement of announcements$ | async">
-                <ion-row>
-                    {{announcement.message}}
-                </ion-row>
                 <ion-row style="font-size: small;">
                     <ion-col>
                         by: {{announcement.poster.username}}
@@ -25,7 +22,19 @@
                         at: {{announcement.created_time.split("+")[0]}}
                     </ion-col>
                 </ion-row>
-                <br>
+                <ion-row>
+                    <ion-col style="font-size: large;">
+                        {{announcement.message}}
+                    </ion-col>
+                    <ion-col size="auto">
+                        <ion-button (click)="clickUpdate()" color="warning" size="small" shape="round">
+                            🖊
+                        </ion-button>
+                        <ion-button (click)="clickRemove(announcement)" color="danger" size="small" shape="round">
+                            ❌
+                        </ion-button>
+                    </ion-col>
+                </ion-row>
             </div>
         </ion-grid>
         <ion-button (click)="dismiss()" expand="full">Done</ion-button>
