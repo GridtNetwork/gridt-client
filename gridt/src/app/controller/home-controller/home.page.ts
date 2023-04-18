@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AlertController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular';
 import { Observable } from 'rxjs';
 
 import { ApiService } from '../../model/services/api.service';
@@ -8,6 +9,7 @@ import { User } from '../../model/interfaces/user.model';
 import { SwapService } from '../../model/services/swap.service';
 
 import { TutorialPage } from '../tutorial-controller/tutorial.page'
+import { AnnouncementPage } from '../announcement-controller/announcement.page';
 
 @Component({
   selector: 'app-home',
@@ -20,7 +22,8 @@ export class HomePage implements OnInit, OnDestroy {
   constructor(
     private api: ApiService,
     private alertCtrl: AlertController,
-    private swapService: SwapService
+    private swapService: SwapService,
+    public modalController: ModalController
   ) { }
 
   ngOnInit() {
@@ -30,6 +33,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.alertCtrl.dismiss();
+    this.modalController.dismiss();
   }
 
   /**
@@ -229,5 +233,14 @@ export class HomePage implements OnInit, OnDestroy {
         .then(alertEl => alertEl.present())
       }
   });
+  }
+
+  async presentAnnouncements(movement: Movement) {
+    const modal = await this.modalController.create({
+      component: AnnouncementPage,
+      componentProps: { movement: movement }
+    });
+    console.log('create announcement modal');
+    return await modal.present();
   }
 }

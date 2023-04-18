@@ -2,7 +2,7 @@ import { of } from 'rxjs';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientModule } from '@angular/common/http';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 
 import { User } from '../../model/interfaces/user.model';
 import { HomePage } from './home.page';
@@ -19,7 +19,10 @@ describe('HomePage', () => {
   let fixture: ComponentFixture<HomePage>;
   let apiSpy: ApiService;
   let alertSpy: AlertController = jasmine.createSpyObj("alertSpy", ["create", "dismiss"]);
-
+  let modalSpy: ModalController = jasmine.createSpyObj("modalSpy", {
+    "create": { "present": () => true },
+    "dismiss": () => true
+  });
 
   beforeEach(() => {
     jasmine.clock().install();
@@ -46,7 +49,8 @@ describe('HomePage', () => {
       providers: [
         { provide: ApiService, useValue: apiSpy },
         { provide: AlertController, useValue: alertSpy },
-        { provide: AuthService, useClass: AuthServiceStub }
+        { provide: AuthService, useClass: AuthServiceStub },
+        { provide: ModalController, useValue: modalSpy }
       ]
     }).compileComponents();
 
@@ -200,5 +204,18 @@ describe('HomePage', () => {
 
     movement.last_signal_sent.time_stamp = '2020-04-09 10:00:00+01:00';
     expect(component.canSwap(movement)).toBeTruthy();
+  });
+
+  it('should open the announcement modal', () => {
+      const movement : Movement = {
+        name: "Flossing",
+        short_description: "Flossing is good for you.",
+        interval: "daily",
+        last_signal_sent: {
+          time_stamp: "2020-04-01 14:00:00+02:00"
+        }
+      } as Movement;
+      component.presentAnnouncements(movement);
+      expect(modalSpy.create).toHaveBeenCalled();
   });
 });

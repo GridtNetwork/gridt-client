@@ -1,0 +1,27 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>Announcements of {{this.movement.name}}</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <div class="ion-padding">
+        <ion-grid>
+            <div  *ngFor="let announcement of announcements$ | async">
+                <ion-row>
+                    {{announcement.message}}
+                </ion-row>
+                <ion-row style="font-size: small;">
+                    <ion-col>
+                        by: {{announcement.poster.username}}
+                    </ion-col>
+                    <ion-col>
+                        at: {{announcement.created_time.split("+")[0]}}
+                    </ion-col>
+                </ion-row>
+                <br>
+            </div>
+        </ion-grid>
+        <ion-button (click)="dismiss()" expand="full">Done</ion-button>
+    </div>
+</ion-content>
