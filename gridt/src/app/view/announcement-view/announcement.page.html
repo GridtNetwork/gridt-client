@@ -7,6 +7,12 @@
 <ion-content>
     <div class="ion-padding">
         <ion-grid>
+            <div>
+                <ion-button (click)="clickNew()" fill="outline" expand="full">
+                    New announcement
+                </ion-button>
+            </div>
+            <br>
             <div  *ngFor="let announcement of announcements$ | async">
                 <ion-row>
                     {{announcement.message}}

@@ -295,4 +295,20 @@ export class ApiService {
       map( () => true)
     ).subscribe();
   }
+
+  public postAnnouncement$(movement_id: number, message: string): Observable<string> {
+    console.log(`Posting announcement to movement #${movement_id}`);
+    let poster = 1;  // We need to do this because the of the implementation of the endpoint
+    let body = { message, movement_id, poster };
+
+    return this.auth.readyAuthentication$.pipe(
+      mergeMap((options) => this.http.post<ServerMessage>(
+        `${this.URL}/movements/${movement_id}/announcements`,
+        body,
+        options
+      )),
+      pluck("message"),
+      catchError( this.handleBadAuth() )
+    );
+  }
 }
