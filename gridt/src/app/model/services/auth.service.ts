@@ -170,11 +170,17 @@ export class AuthService {
    * @param username Username to identify user
    * @param email Email to reach user
    * @param password Password to identify user.
+   * @param admin_key admin key of a user.
    */
-  public register$(username: string, email: string, password: string): Observable<string> {
+  public register$(username: string, email: string, password: string, admin_key: string): Observable<string> {
     console.debug(`Registering user ${username}.`);
+    let body = { username, email, password};
+    if (admin_key != null){
+      body["admin_key"]= admin_key
+    }
+    console.log(body)
 
-    return this.http.post<ServerMessage>("https://api.gridt.org/register", {username, email, password}).pipe(
+    return this.http.post<ServerMessage>("https://api.gridt.org/register", body).pipe(
       pluck("message"),
       catchError( (error) => throwError(error.error.message) )
     );

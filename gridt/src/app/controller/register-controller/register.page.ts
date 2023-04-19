@@ -46,13 +46,14 @@ export class RegisterPage implements OnInit, OnDestroy {
   /*
    * Do API call and handle loading element.
    */
-  public async register (username:string, email: string, password: string ) {
+  public async register (username:string, email: string, password: string, admin_key: string) {
+
     const el = await this.loadingCtrl.create({
       keyboardClose: true,
       message: 'Signing you up...' 
     });
 
-    this.auth.register$(username, email, password).subscribe({
+    this.auth.register$(username, email, password, admin_key).subscribe({
       next: () => {
         this.router.navigateByUrl('/login');
         el.dismiss();
@@ -67,6 +68,7 @@ export class RegisterPage implements OnInit, OnDestroy {
 
   //Submits the registration info
   accept: any;
+  admin: any;
   onSubmit(form: NgForm) {
     if (!form.valid) {
       return;
@@ -74,8 +76,9 @@ export class RegisterPage implements OnInit, OnDestroy {
     const username = form.value.username;
     const email = form.value.email;
     const password = form.value.password;
+    const admin_key = form.value.admin_key;
 
-    this.register(username, email, password);
+    this.register(username, email, password, admin_key);
   }
 
   private showAlert(message: string) {
@@ -94,6 +97,10 @@ export class RegisterPage implements OnInit, OnDestroy {
     });
     console.debug("present privacy-controller policy");
     return await modal.present();
+  }
+
+  async extendForm(){
+
   }
 
 }

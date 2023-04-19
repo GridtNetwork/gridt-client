@@ -242,7 +242,7 @@ describe("AuthService", () => {
     secStoreStub.get$.and.returnValue(of());
     service = new AuthService(httpClientStub, secStoreStub);
 
-    expect(service.register$("mockusername", "mockemail", "mockpassword")).toBeObservable(
+    expect(service.register$("mockusername", "mockemail", "mockpassword", "mock_key")).toBeObservable(
       cold("(s|)", {
         s:"Succesfully created user."
       })
@@ -253,7 +253,8 @@ describe("AuthService", () => {
       {
         username: "mockusername",
         email: "mockemail",
-        password: "mockpassword"
+        password: "mockpassword",
+        admin_key: "mock_key"
       }
     );
   });
@@ -268,7 +269,7 @@ describe("AuthService", () => {
     secStoreStub.get$.and.returnValue(of());
     service = new AuthService(httpClientStub, secStoreStub);
 
-    expect(service.register$("mockusername", "mockemail", "mockpassword")).toBeObservable(
+    expect(service.register$("mockusername", "mockemail", "mockpassword", "mock_key")).toBeObservable(
       cold("#", null, "Username already in use.")
     );
   });
