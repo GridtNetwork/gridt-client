@@ -256,7 +256,7 @@ describe("ApiService when authentication is succesful", () => {
 
     service.getAllMovements();
     service.getSubscriptions();
-    service.getMovement$("Flossing").subscribe();
+    service.getMovement$(1).subscribe();
 
     mock_movements.pop();
     mock_movements.push(flossing_movement);
