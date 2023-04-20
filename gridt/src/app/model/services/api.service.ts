@@ -103,7 +103,7 @@ export class ApiService {
   /*
    * Request single movement from server.
    */
-  public getMovement$ (movement_id: number | string ): Observable<Movement> {
+  public getMovement$ (movement_id: number ): Observable<Movement> {
     console.debug(`Getting movement "${movement_id}" from server.`);
 
     return this.auth.readyAuthentication$.pipe(
@@ -154,9 +154,9 @@ export class ApiService {
 
   /**
    * Subscribe user to a movement.
-   * @param movement_id The movement (id or string) that the user wants to subscribe to.
+   * @param movement_id The movement id that the user wants to subscribe to.
    */
-  public subscribeToMovement$ (movement_id: number | string) {
+  public subscribeToMovement$ (movement_id: number) {
     console.debug(`Subscribing to movement "${movement_id}".`);
 
     return this.auth.readyAuthentication$.pipe(
@@ -172,9 +172,9 @@ export class ApiService {
 
   /**
    * Unsubscribe user from a movement.
-   * @param movement_id The movement (id or string) that the user wants to subscribe to.
+   * @param movement_id The movement id that the user wants to subscribe to.
    */
-  public unsubscribeFromMovement$ (movement_id: number | string): Observable<string> {
+  public unsubscribeFromMovement$ (movement_id: number): Observable<string> {
     console.debug(`Unsubscribing from movement "${movement_id}".`);
 
     return this.auth.readyAuthentication$.pipe(
