@@ -98,9 +98,4 @@ export class RegisterPage implements OnInit, OnDestroy {
     console.debug("present privacy-controller policy");
     return await modal.present();
   }
-
-  async extendForm(){
-
-  }
-
 }
