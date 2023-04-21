@@ -39,7 +39,7 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
   onSubscribe(): void {
     this.alertCtrl.create({
       header: 'Are you sure?',
-      message: 'You are about-controller to subscribe to this movement.',
+      message: 'You are about to subscribe to this movement.',
       buttons: [
         {
           text: 'Cancel',
@@ -61,7 +61,7 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
   onUnsubscribe():void {
     this.alertCtrl.create({
       header: 'Are you sure?',
-      message: 'You are about-controller to leave this movement.',
+      message: 'You are about to leave this movement.',
       buttons: [
         {
           text: 'Cancel',
@@ -89,10 +89,10 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
 
     this.movement$.pipe(
       take(1),
-      mergeMap( (movement) => this.api.subscribeToMovement$(movement.name)),
+      mergeMap( (movement) => this.api.subscribeToMovement$(movement.id)),
       mergeMap( () => this.movement$), // We need the movement name again to reload the movement.
       take(1),
-      mergeMap( (movement) => this.api.getMovement$(movement.name))
+      mergeMap( (movement) => this.api.getMovement$(movement.id))
     ).subscribe({
       next: () => el.dismiss(),
       error: (error) => {
@@ -119,10 +119,10 @@ export class MovementsDetailPage implements OnInit, OnDestroy {
 
     this.movement$.pipe(
       take(1),
-      mergeMap( movement => this.api.unsubscribeFromMovement$(movement.name) ),
+      mergeMap( movement => this.api.unsubscribeFromMovement$(movement.id) ),
       mergeMap( () => this.movement$ ),
       take(1),
-      mergeMap( movement => this.api.getMovement$(movement.name) )
+      mergeMap( movement => this.api.getMovement$(movement.id) )
     ).subscribe({
       next: () => el.dismiss(),
       error: (error) => {
