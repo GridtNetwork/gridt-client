@@ -19,4 +19,8 @@ export interface Identity {
      * The user's MD5 hash for the Gravatar
      */
     avatar: string;
+    /**
+     * Whether or not the user is an admin
+     */
+    is_admin: false;
 }

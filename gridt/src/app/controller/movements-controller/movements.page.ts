@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 
 import { ApiService } from '../../model/services/api.service';
 import { Movement } from '../../model/interfaces/movement.model';
+import { Identity } from 'src/app/model/interfaces/identity.model';
+import { SettingsService } from 'src/app/model/services/settings.service';
 
 @Component({
   selector: 'app-movements',
@@ -13,9 +15,11 @@ import { Movement } from '../../model/interfaces/movement.model';
 export class MovementsPage implements OnInit, OnDestroy {
   searchText: string = "";
   movements$: Observable<Movement[]>;
+  identity$: Observable<Identity>;
 
   constructor(
     private api: ApiService,
+    private settings: SettingsService,
     private menuCtrl: MenuController,
     private alertCtrl: AlertController
   ) { }
@@ -23,6 +27,8 @@ export class MovementsPage implements OnInit, OnDestroy {
   ngOnInit() {
     this.movements$ = this.api.allMovements$;
     this.api.getAllMovements();
+    this.identity$ = this.settings.userIdentity$;
+    this.settings.updateIdentity();
   }
 
   ngOnDestroy() {

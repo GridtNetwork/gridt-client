@@ -31,6 +31,7 @@ export class SettingsService {
     username: "",
     bio: "",
     email: "",
+    is_admin: false,
     avatar: ""
   };
 
