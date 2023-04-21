@@ -22,5 +22,5 @@ export interface Identity {
     /**
      * Whether or not the user is an admin
      */
-    is_admin: false;
+    is_admin: boolean;
 }

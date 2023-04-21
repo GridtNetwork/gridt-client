@@ -24,6 +24,7 @@ let mock_id: Identity[] = [
     username: "ALittleOne",
     bio: "Less then one foot tall.",
     email: "a_little@one.com",
+    is_admin: false,
     avatar: "arandomstring"
   },
   {
@@ -31,6 +32,7 @@ let mock_id: Identity[] = [
     username: "JoeFlosser",
     bio: "Clean as ever.",
     email: "joe@flosser.com",
+    is_admin: false,
     avatar: "arandomstring"
   },
   {
@@ -38,6 +40,7 @@ let mock_id: Identity[] = [
     username: "YoMamma",
     bio: "When I walk by, you experience a solar eclipse.",
     email: "YoMamma@isfat.com",
+    is_admin: true,
     avatar: "arandomstring"
   }
 ];
