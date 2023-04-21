@@ -5,6 +5,8 @@ import { AlertController } from '@ionic/angular';
 
 import { ApiService } from '../../model/services/api.service';
 import { Announcement } from '../../model/interfaces/announcement.model';
+import { SettingsService } from 'src/app/model/services/settings.service';
+import { Identity } from 'src/app/model/interfaces/identity.model';
 
 
 @Component({
@@ -15,20 +17,24 @@ import { Announcement } from '../../model/interfaces/announcement.model';
 export class AnnouncementPage implements OnInit {
   announcements$ = new Observable<Announcement[]>();
   @Input() movement: any;
+  identity$: Observable<Identity>;
 
 
   constructor(
     private api: ApiService,
+    private settings: SettingsService,
     private alertCtrl: AlertController,
     public modalController: ModalController
   ) { }
 
   ngOnInit() {
     this.announcements$ = this.api.announcements$;
+    this.identity$ = this.settings.userIdentity$;
   }
 
   ngAfterViewInit() {
     this.api.getAnnouncements$(this.movement.id);
+    this.settings.updateIdentity();
   }
   
   dismiss() {

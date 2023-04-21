@@ -10,6 +10,7 @@ import { MovementsPage } from './movements.page';
 import { MovementsFilterPipe } from './movement-filter.pipe';
 import { AuthService } from '../../model/services/auth.service';
 import { ApiService } from '../../model/services/api.service';
+import { SettingsService } from 'src/app/model/services/settings.service';
 
 class AuthServiceStub {
   isLoggedIn$ = of(true);
@@ -19,11 +20,15 @@ describe('MovementsPage', () => {
   let component: MovementsPage;
   let fixture: ComponentFixture<MovementsPage>;
   let apiSpy: ApiService;
+  let settingsSpy: SettingsService;
   let alertSpy: AlertController = jasmine.createSpyObj("alertSpy", ["create", "dismiss"]);
 
   beforeEach(waitForAsync(() => {
     apiSpy = jasmine.createSpyObj('ApiService', {
       getAllMovements: () => {}
+    });
+    settingsSpy = jasmine.createSpyObj('SettingsService', {
+      updateIdentity: () => {}
     });
 
     TestBed.configureTestingModule({
@@ -37,6 +42,7 @@ describe('MovementsPage', () => {
       providers: [
         { provide: AuthService, useClass: AuthServiceStub },
         { provide: ApiService, useValue: apiSpy },
+        { provide: SettingsService, useValue: settingsSpy },
         { provide: AlertController, useValue: alertSpy}
       ]
     })

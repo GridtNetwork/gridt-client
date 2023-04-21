@@ -68,7 +68,7 @@
 </ion-content>
 
 <ion-fab vertical="bottom" horizontal="end" slot="fixed" style="padding-right: 0.5rem;">
-  <ion-fab-button color="primary" routerLink="/add">
+  <ion-fab-button *ngIf="(identity$ | async)?.is_admin" color="primary" routerLink="/add">
     <ion-icon name="add"></ion-icon>
   </ion-fab-button>
 </ion-fab> 
