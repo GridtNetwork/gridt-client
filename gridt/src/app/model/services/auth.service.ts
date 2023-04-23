@@ -178,7 +178,6 @@ export class AuthService {
     if (admin_key != null){
       body["admin_key"]= admin_key
     }
-    console.log(body)
 
     return this.http.post<ServerMessage>("https://api.gridt.org/register", body).pipe(
       pluck("message"),
