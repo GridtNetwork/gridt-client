@@ -202,8 +202,12 @@ export class HomePage implements OnInit, OnDestroy {
       inputs: [
         {
           name: "message",
-          placeholder: "message",
-          type: "text",
+          placeholder: "message (max 140 characters)",
+          type: "textarea",
+          attributes: {
+            maxlength: 140,
+            rows: 5,
+          },
         }
       ],
       buttons: [
