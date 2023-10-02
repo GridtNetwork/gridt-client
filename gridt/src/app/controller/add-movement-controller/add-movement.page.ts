@@ -14,8 +14,12 @@ import { Movement } from '../../model/interfaces/movement.model';
 export class AddMovementPage implements OnInit, OnDestroy {
   form: FormGroup;
   intervalTypes: string[] = [
-    'daily',
+    '1 minute',
+    '15 minutes',
+    '30 minutes',
+    'hourly',
     'twice daily',
+    'daily',
     'weekly'
   ];
 
@@ -70,7 +74,7 @@ export class AddMovementPage implements OnInit, OnDestroy {
       next: (message) => {
         el.dismiss();
         this.showMessage(message);
-        this.api.getMovement$(this.form.value.name).subscribe();
+        this.api.getNewMovement$().subscribe();
       },
       error: (error) => {
         el.dismiss();

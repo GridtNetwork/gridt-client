@@ -50,12 +50,30 @@ export class HomePage implements OnInit, OnDestroy {
    * @param hour_offset Timezone offset to account for the possibility that the server is not in the timezone of the client.
    */
   public getLastOccurence(
-    interval: "daily" | "twice daily" | "weekly",
+    interval: "1 minute" | "15 minutes" | "hourly" | "30 minutes" | "daily" | "twice daily" | "weekly",
     hour_offset: number
   ): Date {
     let date = new Date();
 
     switch (interval) {
+      case "1 minute":
+        date.setUTCSeconds(0, 0);
+        break;
+      case "15 minutes":
+        const minutes = date.getMinutes();
+        date.setUTCMinutes(minutes - (minutes % 15), 0, 0);
+        break;
+      case "30 minutes":
+        if (date.getUTCMinutes() < 30) {
+          date.setUTCMinutes(0, 0, 0);
+        } else {
+          date.setUTCMinutes(30, 0, 0);
+        }
+        break;
+      case "hourly":
+        const hours = date.getUTCHours();
+        date.setUTCHours(hour_offset + hours, 0, 0, 0);
+        break;
       case "daily":
         date.setUTCHours(hour_offset, 0, 0, 0);
         break;

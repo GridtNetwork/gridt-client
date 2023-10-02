@@ -38,5 +38,5 @@ export interface Movement {
    */
   description?: string;
 
-  interval: "daily" | "twice daily" | "weekly";
+  interval: "1 minute" | "15 minutes" | "30 minutes" | "daily" | "twice daily" | "weekly";
 }

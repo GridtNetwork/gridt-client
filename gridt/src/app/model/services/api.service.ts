@@ -119,6 +119,11 @@ export class ApiService {
     )
   }
 
+  public getNewMovement$(): Observable<Movement> {
+    let movementId = this._allMovements$.getValue().length;
+    return this.getMovement$(movementId);
+  }
+
   /**
    * Request all movements from the server.
    */
