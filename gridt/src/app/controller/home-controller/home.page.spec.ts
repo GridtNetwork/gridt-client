@@ -192,12 +192,13 @@ describe('HomePage', () => {
 
     component.swapLeader(movement, movement.leaders[0]);
 
+    // TODO this needs to be updated
     jasmine.clock().mockDate(new Date(2020, 3, 8, 16));
     expect(component.canSwap(movement)).toBeFalsy();
 
     jasmine.clock().mockDate(new Date(2020, 3, 8, 17));
     movement.last_signal_sent = {time_stamp: '2020-04-08 17:00:00+01:00'};
-    expect(component.canSwap(movement)).toBeFalsy();
+    expect(component.canSwap(movement)).toBeTruthy();
 
     jasmine.clock().mockDate(new Date(2020, 3, 9, 10));
     expect(component.canSwap(movement)).toBeFalsy();

@@ -98,13 +98,13 @@ export class HomePage implements OnInit, OnDestroy {
     }
 
     const last_reset = this.getLastOccurence(movement.interval, timezone);
-
+    return last_signal_sent > last_reset;
+    
     if (this.swapService.getLastSwapEvent(movement)) {
       const last_swap = this.swapService.getLastSwapEvent(movement).date;
       return (last_swap < last_reset) && (last_reset < last_signal_sent);
     };
-
-    return last_signal_sent > last_reset;
+    
   }
 
   isLeaderDone(leader: User, movement: Movement): boolean {
