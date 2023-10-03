@@ -28,12 +28,14 @@ export class HomePage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.movements$ = this.api.subscriptions$;
+    this.api.subscriptionAutoReload = true;
     this.api.getSubscriptions();
   }
 
   ngOnDestroy() {
     this.alertCtrl.dismiss();
     this.modalController.dismiss();
+    this.api.subscriptionAutoReload = false;
   }
 
   /**

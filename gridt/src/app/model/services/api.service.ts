@@ -38,6 +38,7 @@ export class ApiService {
   get subscriptions$ (): Observable<Movement[]> {
     return this._subscriptions$.asObservable();
   }
+  public subscriptionAutoReload: boolean = true;
 
   private _announcements$ = new BehaviorSubject<Announcement[]>([]);
   get announcements$ (): Observable<Announcement[]> {
@@ -152,9 +153,55 @@ export class ApiService {
         `${this.URL}/movements/subscriptions`,
         options
       )),
-      tap( (movements) => this._subscriptions$.next(movements)),
+      tap( (movements) => {
+        if (this._containsUpdate(movements)) {
+          this._subscriptions$.next(movements)
+        }
+      }),
       catchError( this.handleBadAuth() )
     ).subscribe();
+
+    if (this.subscriptionAutoReload) {
+      setTimeout(() => this.getSubscriptions(), 5000);
+    }
+  }
+
+  private _containsUpdate(new_movements: Movement[]): boolean {
+    const current_movements = this._subscriptions$.getValue();
+
+    if (new_movements.length != current_movements.length) {
+      return true;
+    }
+
+    for (let current_movement of current_movements) {
+      const new_movement = new_movements.find((m) => m.name == current_movement.name);
+
+      if (!new_movement) {
+        return true;
+      }
+
+      const current_leaders = current_movement.leaders;
+      const new_leaders = new_movement.leaders;
+      if (!current_leaders || new_leaders?.length !== current_leaders?.length) {
+        return true;
+      }
+
+      for (let current_leader of current_movement.leaders) {
+        const new_leader = new_leaders.find((l) => l.id === current_leader.id);
+
+        if (current_leader.last_signal === null) {
+          if (new_leader.last_signal !== null) {
+            return true;
+          }
+        } else {
+          if (new_leader.last_signal?.time_stamp !== current_leader.last_signal?.time_stamp) {
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
   }
 
   /**
