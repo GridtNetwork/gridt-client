@@ -47,7 +47,7 @@
                         <h3>
                           {{ leader.username }}
                         </h3>
-                        <p>{{ isLeaderDone(leader, movement) ? 'Done!' : 'Pending...' }}</p>
+                        <p>{{ isLeaderDone(leader, movement) ? '\(^o^)/' : '(-.-)zzZZ' }}</p>
                       </div>
                       <div *ngIf="isLeaderDone(leader, movement) && leader.last_signal.message" id="expandable">
                         <signal-message signalText={{leader.last_signal.message}}></signal-message>
