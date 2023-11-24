@@ -53,7 +53,7 @@ describe('AppComponent', () => {
     app.isLoggedIn$ = of(true);
     await fixture.detectChanges();
     const menuItems = appElement.querySelectorAll('ion-label');
-    expect(menuItems.length).toEqual(4);
+    expect(menuItems.length).toEqual(3);
   });
   
   it('should have urls', async () => {
@@ -62,6 +62,6 @@ describe('AppComponent', () => {
     app.isLoggedIn$ = of(true);
     await fixture.detectChanges();
     const menuItems = appElement.querySelectorAll('ion-item');
-    expect(menuItems.length).toEqual(4);
+    expect(menuItems.length).toEqual(3);
   });
 });
