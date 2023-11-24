@@ -166,7 +166,7 @@ export class HomePage implements OnInit, OnDestroy {
       next: async user => {
         const el = await this.alertCtrl.create({
           header: "Found new leader",
-          message: `Your new leader is ${user.username}.`,
+          message: `Your are now following ${user.username}.`,
           buttons: ["okay"]
         });
 
@@ -198,7 +198,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   async confirmSignal (movement: Movement) {
     const el = await this.alertCtrl.create({
-      header: "Want to send a message with your signal?",
+      header: "Send a message with your signal!",
       message: '',
       cssClass: "confirmSignal-alert", // makes message text go red
       inputs: [
